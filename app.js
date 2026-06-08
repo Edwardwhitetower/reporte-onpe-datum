@@ -26,6 +26,89 @@ function leadClass(lead){
   return n >= 0 ? 'keiko' : 'sanchez';
 }
 
+function signedPoints(n){
+  const value = Number(n || 0);
+  const sign = value >= 0 ? '+' : '−';
+  return `${sign}${Math.abs(value).toFixed(2)} pts`;
+}
+
+function clampPct(n){
+  if(!Number.isFinite(n)) return null;
+  return Math.max(0, Math.min(100, n));
+}
+
+function getForeignActual(){
+  const rows = state.data?.foreign || [];
+  const keiko = rows.reduce((sum, r) => sum + Number(r.keiko_actual || 0), 0);
+  const sanchez = rows.reduce((sum, r) => sum + Number(r.sanchez_actual || 0), 0);
+  const total = keiko + sanchez;
+  return {
+    keiko,
+    sanchez,
+    total,
+    leadKeiko: keiko - sanchez,
+    keikoPct: total ? keiko / total * 100 : null,
+    sanchezPct: total ? sanchez / total * 100 : null
+  };
+}
+
+function calculateForeignThreshold(){
+  const p = state.data?.projection || {};
+  const foreignActual = getForeignActual();
+  const peruLeadKeiko = Number(p.withoutForeignLeadKeiko || 0);
+  const pendingForeign = Number(p.foreignRemainingVotesEstimated || 0);
+  const datumKeikoPct = Number(p.datumForeignKeikoPct || 0);
+
+  const leadBeforePending = peruLeadKeiko + foreignActual.leadKeiko;
+  const neededNetLeadFromPending = -leadBeforePending;
+
+  let rawNeededPct = null;
+  if(pendingForeign > 0){
+    rawNeededPct = ((neededNetLeadFromPending / pendingForeign) + 1) / 2 * 100;
+  }
+
+  const neededPct = rawNeededPct === null ? null : clampPct(rawNeededPct);
+  const datumMargin = neededPct === null ? null : datumKeikoPct - neededPct;
+  const onpePartialMargin = (neededPct === null || foreignActual.keikoPct === null) ? null : foreignActual.keikoPct - neededPct;
+
+  let status = 'neutral';
+  let statusText = 'No disponible';
+
+  if(rawNeededPct !== null){
+    if(rawNeededPct <= 0){
+      status = 'safe';
+      statusText = 'Keiko ya estaría arriba antes de estimar el extranjero pendiente.';
+    }else if(rawNeededPct > 100){
+      status = 'danger';
+      statusText = 'Ni ganando todo el extranjero pendiente alcanzaría bajo este corte.';
+    }else if(datumMargin >= 5){
+      status = 'safe';
+      statusText = `Datum está ${signedPoints(datumMargin)} por encima del umbral.`;
+    }else if(datumMargin >= 0){
+      status = 'warning';
+      statusText = `Datum todavía supera el umbral, pero solo por ${signedPoints(datumMargin)}.`;
+    }else{
+      status = 'danger';
+      statusText = `Datum queda ${signedPoints(datumMargin)} por debajo del umbral.`;
+    }
+  }
+
+  return {
+    peruLeadKeiko,
+    foreignActual,
+    pendingForeign,
+    leadBeforePending,
+    neededNetLeadFromPending,
+    rawNeededPct,
+    neededPct,
+    datumKeikoPct,
+    datumMargin,
+    onpePartialMargin,
+    status,
+    statusText
+  };
+}
+
 function projectionLabel(source){
   if(source === 'provincia') return 'proyección lineal por provincia';
   if(source === 'departamento_fallback') return 'proyección lineal por departamento (respaldo)';
@@ -109,6 +192,7 @@ function render(){
     <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al aplicar el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente— la diferencia ajustada queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
     <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.</p>`;
 
+  renderThreshold();
   renderSensitivity();
   setupProvinceDepartmentFilter();
   renderProvinces();
@@ -119,6 +203,58 @@ function render(){
   document.getElementById('provinceSearch')?.addEventListener('input', renderProvinces);
   document.getElementById('provinceFilter')?.addEventListener('change', renderProvinces);
   document.getElementById('provinceDepartmentFilter')?.addEventListener('change', renderProvinces);
+}
+
+
+function renderThreshold(){
+  const cardsEl = document.getElementById('thresholdCards');
+  const tableEl = document.getElementById('thresholdTable');
+  const calloutEl = document.getElementById('thresholdCallout');
+  const summaryEl = document.getElementById('thresholdSummaryText');
+  if(!cardsEl || !tableEl || !calloutEl) return;
+
+  const t = calculateForeignThreshold();
+  const p = state.data.projection || {};
+  const currentForeignPct = t.foreignActual.keikoPct;
+  const thresholdText = t.neededPct === null ? 'No disponible' : pct(t.neededPct, 2);
+  const datumMarginText = t.datumMargin === null ? 'No disponible' : signedPoints(t.datumMargin);
+  const onpeMarginText = t.onpePartialMargin === null ? 'No disponible' : signedPoints(t.onpePartialMargin);
+
+  cardsEl.innerHTML = [
+    ['Umbral mínimo Keiko', thresholdText, 'Porcentaje necesario del extranjero pendiente'],
+    ['Escenario Datum', pct(t.datumKeikoPct, 2), `${datumMarginText} frente al umbral`],
+    ['ONPE extranjero parcial', currentForeignPct === null ? 'No disponible' : pct(currentForeignPct, 2), `${onpeMarginText} frente al umbral`],
+    ['Extranjero pendiente estimado', moneyish(t.pendingForeign), `Total extranjero estimado: ${moneyish(p.foreignVotesEstimated || 0)}`]
+  ].map(([label, value, desc]) => `<article class="card threshold-card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
+
+  if(summaryEl){
+    summaryEl.innerHTML = `Con este corte, antes de estimar el extranjero pendiente, la diferencia queda en <b class="${leadClass(t.leadBeforePending)}">${leadText(t.leadBeforePending)}</b>. Para revertir o sostener el resultado final, Keiko necesita aproximadamente <b>${thresholdText}</b> del extranjero pendiente.`;
+  }
+
+  const comparisonRows = [
+    { label: 'Umbral mínimo para Keiko', value: t.neededPct, diff: 0, type: 'threshold' },
+    { label: 'ONPE extranjero parcial', value: currentForeignPct, diff: t.onpePartialMargin, type: 'onpe' },
+    { label: 'Escenario Datum extranjero', value: t.datumKeikoPct, diff: t.datumMargin, type: 'datum' }
+  ];
+
+  tableEl.innerHTML = `
+    <thead><tr><th>Referencia</th><th>% Keiko</th><th>Distancia frente al umbral</th><th>Lectura</th></tr></thead>
+    <tbody>${comparisonRows.map(r => {
+      const value = r.value === null ? 'No disponible' : pct(r.value, 2);
+      const diff = r.type === 'threshold' ? 'Base' : (r.diff === null ? 'No disponible' : signedPoints(r.diff));
+      const ok = r.type === 'threshold' ? 'neutral' : (Number(r.diff || 0) >= 0 ? 'keiko' : 'sanchez');
+      const lectura = r.type === 'threshold'
+        ? 'Mínimo requerido'
+        : Number(r.diff || 0) >= 0 ? 'Por encima del umbral' : 'Por debajo del umbral';
+      return `<tr><td>${r.label}</td><td>${value}</td><td class="winner ${ok}">${diff}</td><td>${lectura}</td></tr>`;
+    }).join('')}</tbody>`;
+
+  calloutEl.className = `callout threshold-${t.status}`;
+  calloutEl.innerHTML = `
+    <strong>Lectura del umbral</strong>
+    <p>${t.statusText}</p>
+    <p class="muted">Fórmula: Perú proyectado sin extranjero + extranjero ONPE ya contado + extranjero pendiente estimado. El umbral indica qué porcentaje del extranjero pendiente necesitaría Keiko para terminar arriba.</p>
+    <p class="muted">Extranjero ONPE parcial: Keiko ${moneyish(t.foreignActual.keiko)} vs Sánchez ${moneyish(t.foreignActual.sanchez)}; diferencia parcial: <b class="${leadClass(t.foreignActual.leadKeiko)}">${leadText(t.foreignActual.leadKeiko)}</b>.</p>`;
 }
 
 function renderSensitivity(){
