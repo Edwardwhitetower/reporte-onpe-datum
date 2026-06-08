@@ -2,7 +2,7 @@ const fmt = new Intl.NumberFormat('es-PE');
 const pct = (n, digits = 2) => `${Number(n || 0).toFixed(digits)}%`;
 const moneyish = n => fmt.format(Math.round(Number(n || 0)));
 
-const state = { data: null, regions: [] };
+const state = { data: null, regions: [], provinces: [] };
 
 function formatDateTime(value){
   if(!value) return 'no disponible';
@@ -26,15 +26,31 @@ function leadClass(lead){
   return n >= 0 ? 'keiko' : 'sanchez';
 }
 
+function projectionLabel(source){
+  if(source === 'provincia') return 'proyección lineal por provincia';
+  if(source === 'departamento_fallback') return 'proyección lineal por departamento (respaldo)';
+  return 'proyección lineal por ubicación geográfica';
+}
+
+function decorateRows(rows){
+  return (rows || []).map(r => {
+    const pending = Number(r.totalActas || 0) - Number(r.contabilizadas || 0);
+    const keiko = Number(r.keiko_proyectado || 0);
+    const sanchez = Number(r.sanchez_proyectado || 0);
+    return {
+      ...r,
+      pending,
+      winner: keiko > sanchez ? 'keiko' : 'sanchez',
+      margin: Math.abs(keiko - sanchez)
+    };
+  });
+}
+
 async function loadData(){
   const res = await fetch(`data/report-data.json?v=${Date.now()}`);
   state.data = await res.json();
-  state.regions = state.data.regions.map(r => ({
-    ...r,
-    pending: Number(r.totalActas || 0) - Number(r.contabilizadas || 0),
-    winner: Number(r.keiko_proyectado || 0) > Number(r.sanchez_proyectado || 0) ? 'keiko' : 'sanchez',
-    margin: Math.abs(Number(r.keiko_proyectado || 0) - Number(r.sanchez_proyectado || 0))
-  }));
+  state.regions = decorateRows(state.data.regions);
+  state.provinces = decorateRows(state.data.provinces || []);
   render();
 }
 
@@ -42,6 +58,7 @@ function render(){
   const { nationalOnpe:n, projection:p, candidates:c, meta:m } = state.data;
   const keiko = c.find(x => x.id === 'keiko');
   const sanchez = c.find(x => x.id === 'sanchez');
+  const sourceText = projectionLabel(p.projectionSource || m.projectionSource);
 
   document.getElementById('heroSubtitle').textContent = `${m.subtitle} · Corte ONPE ${n.fechaActualizacion}`;
 
@@ -50,20 +67,33 @@ function render(){
     cutoff.innerHTML = `
       <strong>Última actualización manual del informe:</strong> ${formatDateTime(m.generatedAt)}<br>
       <strong>Corte ONPE:</strong> ${n.fechaActualizacion} · ${pct(n.actasContabilizadasPct, 3)} de actas contabilizadas.<br>
+      <strong>Fuente de proyección Perú:</strong> ${sourceText}.<br>
       <strong>Escenario extranjero:</strong> ONPE para votos ya contabilizados + Datum (${pct(p.datumForeignKeikoPct, 2)} Keiko / ${pct(p.datumForeignSanchezPct, 2)} Sánchez) solo para lo pendiente.<br>
       <strong>Nota:</strong> este informe es una proyección analítica y no reemplaza los resultados oficiales de ONPE/JNE.
     `;
   }
 
+  const projectionSourceText = document.getElementById('projectionSourceText');
+  if(projectionSourceText){
+    projectionSourceText.textContent = `Suma la ${sourceText} para Perú y el escenario extranjero mixto ONPE + Datum.`;
+  }
+
+  const projectionMethodText = document.getElementById('projectionMethodText');
+  if(projectionMethodText){
+    projectionMethodText.innerHTML = p.projectionSource === 'provincia'
+      ? `La proyección principal usa <b>${moneyish(state.provinces.length)} provincias</b>. Esto reduce el sesgo de usar solo departamentos, aunque sigue siendo una estimación dinámica por corte.`
+      : `La proyección principal usa departamentos porque no se detectó suficiente detalle provincial en el JSON.`;
+  }
+
   const methodNote = document.getElementById('manualUpdateNote');
   if(methodNote){
-    methodNote.innerHTML = `Datos actualizados manualmente desde Colab. Método extranjero actual: <b>${m.foreignVolumeMethod || 'no especificado'}</b>. Si la actualización automática o manual falla, la página mantiene el último corte válido publicado.`;
+    methodNote.innerHTML = `Datos actualizados manualmente desde Colab. Método extranjero actual: <b>${m.foreignVolumeMethod || 'no especificado'}</b>. Fuente de proyección Perú: <b>${sourceText}</b>. Si la actualización falla, la página mantiene el último corte válido publicado.`;
   }
 
   document.getElementById('summaryCards').innerHTML = [
     ['Actas contabilizadas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)} actas`],
     ['Diferencia actual ONPE', leadText(p.currentLeadKeiko), 'Diferencia con actas contabilizadas'],
-    ['Diferencia sin extranjero', leadText(p.withoutForeignLeadKeiko), 'Proyección lineal por regiones nacionales'],
+    ['Diferencia Perú sin extranjero', leadText(p.withoutForeignLeadKeiko), sourceText],
     ['Diferencia ajustada Datum', leadText(p.adjustedLeadKeiko), `Keiko ${pct(p.adjustedKeikoPct, 3)} vs Sánchez ${pct(p.adjustedSanchezPct, 3)}`]
   ].map(([label, value, desc]) => `<article class="card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
 
@@ -76,20 +106,72 @@ function render(){
 
   document.getElementById('mainCallout').innerHTML = `
     <strong>Lectura principal</strong>
-    <p>La diferencia nacional sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>. Al aplicar el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente— la diferencia ajustada queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
+    <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al aplicar el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente— la diferencia ajustada queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
     <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.</p>`;
 
   renderSensitivity();
+  setupProvinceDepartmentFilter();
+  renderProvinces();
   renderRegions();
-  document.getElementById('regionSearch').addEventListener('input', renderRegions);
-  document.getElementById('regionFilter').addEventListener('change', renderRegions);
+
+  document.getElementById('regionSearch')?.addEventListener('input', renderRegions);
+  document.getElementById('regionFilter')?.addEventListener('change', renderRegions);
+  document.getElementById('provinceSearch')?.addEventListener('input', renderProvinces);
+  document.getElementById('provinceFilter')?.addEventListener('change', renderProvinces);
+  document.getElementById('provinceDepartmentFilter')?.addEventListener('change', renderProvinces);
 }
 
 function renderSensitivity(){
-  const rows = state.data.sensitivity;
+  const rows = state.data.sensitivity || [];
   document.getElementById('sensitivityTable').innerHTML = `
     <thead><tr><th>Votos extranjero</th><th>% Keiko</th><th>% Sánchez</th><th>Diferencia final</th><th>Ganador</th></tr></thead>
     <tbody>${rows.map(r => `<tr><td>${moneyish(r.foreignVotes)}</td><td>${pct(r.keikoPct, 2)}</td><td>${pct(r.sanchezPct, 2)}</td><td>${leadText(r.finalLeadKeiko)}</td><td class="winner ${r.winner === 'Keiko' ? 'keiko' : 'sanchez'}">${r.winner}</td></tr>`).join('')}</tbody>`;
+}
+
+function setupProvinceDepartmentFilter(){
+  const select = document.getElementById('provinceDepartmentFilter');
+  if(!select || select.dataset.ready === '1') return;
+  const departments = [...new Set(state.provinces.map(p => p.departamento).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'es'));
+  select.innerHTML = '<option value="all">Todos los departamentos</option>' + departments.map(d => `<option value="${d}">${d}</option>`).join('');
+  select.dataset.ready = '1';
+}
+
+function renderProvinces(){
+  const table = document.getElementById('provinceTable');
+  if(!table) return;
+
+  const q = (document.getElementById('provinceSearch')?.value || '').trim().toLowerCase();
+  const dept = document.getElementById('provinceDepartmentFilter')?.value || 'all';
+  const filter = document.getElementById('provinceFilter')?.value || 'all';
+
+  let rows = [...state.provinces];
+  if(q){
+    rows = rows.filter(r => `${r.departamento || ''} ${r.provincia || ''}`.toLowerCase().includes(q));
+  }
+  if(dept !== 'all') rows = rows.filter(r => r.departamento === dept);
+  if(filter === 'keiko') rows = rows.filter(r => r.winner === 'keiko');
+  if(filter === 'sanchez') rows = rows.filter(r => r.winner === 'sanchez');
+  if(filter === 'pending') rows.sort((a,b) => b.pending - a.pending || b.margin - a.margin);
+  else if(filter === 'close') rows.sort((a,b) => a.margin - b.margin || b.pending - a.pending);
+  else rows.sort((a,b) => b.pending - a.pending || b.margin - a.margin);
+
+  const count = document.getElementById('provinceCount');
+  if(count){
+    count.textContent = `${moneyish(rows.length)} provincias visibles de ${moneyish(state.provinces.length)} procesadas.`;
+  }
+
+  table.innerHTML = `
+    <thead><tr><th>Departamento</th><th>Provincia</th><th>Avance actas</th><th>No contabilizadas</th><th>Keiko proy.</th><th>Sánchez proy.</th><th>Ganador proy.</th><th>Diferencia</th></tr></thead>
+    <tbody>${rows.map(r => `<tr>
+      <td>${r.departamento || ''}</td>
+      <td>${r.provincia || ''}</td>
+      <td>${pct(r.actasContabilizadas, 3)}</td>
+      <td>${moneyish(r.pending)}</td>
+      <td>${moneyish(r.keiko_proyectado)}</td>
+      <td>${moneyish(r.sanchez_proyectado)}</td>
+      <td class="winner ${r.winner}">${r.winner === 'keiko' ? 'Keiko' : 'Sánchez'}</td>
+      <td>${moneyish(r.margin)}</td>
+    </tr>`).join('')}</tbody>`;
 }
 
 function renderRegions(){

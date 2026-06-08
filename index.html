@@ -15,7 +15,8 @@
         <a href="#resumen">Resumen</a>
         <a href="#metodologia">Metodología</a>
         <a href="#actualizacion">Actualización</a>
-        <a href="#regional">Regional</a>
+        <a href="#provincias">Provincias</a>
+        <a href="#regional">Regiones</a>
         <a href="#descargas">Descargas</a>
       </div>
     </nav>
@@ -42,7 +43,7 @@
       <div class="panel two-col">
         <div>
           <h3>Proyección final ajustada</h3>
-          <p class="muted">Suma la proyección regional nacional y el escenario extranjero Datum.</p>
+          <p class="muted" id="projectionSourceText">Cargando fuente de proyección...</p>
           <div id="finalBars" class="bars"></div>
         </div>
         <div class="callout" id="mainCallout"></div>
@@ -58,12 +59,12 @@
         <article class="method-card">
           <span>1</span>
           <h3>Datos oficiales ONPE</h3>
-          <p>Se toman actas contabilizadas, votos válidos nacionales y resultados por región desde la web de resultados.</p>
+          <p>Se toman actas contabilizadas, votos válidos nacionales y resultados por ubicación geográfica desde la web oficial de resultados.</p>
         </article>
         <article class="method-card">
           <span>2</span>
-          <h3>Proyección regional</h3>
-          <p>Para cada región nacional, se proyectan votos con una regla lineal: votos actuales / porcentaje de actas contabilizadas.</p>
+          <h3>Proyección Perú</h3>
+          <p id="projectionMethodText">La proyección se calcula por provincia cuando los datos provinciales están disponibles; de lo contrario, usa regiones como respaldo.</p>
         </article>
         <article class="method-card">
           <span>3</span>
@@ -89,10 +90,32 @@
       <div class="table-wrap"><table id="sensitivityTable"></table></div>
     </section>
 
-    <section id="regional" class="section alt">
+    <section id="provincias" class="section alt">
+      <div class="section-title">
+        <p class="eyebrow">Detalle provincial</p>
+        <h2>Proyección por provincia</h2>
+        <p class="muted">Esta tabla permite revisar el cálculo más fino usado para la proyección Perú sin extranjero, cuando la fuente del modelo es provincial.</p>
+      </div>
+      <div class="controls">
+        <input id="provinceSearch" type="search" placeholder="Buscar departamento o provincia..." />
+        <select id="provinceDepartmentFilter"><option value="all">Todos los departamentos</option></select>
+        <select id="provinceFilter">
+          <option value="all">Todas</option>
+          <option value="keiko">Ganador proyectado: Keiko</option>
+          <option value="sanchez">Ganador proyectado: Sánchez</option>
+          <option value="pending">Más actas no contabilizadas</option>
+          <option value="close">Carreras más ajustadas</option>
+        </select>
+      </div>
+      <p class="muted" id="provinceCount"></p>
+      <div class="table-wrap"><table id="provinceTable"></table></div>
+    </section>
+
+    <section id="regional" class="section">
       <div class="section-title">
         <p class="eyebrow">Detalle regional</p>
         <h2>Regiones con mayor pendiente y ganador proyectado</h2>
+        <p class="muted">La tabla regional se mantiene como vista resumida; la proyección principal puede estar basada en provincias si el JSON contiene ese nivel.</p>
       </div>
       <div class="controls">
         <input id="regionSearch" type="search" placeholder="Buscar región..." />
@@ -106,7 +129,7 @@
       <div class="table-wrap"><table id="regionalTable"></table></div>
     </section>
 
-    <section id="descargas" class="section">
+    <section id="descargas" class="section alt">
       <div class="section-title">
         <p class="eyebrow">Descargas y auditoría</p>
         <h2>Archivos incluidos</h2>
@@ -119,6 +142,14 @@
         <a class="download-card" href="data/regions.csv" download>
           <strong>regions.csv</strong>
           <span>Detalle regional en CSV.</span>
+        </a>
+        <a class="download-card" href="data/provinces.csv" download>
+          <strong>provinces.csv</strong>
+          <span>Detalle provincial en CSV.</span>
+        </a>
+        <a class="download-card" href="data/province-errors.csv" download>
+          <strong>province-errors.csv</strong>
+          <span>Errores de descarga provincial, si los hubiera.</span>
         </a>
         <a class="download-card" href="README.md" download>
           <strong>README.md</strong>
