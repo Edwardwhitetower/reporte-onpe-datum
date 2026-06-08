@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Informe electoral ONPE + escenario Datum</title>
+  <meta name="description" content="Informe analítico de resultados ONPE y escenario extranjero Datum para la segunda vuelta presidencial Perú 2026." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <nav class="topbar">
+      <div class="brand">Reporte Electoral</div>
+      <div class="navlinks">
+        <a href="#resumen">Resumen</a>
+        <a href="#metodologia">Metodología</a>
+        <a href="#regional">Regional</a>
+        <a href="#descargas">Descargas</a>
+      </div>
+    </nav>
+    <section class="hero-content">
+      <span class="badge">Escenario analítico no oficial</span>
+      <h1>ONPE + escenario extranjero Datum</h1>
+      <p id="heroSubtitle">Segunda vuelta presidencial Perú 2026</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#resumen">Ver resumen</a>
+        <a class="button secondary" href="data/report-data.json" download>Descargar JSON</a>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section id="resumen" class="section">
+      <div class="section-title">
+        <p class="eyebrow">Resumen ejecutivo</p>
+        <h2>Resultado actual y proyección ajustada</h2>
+        <p class="muted">Los resultados oficiales corresponden a ONPE. El componente extranjero Datum se usa como escenario de simulación.</p>
+      </div>
+      <div class="cards" id="summaryCards"></div>
+      <div class="panel two-col">
+        <div>
+          <h3>Proyección final ajustada</h3>
+          <p class="muted">Suma la proyección regional nacional y el escenario extranjero Datum.</p>
+          <div id="finalBars" class="bars"></div>
+        </div>
+        <div class="callout" id="mainCallout"></div>
+      </div>
+    </section>
+
+    <section id="metodologia" class="section alt">
+      <div class="section-title">
+        <p class="eyebrow">Metodología</p>
+        <h2>Cómo se construyó el escenario</h2>
+      </div>
+      <div class="method-grid">
+        <article class="method-card">
+          <span>1</span>
+          <h3>Datos oficiales ONPE</h3>
+          <p>Se toman actas contabilizadas, votos válidos nacionales y resultados por región desde la web de resultados.</p>
+        </article>
+        <article class="method-card">
+          <span>2</span>
+          <h3>Proyección regional</h3>
+          <p>Para cada región nacional, se proyectan votos con una regla lineal: votos actuales / porcentaje de actas contabilizadas.</p>
+        </article>
+        <article class="method-card">
+          <span>3</span>
+          <h3>Extranjero Datum</h3>
+          <p>El extranjero se estima con el promedio nacional de votos válidos por acta y se distribuye según Datum: 62.67% Keiko / 37.33% Sánchez.</p>
+        </article>
+      </div>
+      <div class="formula">
+        <strong>Advertencia:</strong> este informe no proclama resultados. Es una herramienta de lectura y simulación; la fuente oficial final es ONPE/JNE.
+      </div>
+    </section>
+
+    <section id="sensibilidad" class="section">
+      <div class="section-title">
+        <p class="eyebrow">Sensibilidad</p>
+        <h2>Qué pasa si cambia el volumen del extranjero</h2>
+        <p class="muted">La tabla muestra cómo cambia la ventaja final de Keiko con distintos volúmenes de voto extranjero y porcentajes.</p>
+      </div>
+      <div class="table-wrap"><table id="sensitivityTable"></table></div>
+    </section>
+
+    <section id="regional" class="section alt">
+      <div class="section-title">
+        <p class="eyebrow">Detalle regional</p>
+        <h2>Regiones con mayor pendiente y ganador proyectado</h2>
+      </div>
+      <div class="controls">
+        <input id="regionSearch" type="search" placeholder="Buscar región..." />
+        <select id="regionFilter">
+          <option value="all">Todas</option>
+          <option value="keiko">Ganador proyectado: Keiko</option>
+          <option value="sanchez">Ganador proyectado: Sánchez</option>
+          <option value="pending">Más actas no contabilizadas</option>
+        </select>
+      </div>
+      <div class="table-wrap"><table id="regionalTable"></table></div>
+    </section>
+
+    <section id="descargas" class="section">
+      <div class="section-title">
+        <p class="eyebrow">Descargas y auditoría</p>
+        <h2>Archivos incluidos</h2>
+      </div>
+      <div class="download-grid">
+        <a class="download-card" href="data/report-data.json" download>
+          <strong>report-data.json</strong>
+          <span>Datos usados por la página.</span>
+        </a>
+        <a class="download-card" href="data/regions.csv" download>
+          <strong>regions.csv</strong>
+          <span>Detalle regional en CSV.</span>
+        </a>
+        <a class="download-card" href="README.md" download>
+          <strong>README.md</strong>
+          <span>Guía para publicar en GitHub Pages.</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum. No reemplaza resultados oficiales ni proclamación electoral.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
