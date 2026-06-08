@@ -14,6 +14,7 @@
       <div class="navlinks">
         <a href="#resumen">Resumen</a>
         <a href="#metodologia">Metodología</a>
+        <a href="#actualizacion">Actualización</a>
         <a href="#regional">Regional</a>
         <a href="#descargas">Descargas</a>
       </div>
@@ -22,11 +23,8 @@
       <span class="badge">Escenario analítico no oficial</span>
       <h1>ONPE + escenario extranjero Datum</h1>
       <p id="heroSubtitle">Segunda vuelta presidencial Perú 2026</p>
-
-<div id="cutoffNotice" class="notice"></div>
-
-<div class="hero-actions">
-  
+      <div id="cutoffNotice" class="notice" aria-live="polite"></div>
+      <div class="hero-actions">
         <a class="button primary" href="#resumen">Ver resumen</a>
         <a class="button secondary" href="data/report-data.json" download>Descargar JSON</a>
       </div>
@@ -69,9 +67,13 @@
         </article>
         <article class="method-card">
           <span>3</span>
-          <h3>Extranjero Datum</h3>
-          <p>El extranjero se estima con el promedio nacional de votos válidos por acta y se distribuye según Datum: 62.67% Keiko / 37.33% Sánchez.</p>
+          <h3>Extranjero ONPE + Datum</h3>
+          <p>Si ONPE ya contabilizó votos del extranjero, se respetan esos votos oficiales. Datum se aplica solo al extranjero pendiente.</p>
         </article>
+      </div>
+      <div id="actualizacion" class="formula method-note">
+        <strong>Actualización manual:</strong>
+        <span id="manualUpdateNote">Cargando información de actualización...</span>
       </div>
       <div class="formula">
         <strong>Advertencia:</strong> este informe no proclama resultados. Es una herramienta de lectura y simulación; la fuente oficial final es ONPE/JNE.
@@ -120,14 +122,14 @@
         </a>
         <a class="download-card" href="README.md" download>
           <strong>README.md</strong>
-          <span>Guía de publicación de datos.</span>
+          <span>Guía para publicar en GitHub Pages.</span>
         </a>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum. No reemplaza resultados oficiales ni proclamación electoral.</p>
+    <p>Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum. Actualización manual mediante Google Colab. No reemplaza resultados oficiales ni proclamación electoral.</p>
   </footer>
 
   <script src="app.js"></script>
