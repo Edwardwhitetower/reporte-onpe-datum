@@ -19,6 +19,11 @@ async function loadData(){
 function render(){
   const { nationalOnpe:n, projection:p, candidates:c } = state.data;
   document.getElementById('heroSubtitle').textContent = `${state.data.meta.subtitle} · Corte ${n.fechaActualizacion}`;
+  document.getElementById('cutoffNotice').innerHTML = `
+  <strong>Fecha de corte:</strong> Datos ONPE actualizados al ${n.fechaActualizacion}.<br>
+  <strong>Escenario extranjero:</strong> Datum: Keiko ${pct(p.datumForeignKeikoPct, 2)} / Sánchez ${pct(p.datumForeignSanchezPct, 2)}.<br>
+  <strong>Nota:</strong> Este informe es una proyección analítica y no reemplaza los resultados oficiales de ONPE/JNE.
+`;
   const keiko = c.find(x=>x.id==='keiko');
   const sanchez = c.find(x=>x.id==='sanchez');
 
