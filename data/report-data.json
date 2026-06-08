@@ -2,142 +2,156 @@
   "meta": {
     "title": "Informe electoral: ONPE + escenario extranjero Datum",
     "subtitle": "Segunda vuelta presidencial Perú 2026",
-    "generatedAt": "2026-06-08T07:22:00-05:00",
+    "generatedAt": "2026-06-08T12:14:59.033039-05:00",
     "status": "Escenario analítico no oficial",
     "onpeSource": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
     "datumSource": "Datum Internacional vía Gestión: extranjero Keiko 62.67% vs Sánchez 37.33%",
-    "note": "Los datos base fueron construidos desde la extracción de ONPE realizada en Google Colab. El escenario Datum no reemplaza resultados oficiales de ONPE/JNE."
+    "foreignVolumeMethod": "Proyección con actas extranjeras ya contabilizadas",
+    "note": "El escenario Datum no reemplaza los resultados oficiales de ONPE/JNE."
   },
   "nationalOnpe": {
-    "actasContabilizadasPct": 92.609,
-    "contabilizadas": 85910,
+    "fechaActualizacion": "2026-06-08 12:10:17",
+    "actasContabilizadasPct": 93.767,
+    "actasEnviadasJeePct": 1.634,
+    "actasPendientesPct": 4.599,
+    "contabilizadas": 86984,
+    "enviadasJee": 1516,
+    "pendientesJee": 4266,
     "totalActas": 92766,
-    "actasEnviadasJeePct": 1.628,
-    "enviadasJee": 1510,
-    "actasPendientesPct": 5.763,
-    "pendientesJee": 5346,
-    "totalVotosEmitidos": 18632321,
-    "totalVotosValidos": 17412077,
-    "fechaActualizacion": "2026-06-08 07:22:00"
+    "totalVotosEmitidos": 18789388,
+    "totalVotosValidos": 17558628
   },
   "candidates": [
     {
       "id": "keiko",
       "name": "KEIKO SOFIA FUJIMORI HIGUCHI",
       "party": "FUERZA POPULAR",
-      "currentVotes": 8734031,
-      "currentPct": 50.161,
-      "projectedWithoutForeign": 9127424,
-      "foreignEstimated": 323007,
-      "projectedAdjusted": 9450431
+      "currentVotes": 8781196,
+      "currentPct": 50.011,
+      "projectedWithoutForeign": 9088294,
+      "foreignEstimated": 271593,
+      "projectedAdjusted": 9359887
     },
     {
       "id": "sanchez",
       "name": "ROBERTO HELBERT SANCHEZ PALOMINO",
       "party": "JUNTOS POR EL PERÚ",
-      "currentVotes": 8678046,
-      "currentPct": 49.839,
-      "projectedWithoutForeign": 9109130,
-      "foreignEstimated": 192403,
-      "projectedAdjusted": 9301533
+      "currentVotes": 8777432,
+      "currentPct": 49.989,
+      "projectedWithoutForeign": 9090601,
+      "foreignEstimated": 161777,
+      "projectedAdjusted": 9252378
     }
   ],
   "projection": {
-    "currentLeadKeiko": 55985,
-    "withoutForeignLeadKeiko": 18294,
+    "currentLeadKeiko": 3764,
+    "withoutForeignLeadKeiko": -2307,
+    "foreignVotesEstimated": 433370,
     "foreignActs": 2543,
-    "foreignVotesEstimated": 515410,
+    "foreignCountedActs": 12,
+    "foreignLeadKeiko": 109816,
     "datumForeignKeikoPct": 62.67,
     "datumForeignSanchezPct": 37.33,
-    "foreignLeadKeiko": 130604,
-    "adjustedLeadKeiko": 148898,
-    "adjustedKeikoPct": 50.397019746838254,
-    "adjustedSanchezPct": 49.602980253161746
+    "adjustedLeadKeiko": 107509,
+    "adjustedKeikoPct": 50.28881224289468,
+    "adjustedSanchezPct": 49.71118775710533
   },
   "regions": [
     {
       "ambito": 1,
       "ubigeo": "010000",
       "region": "AMAZONAS",
-      "actasContabilizadas": 88.341,
-      "contabilizadas": 1129,
+      "actasContabilizadas": 90.923,
+      "contabilizadas": 1162,
       "totalActas": 1278,
-      "pendientesJee": 136,
+      "pendientesJee": 103,
       "enviadasJee": 13,
-      "keiko_actual": 67506,
-      "keiko_proyectado": 76415,
-      "sanchez_actual": 111848,
-      "sanchez_proyectado": 126609
+      "keiko_actual": 67948,
+      "sanchez_actual": 114502,
+      "keiko_proyectado": 74731,
+      "sanchez_proyectado": 125933,
+      "diferencia_proyectada_keiko": -51202,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "020000",
       "region": "ÁNCASH",
-      "actasContabilizadas": 98.618,
-      "contabilizadas": 3424,
+      "actasContabilizadas": 98.646,
+      "contabilizadas": 3425,
       "totalActas": 3472,
-      "pendientesJee": 1,
+      "pendientesJee": 0,
       "enviadasJee": 47,
-      "keiko_actual": 267361,
-      "keiko_proyectado": 271108,
-      "sanchez_actual": 348658,
-      "sanchez_proyectado": 353544
+      "keiko_actual": 267408,
+      "sanchez_actual": 348735,
+      "keiko_proyectado": 271078,
+      "sanchez_proyectado": 353522,
+      "diferencia_proyectada_keiko": -82444,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "030000",
       "region": "APURÍMAC",
-      "actasContabilizadas": 97.57,
-      "contabilizadas": 1285,
+      "actasContabilizadas": 99.089,
+      "contabilizadas": 1305,
       "totalActas": 1317,
-      "pendientesJee": 22,
+      "pendientesJee": 2,
       "enviadasJee": 10,
-      "keiko_actual": 42826,
-      "keiko_proyectado": 43893,
-      "sanchez_actual": 183309,
-      "sanchez_proyectado": 187874
+      "keiko_actual": 43104,
+      "sanchez_actual": 185679,
+      "keiko_proyectado": 43500,
+      "sanchez_proyectado": 187386,
+      "diferencia_proyectada_keiko": -143886,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "040000",
       "region": "AREQUIPA",
-      "actasContabilizadas": 98.292,
-      "contabilizadas": 4143,
+      "actasContabilizadas": 99.217,
+      "contabilizadas": 4182,
       "totalActas": 4215,
-      "pendientesJee": 48,
-      "enviadasJee": 24,
-      "keiko_actual": 329205,
-      "keiko_proyectado": 334926,
-      "sanchez_actual": 575906,
-      "sanchez_proyectado": 585913
+      "pendientesJee": 8,
+      "enviadasJee": 25,
+      "keiko_actual": 332235,
+      "sanchez_actual": 579783,
+      "keiko_proyectado": 334857,
+      "sanchez_proyectado": 584359,
+      "diferencia_proyectada_keiko": -249502,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "050000",
       "region": "AYACUCHO",
-      "actasContabilizadas": 86.474,
-      "contabilizadas": 1643,
+      "actasContabilizadas": 88.842,
+      "contabilizadas": 1688,
       "totalActas": 1900,
-      "pendientesJee": 240,
+      "pendientesJee": 195,
       "enviadasJee": 17,
-      "keiko_actual": 60390,
-      "keiko_proyectado": 69836,
-      "sanchez_actual": 227328,
-      "sanchez_proyectado": 262886
+      "keiko_actual": 61160,
+      "sanchez_actual": 231474,
+      "keiko_proyectado": 68841,
+      "sanchez_proyectado": 260546,
+      "diferencia_proyectada_keiko": -191705,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "060000",
       "region": "CAJAMARCA",
-      "actasContabilizadas": 99.057,
-      "contabilizadas": 4200,
+      "actasContabilizadas": 99.292,
+      "contabilizadas": 4210,
       "totalActas": 4240,
-      "pendientesJee": 10,
+      "pendientesJee": 0,
       "enviadasJee": 30,
-      "keiko_actual": 244178,
-      "keiko_proyectado": 246503,
-      "sanchez_actual": 490060,
-      "sanchez_proyectado": 494725
+      "keiko_actual": 244352,
+      "sanchez_actual": 490702,
+      "keiko_proyectado": 246094,
+      "sanchez_proyectado": 494201,
+      "diferencia_proyectada_keiko": -248107,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
@@ -149,51 +163,59 @@
       "pendientesJee": 0,
       "enviadasJee": 69,
       "keiko_actual": 394407,
-      "keiko_proyectado": 404027,
       "sanchez_actual": 206765,
-      "sanchez_proyectado": 211808
+      "keiko_proyectado": 404027,
+      "sanchez_proyectado": 211808,
+      "diferencia_proyectada_keiko": 192219,
+      "ganador_proyectado": "Keiko"
     },
     {
       "ambito": 1,
       "ubigeo": "070000",
       "region": "CUSCO",
-      "actasContabilizadas": 90.434,
-      "contabilizadas": 3602,
+      "actasContabilizadas": 91.288,
+      "contabilizadas": 3636,
       "totalActas": 3983,
-      "pendientesJee": 338,
+      "pendientesJee": 304,
       "enviadasJee": 43,
-      "keiko_actual": 156179,
-      "keiko_proyectado": 172699,
-      "sanchez_actual": 545757,
-      "sanchez_proyectado": 603487
+      "keiko_actual": 156667,
+      "sanchez_actual": 549829,
+      "keiko_proyectado": 171618,
+      "sanchez_proyectado": 602302,
+      "diferencia_proyectada_keiko": -430684,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "080000",
       "region": "HUANCAVELICA",
-      "actasContabilizadas": 90.338,
-      "contabilizadas": 1150,
+      "actasContabilizadas": 98.507,
+      "contabilizadas": 1254,
       "totalActas": 1273,
-      "pendientesJee": 112,
+      "pendientesJee": 8,
       "enviadasJee": 11,
-      "keiko_actual": 33714,
-      "keiko_proyectado": 37320,
-      "sanchez_actual": 148405,
-      "sanchez_proyectado": 164277
+      "keiko_actual": 36413,
+      "sanchez_actual": 160003,
+      "keiko_proyectado": 36965,
+      "sanchez_proyectado": 162428,
+      "diferencia_proyectada_keiko": -125463,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "090000",
       "region": "HUÁNUCO",
-      "actasContabilizadas": 94.319,
-      "contabilizadas": 2208,
+      "actasContabilizadas": 96.882,
+      "contabilizadas": 2268,
       "totalActas": 2341,
-      "pendientesJee": 113,
+      "pendientesJee": 53,
       "enviadasJee": 20,
-      "keiko_actual": 135080,
-      "keiko_proyectado": 143216,
-      "sanchez_actual": 239853,
-      "sanchez_proyectado": 254300
+      "keiko_actual": 137218,
+      "sanchez_actual": 244853,
+      "keiko_proyectado": 141634,
+      "sanchez_proyectado": 252733,
+      "diferencia_proyectada_keiko": -111099,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
@@ -205,37 +227,43 @@
       "pendientesJee": 0,
       "enviadasJee": 22,
       "keiko_actual": 279728,
-      "keiko_proyectado": 282271,
       "sanchez_actual": 259131,
-      "sanchez_proyectado": 261487
+      "keiko_proyectado": 282271,
+      "sanchez_proyectado": 261487,
+      "diferencia_proyectada_keiko": 20784,
+      "ganador_proyectado": "Keiko"
     },
     {
       "ambito": 1,
       "ubigeo": "110000",
       "region": "JUNÍN",
-      "actasContabilizadas": 94.229,
-      "contabilizadas": 3478,
+      "actasContabilizadas": 97.507,
+      "contabilizadas": 3599,
       "totalActas": 3691,
-      "pendientesJee": 183,
-      "enviadasJee": 30,
-      "keiko_actual": 309562,
-      "keiko_proyectado": 328521,
-      "sanchez_actual": 373566,
-      "sanchez_proyectado": 396445
+      "pendientesJee": 60,
+      "enviadasJee": 32,
+      "keiko_actual": 317670,
+      "sanchez_actual": 386933,
+      "keiko_proyectado": 325792,
+      "sanchez_proyectado": 396826,
+      "diferencia_proyectada_keiko": -71034,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "120000",
       "region": "LA LIBERTAD",
-      "actasContabilizadas": 99.132,
-      "contabilizadas": 5256,
+      "actasContabilizadas": 99.283,
+      "contabilizadas": 5264,
       "totalActas": 5302,
-      "pendientesJee": 7,
-      "enviadasJee": 39,
-      "keiko_actual": 599380,
-      "keiko_proyectado": 604628,
-      "sanchez_actual": 441970,
-      "sanchez_proyectado": 445840
+      "pendientesJee": 0,
+      "enviadasJee": 38,
+      "keiko_actual": 599711,
+      "sanchez_actual": 442641,
+      "keiko_proyectado": 604042,
+      "sanchez_proyectado": 445838,
+      "diferencia_proyectada_keiko": 158204,
+      "ganador_proyectado": "Keiko"
     },
     {
       "ambito": 1,
@@ -247,9 +275,11 @@
       "pendientesJee": 0,
       "enviadasJee": 15,
       "keiko_actual": 435552,
-      "keiko_proyectado": 437380,
       "sanchez_actual": 304561,
-      "sanchez_proyectado": 305839
+      "keiko_proyectado": 437380,
+      "sanchez_proyectado": 305839,
+      "diferencia_proyectada_keiko": 131541,
+      "ganador_proyectado": "Keiko"
     },
     {
       "ambito": 1,
@@ -261,107 +291,123 @@
       "pendientesJee": 0,
       "enviadasJee": 924,
       "keiko_actual": 3943082,
-      "keiko_proyectado": 4071707,
       "sanchez_actual": 2266534,
-      "sanchez_proyectado": 2340469
+      "keiko_proyectado": 4071707,
+      "sanchez_proyectado": 2340469,
+      "diferencia_proyectada_keiko": 1731238,
+      "ganador_proyectado": "Keiko"
     },
     {
       "ambito": 1,
       "ubigeo": "150000",
       "region": "LORETO",
-      "actasContabilizadas": 59.733,
-      "contabilizadas": 1611,
+      "actasContabilizadas": 68.224,
+      "contabilizadas": 1840,
       "totalActas": 2697,
-      "pendientesJee": 1063,
-      "enviadasJee": 23,
-      "keiko_actual": 159865,
-      "keiko_proyectado": 267633,
-      "sanchez_actual": 125514,
-      "sanchez_proyectado": 210125
+      "pendientesJee": 831,
+      "enviadasJee": 26,
+      "keiko_actual": 173223,
+      "sanchez_actual": 139147,
+      "keiko_proyectado": 253903,
+      "sanchez_proyectado": 203956,
+      "diferencia_proyectada_keiko": 49947,
+      "ganador_proyectado": "Keiko"
     },
     {
       "ambito": 1,
       "ubigeo": "160000",
       "region": "MADRE DE DIOS",
-      "actasContabilizadas": 85.602,
-      "contabilizadas": 434,
+      "actasContabilizadas": 94.872,
+      "contabilizadas": 481,
       "totalActas": 507,
-      "pendientesJee": 69,
+      "pendientesJee": 22,
       "enviadasJee": 4,
-      "keiko_actual": 27027,
-      "keiko_proyectado": 31573,
-      "sanchez_actual": 56910,
-      "sanchez_proyectado": 66482
+      "keiko_actual": 28625,
+      "sanchez_actual": 63171,
+      "keiko_proyectado": 30172,
+      "sanchez_proyectado": 66586,
+      "diferencia_proyectada_keiko": -36414,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "170000",
       "region": "MOQUEGUA",
-      "actasContabilizadas": 99.308,
-      "contabilizadas": 574,
+      "actasContabilizadas": 99.654,
+      "contabilizadas": 576,
       "totalActas": 578,
-      "pendientesJee": 2,
+      "pendientesJee": 0,
       "enviadasJee": 2,
-      "keiko_actual": 33319,
-      "keiko_proyectado": 33551,
-      "sanchez_actual": 88049,
-      "sanchez_proyectado": 88663
+      "keiko_actual": 33353,
+      "sanchez_actual": 88235,
+      "keiko_proyectado": 33469,
+      "sanchez_proyectado": 88541,
+      "diferencia_proyectada_keiko": -55072,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "180000",
       "region": "PASCO",
-      "actasContabilizadas": 90.025,
-      "contabilizadas": 722,
+      "actasContabilizadas": 98.254,
+      "contabilizadas": 788,
       "totalActas": 802,
-      "pendientesJee": 67,
-      "enviadasJee": 13,
-      "keiko_actual": 47323,
-      "keiko_proyectado": 52567,
-      "sanchez_actual": 73057,
-      "sanchez_proyectado": 81152
+      "pendientesJee": 0,
+      "enviadasJee": 14,
+      "keiko_actual": 50699,
+      "sanchez_actual": 78518,
+      "keiko_proyectado": 51600,
+      "sanchez_proyectado": 79913,
+      "diferencia_proyectada_keiko": -28313,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "190000",
       "region": "PIURA",
-      "actasContabilizadas": 96.97,
-      "contabilizadas": 5121,
+      "actasContabilizadas": 98.712,
+      "contabilizadas": 5213,
       "totalActas": 5281,
-      "pendientesJee": 92,
+      "pendientesJee": 0,
       "enviadasJee": 68,
-      "keiko_actual": 579329,
-      "keiko_proyectado": 597431,
-      "sanchez_actual": 431355,
-      "sanchez_proyectado": 444833
+      "keiko_actual": 581730,
+      "sanchez_actual": 439700,
+      "keiko_proyectado": 589320,
+      "sanchez_proyectado": 445437,
+      "diferencia_proyectada_keiko": 143883,
+      "ganador_proyectado": "Keiko"
     },
     {
       "ambito": 1,
       "ubigeo": "200000",
       "region": "PUNO",
-      "actasContabilizadas": 97.763,
-      "contabilizadas": 3321,
+      "actasContabilizadas": 98.999,
+      "contabilizadas": 3363,
       "totalActas": 3397,
-      "pendientesJee": 51,
+      "pendientesJee": 9,
       "enviadasJee": 25,
-      "keiko_actual": 94179,
-      "keiko_proyectado": 96334,
-      "sanchez_actual": 601342,
-      "sanchez_proyectado": 615102
+      "keiko_actual": 95272,
+      "sanchez_actual": 607328,
+      "keiko_proyectado": 96235,
+      "sanchez_proyectado": 613469,
+      "diferencia_proyectada_keiko": -517234,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "210000",
       "region": "SAN MARTÍN",
-      "actasContabilizadas": 96.409,
-      "contabilizadas": 2443,
+      "actasContabilizadas": 98.54,
+      "contabilizadas": 2497,
       "totalActas": 2534,
-      "pendientesJee": 79,
-      "enviadasJee": 12,
-      "keiko_actual": 214553,
-      "keiko_proyectado": 222545,
-      "sanchez_actual": 253842,
-      "sanchez_proyectado": 263297
+      "pendientesJee": 24,
+      "enviadasJee": 13,
+      "keiko_actual": 217130,
+      "sanchez_actual": 260806,
+      "keiko_proyectado": 220347,
+      "sanchez_proyectado": 264670,
+      "diferencia_proyectada_keiko": -44323,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
@@ -373,37 +419,43 @@
       "pendientesJee": 0,
       "enviadasJee": 14,
       "keiko_actual": 65388,
-      "keiko_proyectado": 66279,
       "sanchez_actual": 162820,
-      "sanchez_proyectado": 165040
+      "keiko_proyectado": 66279,
+      "sanchez_proyectado": 165040,
+      "diferencia_proyectada_keiko": -98761,
+      "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "230000",
       "region": "TUMBES",
-      "actasContabilizadas": 99.367,
-      "contabilizadas": 628,
+      "actasContabilizadas": 99.684,
+      "contabilizadas": 630,
       "totalActas": 632,
       "pendientesJee": 0,
-      "enviadasJee": 4,
-      "keiko_actual": 81699,
-      "keiko_proyectado": 82219,
-      "sanchez_actual": 45285,
-      "sanchez_proyectado": 45573
+      "enviadasJee": 2,
+      "keiko_actual": 81960,
+      "sanchez_actual": 45427,
+      "keiko_proyectado": 82220,
+      "sanchez_proyectado": 45571,
+      "diferencia_proyectada_keiko": 36649,
+      "ganador_proyectado": "Keiko"
     },
     {
       "ambito": 1,
       "ubigeo": "250000",
       "region": "UCAYALI",
-      "actasContabilizadas": 87.148,
-      "contabilizadas": 1363,
+      "actasContabilizadas": 90.537,
+      "contabilizadas": 1416,
       "totalActas": 1564,
-      "pendientesJee": 170,
-      "enviadasJee": 31,
-      "keiko_actual": 133199,
-      "keiko_proyectado": 152842,
-      "sanchez_actual": 116221,
-      "sanchez_proyectado": 133360
+      "pendientesJee": 116,
+      "enviadasJee": 32,
+      "keiko_actual": 135997,
+      "sanchez_actual": 119274,
+      "keiko_proyectado": 150212,
+      "sanchez_proyectado": 131741,
+      "diferencia_proyectada_keiko": 18471,
+      "ganador_proyectado": "Keiko"
     }
   ],
   "foreign": [
@@ -411,51 +463,61 @@
       "ambito": 2,
       "ubigeo": "910000",
       "region": "ÁFRICA",
-      "actasContabilizadas": 0,
+      "actasContabilizadas": 0.0,
       "contabilizadas": 0,
       "totalActas": 6,
       "pendientesJee": 6,
-      "enviadasJee": 0
+      "enviadasJee": 0,
+      "keiko_actual": 0,
+      "sanchez_actual": 0
     },
     {
       "ambito": 2,
       "ubigeo": "920000",
       "region": "AMÉRICA",
-      "actasContabilizadas": 0,
-      "contabilizadas": 0,
+      "actasContabilizadas": 0.764,
+      "contabilizadas": 12,
       "totalActas": 1570,
-      "pendientesJee": 1570,
-      "enviadasJee": 0
+      "pendientesJee": 1558,
+      "enviadasJee": 0,
+      "keiko_actual": 1164,
+      "sanchez_actual": 881
     },
     {
       "ambito": 2,
       "ubigeo": "930000",
       "region": "ASIA",
-      "actasContabilizadas": 0,
+      "actasContabilizadas": 0.0,
       "contabilizadas": 0,
       "totalActas": 107,
       "pendientesJee": 107,
-      "enviadasJee": 0
+      "enviadasJee": 0,
+      "keiko_actual": 0,
+      "sanchez_actual": 0
     },
     {
       "ambito": 2,
       "ubigeo": "940000",
       "region": "EUROPA",
-      "actasContabilizadas": 0,
+      "actasContabilizadas": 0.0,
       "contabilizadas": 0,
       "totalActas": 839,
       "pendientesJee": 839,
-      "enviadasJee": 0
+      "enviadasJee": 0,
+      "keiko_actual": 0,
+      "sanchez_actual": 0
     },
     {
       "ambito": 2,
       "ubigeo": "950000",
       "region": "OCEANÍA",
-      "actasContabilizadas": 0,
+      "actasContabilizadas": 0.0,
       "contabilizadas": 0,
       "totalActas": 21,
       "pendientesJee": 21,
-      "enviadasJee": 0
+      "enviadasJee": 0,
+      "keiko_actual": 0,
+      "sanchez_actual": 0
     }
   ],
   "sensitivity": [
@@ -465,7 +527,7 @@
       "sanchezPct": 45,
       "keikoForeign": 110000,
       "sanchezForeign": 90000,
-      "finalLeadKeiko": 38294,
+      "finalLeadKeiko": 17693,
       "winner": "Keiko"
     },
     {
@@ -474,7 +536,7 @@
       "sanchezPct": 40,
       "keikoForeign": 120000,
       "sanchezForeign": 80000,
-      "finalLeadKeiko": 58294,
+      "finalLeadKeiko": 37693,
       "winner": "Keiko"
     },
     {
@@ -483,7 +545,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 125340,
       "sanchezForeign": 74660,
-      "finalLeadKeiko": 68974,
+      "finalLeadKeiko": 48373,
       "winner": "Keiko"
     },
     {
@@ -492,7 +554,7 @@
       "sanchezPct": 35,
       "keikoForeign": 130000,
       "sanchezForeign": 70000,
-      "finalLeadKeiko": 78294,
+      "finalLeadKeiko": 57693,
       "winner": "Keiko"
     },
     {
@@ -501,7 +563,7 @@
       "sanchezPct": 30,
       "keikoForeign": 140000,
       "sanchezForeign": 60000,
-      "finalLeadKeiko": 98294,
+      "finalLeadKeiko": 77693,
       "winner": "Keiko"
     },
     {
@@ -510,7 +572,7 @@
       "sanchezPct": 45,
       "keikoForeign": 165000,
       "sanchezForeign": 135000,
-      "finalLeadKeiko": 48294,
+      "finalLeadKeiko": 27693,
       "winner": "Keiko"
     },
     {
@@ -519,7 +581,7 @@
       "sanchezPct": 40,
       "keikoForeign": 180000,
       "sanchezForeign": 120000,
-      "finalLeadKeiko": 78294,
+      "finalLeadKeiko": 57693,
       "winner": "Keiko"
     },
     {
@@ -528,7 +590,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 188010,
       "sanchezForeign": 111990,
-      "finalLeadKeiko": 94314,
+      "finalLeadKeiko": 73713,
       "winner": "Keiko"
     },
     {
@@ -537,7 +599,7 @@
       "sanchezPct": 35,
       "keikoForeign": 195000,
       "sanchezForeign": 105000,
-      "finalLeadKeiko": 108294,
+      "finalLeadKeiko": 87693,
       "winner": "Keiko"
     },
     {
@@ -546,7 +608,7 @@
       "sanchezPct": 30,
       "keikoForeign": 210000,
       "sanchezForeign": 90000,
-      "finalLeadKeiko": 138294,
+      "finalLeadKeiko": 117693,
       "winner": "Keiko"
     },
     {
@@ -555,7 +617,7 @@
       "sanchezPct": 45,
       "keikoForeign": 220000,
       "sanchezForeign": 180000,
-      "finalLeadKeiko": 58294,
+      "finalLeadKeiko": 37693,
       "winner": "Keiko"
     },
     {
@@ -564,7 +626,7 @@
       "sanchezPct": 40,
       "keikoForeign": 240000,
       "sanchezForeign": 160000,
-      "finalLeadKeiko": 98294,
+      "finalLeadKeiko": 77693,
       "winner": "Keiko"
     },
     {
@@ -573,7 +635,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 250680,
       "sanchezForeign": 149320,
-      "finalLeadKeiko": 119654,
+      "finalLeadKeiko": 99053,
       "winner": "Keiko"
     },
     {
@@ -582,7 +644,7 @@
       "sanchezPct": 35,
       "keikoForeign": 260000,
       "sanchezForeign": 140000,
-      "finalLeadKeiko": 138294,
+      "finalLeadKeiko": 117693,
       "winner": "Keiko"
     },
     {
@@ -591,7 +653,52 @@
       "sanchezPct": 30,
       "keikoForeign": 280000,
       "sanchezForeign": 120000,
-      "finalLeadKeiko": 178294,
+      "finalLeadKeiko": 157693,
+      "winner": "Keiko"
+    },
+    {
+      "foreignVotes": 433370,
+      "keikoPct": 55,
+      "sanchezPct": 45,
+      "keikoForeign": 238354,
+      "sanchezForeign": 195016,
+      "finalLeadKeiko": 41031,
+      "winner": "Keiko"
+    },
+    {
+      "foreignVotes": 433370,
+      "keikoPct": 60,
+      "sanchezPct": 40,
+      "keikoForeign": 260022,
+      "sanchezForeign": 173348,
+      "finalLeadKeiko": 84367,
+      "winner": "Keiko"
+    },
+    {
+      "foreignVotes": 433370,
+      "keikoPct": 62.67,
+      "sanchezPct": 37.33,
+      "keikoForeign": 271593,
+      "sanchezForeign": 161777,
+      "finalLeadKeiko": 107509,
+      "winner": "Keiko"
+    },
+    {
+      "foreignVotes": 433370,
+      "keikoPct": 65,
+      "sanchezPct": 35,
+      "keikoForeign": 281690,
+      "sanchezForeign": 151680,
+      "finalLeadKeiko": 127703,
+      "winner": "Keiko"
+    },
+    {
+      "foreignVotes": 433370,
+      "keikoPct": 70,
+      "sanchezPct": 30,
+      "keikoForeign": 303359,
+      "sanchezForeign": 130011,
+      "finalLeadKeiko": 171041,
       "winner": "Keiko"
     },
     {
@@ -600,7 +707,7 @@
       "sanchezPct": 45,
       "keikoForeign": 275000,
       "sanchezForeign": 225000,
-      "finalLeadKeiko": 68294,
+      "finalLeadKeiko": 47693,
       "winner": "Keiko"
     },
     {
@@ -609,7 +716,7 @@
       "sanchezPct": 40,
       "keikoForeign": 300000,
       "sanchezForeign": 200000,
-      "finalLeadKeiko": 118294,
+      "finalLeadKeiko": 97693,
       "winner": "Keiko"
     },
     {
@@ -618,7 +725,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 313350,
       "sanchezForeign": 186650,
-      "finalLeadKeiko": 144994,
+      "finalLeadKeiko": 124393,
       "winner": "Keiko"
     },
     {
@@ -627,7 +734,7 @@
       "sanchezPct": 35,
       "keikoForeign": 325000,
       "sanchezForeign": 175000,
-      "finalLeadKeiko": 168294,
+      "finalLeadKeiko": 147693,
       "winner": "Keiko"
     },
     {
@@ -636,52 +743,7 @@
       "sanchezPct": 30,
       "keikoForeign": 350000,
       "sanchezForeign": 150000,
-      "finalLeadKeiko": 218294,
-      "winner": "Keiko"
-    },
-    {
-      "foreignVotes": 515410,
-      "keikoPct": 55,
-      "sanchezPct": 45,
-      "keikoForeign": 283476,
-      "sanchezForeign": 231934,
-      "finalLeadKeiko": 69836,
-      "winner": "Keiko"
-    },
-    {
-      "foreignVotes": 515410,
-      "keikoPct": 60,
-      "sanchezPct": 40,
-      "keikoForeign": 309246,
-      "sanchezForeign": 206164,
-      "finalLeadKeiko": 121376,
-      "winner": "Keiko"
-    },
-    {
-      "foreignVotes": 515410,
-      "keikoPct": 62.67,
-      "sanchezPct": 37.33,
-      "keikoForeign": 323007,
-      "sanchezForeign": 192403,
-      "finalLeadKeiko": 148898,
-      "winner": "Keiko"
-    },
-    {
-      "foreignVotes": 515410,
-      "keikoPct": 65,
-      "sanchezPct": 35,
-      "keikoForeign": 335016,
-      "sanchezForeign": 180394,
-      "finalLeadKeiko": 172916,
-      "winner": "Keiko"
-    },
-    {
-      "foreignVotes": 515410,
-      "keikoPct": 70,
-      "sanchezPct": 30,
-      "keikoForeign": 360787,
-      "sanchezForeign": 154623,
-      "finalLeadKeiko": 224458,
+      "finalLeadKeiko": 197693,
       "winner": "Keiko"
     },
     {
@@ -690,7 +752,7 @@
       "sanchezPct": 45,
       "keikoForeign": 330000,
       "sanchezForeign": 270000,
-      "finalLeadKeiko": 78294,
+      "finalLeadKeiko": 57693,
       "winner": "Keiko"
     },
     {
@@ -699,7 +761,7 @@
       "sanchezPct": 40,
       "keikoForeign": 360000,
       "sanchezForeign": 240000,
-      "finalLeadKeiko": 138294,
+      "finalLeadKeiko": 117693,
       "winner": "Keiko"
     },
     {
@@ -708,7 +770,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 376020,
       "sanchezForeign": 223980,
-      "finalLeadKeiko": 170334,
+      "finalLeadKeiko": 149733,
       "winner": "Keiko"
     },
     {
@@ -717,7 +779,7 @@
       "sanchezPct": 35,
       "keikoForeign": 390000,
       "sanchezForeign": 210000,
-      "finalLeadKeiko": 198294,
+      "finalLeadKeiko": 177693,
       "winner": "Keiko"
     },
     {
@@ -726,7 +788,7 @@
       "sanchezPct": 30,
       "keikoForeign": 420000,
       "sanchezForeign": 180000,
-      "finalLeadKeiko": 258294,
+      "finalLeadKeiko": 237693,
       "winner": "Keiko"
     },
     {
@@ -735,7 +797,7 @@
       "sanchezPct": 45,
       "keikoForeign": 385000,
       "sanchezForeign": 315000,
-      "finalLeadKeiko": 88294,
+      "finalLeadKeiko": 67693,
       "winner": "Keiko"
     },
     {
@@ -744,7 +806,7 @@
       "sanchezPct": 40,
       "keikoForeign": 420000,
       "sanchezForeign": 280000,
-      "finalLeadKeiko": 158294,
+      "finalLeadKeiko": 137693,
       "winner": "Keiko"
     },
     {
@@ -753,7 +815,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 438690,
       "sanchezForeign": 261310,
-      "finalLeadKeiko": 195674,
+      "finalLeadKeiko": 175073,
       "winner": "Keiko"
     },
     {
@@ -762,7 +824,7 @@
       "sanchezPct": 35,
       "keikoForeign": 455000,
       "sanchezForeign": 245000,
-      "finalLeadKeiko": 228294,
+      "finalLeadKeiko": 207693,
       "winner": "Keiko"
     },
     {
@@ -771,7 +833,7 @@
       "sanchezPct": 30,
       "keikoForeign": 490000,
       "sanchezForeign": 210000,
-      "finalLeadKeiko": 298294,
+      "finalLeadKeiko": 277693,
       "winner": "Keiko"
     }
   ]
