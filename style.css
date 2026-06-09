@@ -20,3 +20,186 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
 .notice strong{color:#172033}.method-note{display:block;line-height:1.6}.keiko{color:var(--blue);font-weight:900}.sanchez{color:var(--orange);font-weight:900}
 
 #provinceCount{margin-top:-6px;margin-bottom:14px}.table-wrap table th:nth-child(1),.table-wrap table td:nth-child(1),.table-wrap table th:nth-child(2),.table-wrap table td:nth-child(2){text-align:left}.download-grid{grid-template-columns:repeat(5,minmax(0,1fr))}@media (max-width:1100px){.download-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:640px){.download-grid{grid-template-columns:1fr}}
+
+.threshold-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
+  margin-bottom:18px;
+}
+.threshold-card strong{font-size:clamp(1.4rem,2.6vw,2.15rem)}
+.threshold-panel{align-items:start}.table-wrap.compact table{min-width:620px}.threshold-safe{background:#ecfdf3;border-color:#abefc6}.threshold-warning{background:#fff9eb;border-color:#fedf89}.threshold-danger{background:#fff1f3;border-color:#fecdd6}.winner.neutral{color:var(--muted);font-weight:900}
+@media (max-width:920px){.threshold-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.threshold-grid{grid-template-columns:1fr}}
+
+/* ------------------------------------------------------------
+   Responsive fix: bloque de umbral extranjero
+   ------------------------------------------------------------ */
+#umbral .threshold-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+#umbral .threshold-card {
+  min-width: 0;
+}
+
+#umbral .threshold-card strong,
+#umbral .threshold-card span,
+#umbral .threshold-card small {
+  overflow-wrap: anywhere;
+}
+
+#umbral .threshold-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+  gap: 24px;
+  align-items: stretch;
+}
+
+#umbral .threshold-panel > div {
+  min-width: 0;
+}
+
+#umbral .threshold-panel .callout {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#umbral .table-wrap.compact {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#umbral .table-wrap.compact table {
+  width: 100%;
+  min-width: 560px;
+}
+
+#umbral .table-wrap.compact th,
+#umbral .table-wrap.compact td {
+  white-space: normal;
+  vertical-align: top;
+}
+
+#umbral .table-wrap.compact th:first-child,
+#umbral .table-wrap.compact td:first-child {
+  min-width: 150px;
+}
+
+@media (max-width: 1180px) {
+  #umbral .threshold-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #umbral .threshold-panel {
+    grid-template-columns: 1fr;
+  }
+
+  #umbral .threshold-panel .callout {
+    height: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  #umbral .threshold-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #umbral .threshold-panel {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  #umbral .threshold-panel h3 {
+    margin-top: 0;
+  }
+
+  #umbral .table-wrap.compact {
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  #umbral #thresholdTable {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  #umbral #thresholdTable thead {
+    display: none;
+  }
+
+  #umbral #thresholdTable tbody,
+  #umbral #thresholdTable tr,
+  #umbral #thresholdTable td {
+    display: block;
+    width: 100%;
+  }
+
+  #umbral #thresholdTable tr {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  #umbral #thresholdTable td {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--line);
+    text-align: right;
+    white-space: normal;
+  }
+
+  #umbral #thresholdTable td:last-child {
+    border-bottom: 0;
+  }
+
+  #umbral #thresholdTable td::before {
+    content: attr(data-label);
+    flex: 0 0 42%;
+    text-align: left;
+    color: var(--muted);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-size: .72rem;
+  }
+
+  #umbral #thresholdTable td:first-child {
+    text-align: right;
+  }
+
+  #umbral .callout {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  #umbral #thresholdTable td {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    text-align: left;
+  }
+
+  #umbral #thresholdTable td::before {
+    flex: none;
+  }
+
+  #umbral #thresholdTable td:first-child {
+    text-align: left;
+  }
+}
+

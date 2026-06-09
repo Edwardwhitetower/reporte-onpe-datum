@@ -319,7 +319,12 @@ function renderThreshold(){
       const lectura = r.type === 'threshold'
         ? 'Mínimo requerido'
         : Number(r.diff || 0) >= 0 ? 'Por encima del umbral' : 'Por debajo del umbral';
-      return `<tr><td>${r.label}</td><td>${value}</td><td class="winner ${ok}">${diff}</td><td>${lectura}</td></tr>`;
+      return `<tr>
+        <td data-label="Referencia">${r.label}</td>
+        <td data-label="% Keiko">${value}</td>
+        <td data-label="Distancia" class="winner ${ok}">${diff}</td>
+        <td data-label="Lectura">${lectura}</td>
+      </tr>`;
     }).join('')}</tbody>`;
 
   calloutEl.className = `callout threshold-${t.status}`;
