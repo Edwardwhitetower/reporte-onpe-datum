@@ -111,8 +111,70 @@ function calculateForeignThreshold(){
 
 function projectionLabel(source){
   if(source === 'provincia') return 'proyección lineal por provincia';
+  if(source === 'hibrido_provincia_departamento') return 'modelo híbrido: provincias completas + departamento como respaldo';
   if(source === 'departamento_fallback') return 'proyección lineal por departamento (respaldo)';
   return 'proyección lineal por ubicación geográfica';
+}
+
+function getFallbackDepartments(){
+  return state.data?.fallbackDepartments || state.data?.meta?.fallbackDepartments || [];
+}
+
+function fallbackSummaryText(){
+  const items = getFallbackDepartments();
+  if(!items.length) return 'No se aplicó fallback departamental en este corte.';
+  return items.map(x => `${x.departamento}: ${x.provinciasProcesadas}/${x.provinciasEsperadas} provincias`).join('; ');
+}
+
+function ensureFallbackNotice(){
+  let box = document.getElementById('fallbackNotice');
+  if(box) return box;
+
+  const target = document.getElementById('actualizacion') || document.getElementById('mainCallout');
+  if(!target) return null;
+
+  box = document.createElement('div');
+  box.id = 'fallbackNotice';
+  box.className = 'formula method-note fallback-note';
+  target.insertAdjacentElement('afterend', box);
+  return box;
+}
+
+function renderFallbackNotice(){
+  const box = ensureFallbackNotice();
+  if(!box) return;
+
+  const p = state.data?.projection || {};
+  const items = getFallbackDepartments();
+  const source = p.projectionSource || state.data?.meta?.projectionSource;
+
+  if(source !== 'hibrido_provincia_departamento' || !items.length){
+    box.innerHTML = `<strong>Fallback departamental:</strong> No se aplicó fallback departamental en este corte. La proyección Perú usa provincias completas.`;
+    return;
+  }
+
+  const list = items.map(x => `<li><b>${x.departamento}</b>: ${x.provinciasProcesadas}/${x.provinciasEsperadas} provincias; se usó el total departamental como respaldo.</li>`).join('');
+
+  box.innerHTML = `
+    <strong>Fallback departamental aplicado:</strong> este corte tuvo provincias que no respondieron, por lo que el modelo evitó omitir votos usando el total departamental en esos casos.
+    <ul>${list}</ul>
+  `;
+}
+
+function ensureFallbackDownload(){
+  const grid = document.querySelector('#descargas .download-grid');
+  if(!grid || document.getElementById('fallbackDownloadCard')) return;
+
+  const card = document.createElement('a');
+  card.id = 'fallbackDownloadCard';
+  card.className = 'download-card';
+  card.href = 'data/fallback-departments.csv';
+  card.download = true;
+  card.innerHTML = `<strong>fallback-departments.csv</strong><span>Departamentos donde se usó respaldo departamental.</span>`;
+
+  const readme = [...grid.querySelectorAll('a')].find(a => (a.getAttribute('href') || '').includes('README'));
+  if(readme) grid.insertBefore(card, readme);
+  else grid.appendChild(card);
 }
 
 function decorateRows(rows){
@@ -163,15 +225,25 @@ function render(){
 
   const projectionMethodText = document.getElementById('projectionMethodText');
   if(projectionMethodText){
-    projectionMethodText.innerHTML = p.projectionSource === 'provincia'
-      ? `La proyección principal usa <b>${moneyish(state.provinces.length)} provincias</b>. Esto reduce el sesgo de usar solo departamentos, aunque sigue siendo una estimación dinámica por corte.`
-      : `La proyección principal usa departamentos porque no se detectó suficiente detalle provincial en el JSON.`;
+    if(p.projectionSource === 'provincia'){
+      projectionMethodText.innerHTML = `La proyección principal usa <b>${moneyish(state.provinces.length)} provincias</b>. Esto reduce el sesgo de usar solo departamentos, aunque sigue siendo una estimación dinámica por corte.`;
+    }else if(p.projectionSource === 'hibrido_provincia_departamento'){
+      projectionMethodText.innerHTML = `La proyección principal usa un <b>modelo híbrido</b>: provincias cuando el departamento está completo, y total departamental como respaldo cuando faltan provincias. Fallback aplicado en <b>${moneyish(p.fallbackDepartmentCount || getFallbackDepartments().length)}</b> departamento(s): ${fallbackSummaryText()}.`;
+    }else{
+      projectionMethodText.innerHTML = `La proyección principal usa departamentos porque no se detectó suficiente detalle provincial en el JSON.`;
+    }
   }
 
   const methodNote = document.getElementById('manualUpdateNote');
   if(methodNote){
-    methodNote.innerHTML = `Datos actualizados manualmente desde Colab. Método extranjero actual: <b>${m.foreignVolumeMethod || 'no especificado'}</b>. Fuente de proyección Perú: <b>${sourceText}</b>. Si la actualización falla, la página mantiene el último corte válido publicado.`;
+    const fallbackText = (p.projectionSource === 'hibrido_provincia_departamento')
+      ? ` Fallback departamental: <b>${fallbackSummaryText()}</b>.`
+      : ' Sin fallback departamental en este corte.';
+    methodNote.innerHTML = `Datos actualizados manualmente desde Colab. Método extranjero actual: <b>${m.foreignVolumeMethod || 'no especificado'}</b>. Fuente de proyección Perú: <b>${sourceText}</b>.${fallbackText} Si la actualización falla, la página mantiene el último corte válido publicado.`;
   }
+
+  renderFallbackNotice();
+  ensureFallbackDownload();
 
   document.getElementById('summaryCards').innerHTML = [
     ['Actas contabilizadas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)} actas`],
@@ -190,6 +262,7 @@ function render(){
   document.getElementById('mainCallout').innerHTML = `
     <strong>Lectura principal</strong>
     <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al aplicar el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente— la diferencia ajustada queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
+    ${p.projectionSource === 'hibrido_provincia_departamento' ? `<p class="muted"><b>Nota de calidad del corte:</b> se usó fallback departamental en ${moneyish(p.fallbackDepartmentCount || getFallbackDepartments().length)} departamento(s) para evitar omitir provincias que no respondieron. ${fallbackSummaryText()}.</p>` : ''}
     <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.</p>`;
 
   renderThreshold();
@@ -259,9 +332,20 @@ function renderThreshold(){
 
 function renderSensitivity(){
   const rows = state.data.sensitivity || [];
-  document.getElementById('sensitivityTable').innerHTML = `
-    <thead><tr><th>Votos extranjero</th><th>% Keiko</th><th>% Sánchez</th><th>Diferencia final</th><th>Ganador</th></tr></thead>
-    <tbody>${rows.map(r => `<tr><td>${moneyish(r.foreignVotes)}</td><td>${pct(r.keikoPct, 2)}</td><td>${pct(r.sanchezPct, 2)}</td><td>${leadText(r.finalLeadKeiko)}</td><td class="winner ${r.winner === 'Keiko' ? 'keiko' : 'sanchez'}">${r.winner}</td></tr>`).join('')}</tbody>`;
+  const table = document.getElementById('sensitivityTable');
+  if(!table) return;
+
+  table.innerHTML = `
+    <thead><tr><th>Escenario volumen</th><th>Votos extranjero</th><th>Escenario %</th><th>% Keiko</th><th>% Sánchez</th><th>Diferencia final</th><th>Ganador</th></tr></thead>
+    <tbody>${rows.map(r => `<tr>
+      <td>${r.volumeLabel || 'Escenario'}</td>
+      <td>${moneyish(r.foreignVotes)}</td>
+      <td>${r.pctLabel || ''}</td>
+      <td>${pct(r.keikoPct, 2)}</td>
+      <td>${pct(r.sanchezPct, 2)}</td>
+      <td>${leadText(r.finalLeadKeiko)}</td>
+      <td class="winner ${r.winner === 'Keiko' ? 'keiko' : 'sanchez'}">${r.winner}</td>
+    </tr>`).join('')}</tbody>`;
 }
 
 function setupProvinceDepartmentFilter(){
@@ -293,7 +377,10 @@ function renderProvinces(){
 
   const count = document.getElementById('provinceCount');
   if(count){
-    count.textContent = `${moneyish(rows.length)} provincias visibles de ${moneyish(state.provinces.length)} procesadas.`;
+    const p = state.data.projection || {};
+    const fallback = getFallbackDepartments();
+    const fallbackText = fallback.length ? ` Modelo híbrido con fallback en ${moneyish(fallback.length)} departamento(s): ${fallbackSummaryText()}.` : '';
+    count.textContent = `${moneyish(rows.length)} provincias visibles de ${moneyish(state.provinces.length)} procesadas.${fallbackText}`;
   }
 
   table.innerHTML = `
