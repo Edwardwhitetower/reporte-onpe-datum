@@ -1,134 +1,57 @@
 ﻿departamento,departamento_ubigeo,provincia,provincia_ubigeo,error
-PIURA,190000,HUANCABAMBA,190300,"No funcionó /presentacion-backend/resumen-general/participantes. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/participantes?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190300 | status=200 | preview=<!doctype html>
+MOQUEGUA,170000,GENERAL SÁNCHEZ CERRO,170200,"Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=170000&ubigeoNivel2=170200 | status=200 | preview=<!doctype html>
 <html lang=""es"" data-beasties-container="""">
   <head>
     <meta charset=""utf-8"">
     <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
     <base href=""/"">
-    <meta name=""viewport"""
-PIURA,190000,MORROPÓN,190400,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190400 | status=200 | preview=<!doctype html>
+    <met"
+MOQUEGUA,170000,ILO,170300,"Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=170000&ubigeoNivel2=170300 | status=200 | preview=<!doctype html>
 <html lang=""es"" data-beasties-container="""">
   <head>
     <meta charset=""utf-8"">
     <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
     <base href=""/"">
-    <meta name=""viewport"""
-PIURA,190000,PAITA,190500,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190500 | status=200 | preview=<!doctype html>
+    <met"
+MOQUEGUA,170000,MARISCAL NIETO,170100,"Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=170000&ubigeoNivel2=170100 | status=200 | preview=<!doctype html>
 <html lang=""es"" data-beasties-container="""">
   <head>
     <meta charset=""utf-8"">
     <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
     <base href=""/"">
-    <meta name=""viewport"""
-PIURA,190000,PIURA,190100,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190100 | status=200 | preview=<!doctype html>
+    <met"
+PASCO,180000,DANIEL ALCIDES CARRIÓN,180200,"Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=180000&ubigeoNivel2=180200 | status=200 | preview=<!doctype html>
 <html lang=""es"" data-beasties-container="""">
   <head>
     <meta charset=""utf-8"">
     <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
     <base href=""/"">
-    <meta name=""viewport"""
-PIURA,190000,SECHURA,190800,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190800 | status=200 | preview=<!doctype html>
+    <met"
+PASCO,180000,OXAPAMPA,180300,"Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=180000&ubigeoNivel2=180300 | status=200 | preview=<!doctype html>
 <html lang=""es"" data-beasties-container="""">
   <head>
     <meta charset=""utf-8"">
     <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
     <base href=""/"">
-    <meta name=""viewport"""
-PIURA,190000,SULLANA,190600,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190600 | status=200 | preview=<!doctype html>
+    <met"
+PASCO,180000,PASCO,180100,"Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=180000&ubigeoNivel2=180100 | status=200 | preview=<!doctype html>
 <html lang=""es"" data-beasties-container="""">
   <head>
     <meta charset=""utf-8"">
     <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
     <base href=""/"">
-    <meta name=""viewport"""
-PIURA,190000,TALARA,190700,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190700 | status=200 | preview=<!doctype html>
+    <met"
+PIURA,190000,AYABACA,190200,"Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190200 | status=200 | preview=<!doctype html>
 <html lang=""es"" data-beasties-container="""">
   <head>
     <meta charset=""utf-8"">
     <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
     <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,AZÁNGARO,200200,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200200 | status=200 | preview=<!doctype html>
+    <met"
+PIURA,190000,HUANCABAMBA,190300,"Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=190000&ubigeoNivel2=190300 | status=200 | preview=<!doctype html>
 <html lang=""es"" data-beasties-container="""">
   <head>
     <meta charset=""utf-8"">
     <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
     <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,CARABAYA,200300,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200300 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,CHUCUITO,200400,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200400 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,EL COLLAO,201200,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=201200 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,HUANCANÉ,200500,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200500 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,LAMPA,200600,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200600 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,MELGAR,200700,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200700 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,MOHO,201300,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=201300 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,PUNO,200100,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200100 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,SAN ANTONIO DE PUTINA,201100,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=201100 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,SANDIA,200800,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200800 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
-PUNO,200000,SAN ROMÁN,200900,"No funcionó /presentacion-backend/resumen-general/totales. Último error: No JSON: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=200000&ubigeoNivel2=200900 | status=200 | preview=<!doctype html>
-<html lang=""es"" data-beasties-container="""">
-  <head>
-    <meta charset=""utf-8"">
-    <title>ONPE - PRESENTACIÓN DE RESULTADOS</title>
-    <base href=""/"">
-    <meta name=""viewport"""
+    <met"
