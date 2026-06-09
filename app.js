@@ -239,7 +239,7 @@ function render(){
     const fallbackText = (p.projectionSource === 'hibrido_provincia_departamento')
       ? ` Fallback departamental: <b>${fallbackSummaryText()}</b>.`
       : ' Sin fallback departamental en este corte.';
-    methodNote.innerHTML = `Datos actualizados manualmente desde Colab. Método extranjero actual: <b>${m.foreignVolumeMethod || 'no especificado'}</b>. Fuente de proyección Perú: <b>${sourceText}</b>.${fallbackText} Si la actualización falla, la página mantiene el último corte válido publicado.`;
+    methodNote.innerHTML = `Datos actualizados mediante control manual antes de publicarse. Método extranjero actual: <b>${m.foreignVolumeMethod || 'no especificado'}</b>. Fuente de proyección Perú: <b>${sourceText}</b>.${fallbackText} Si la actualización falla, la página mantiene el último corte válido publicado.`;
   }
 
   renderFallbackNotice();

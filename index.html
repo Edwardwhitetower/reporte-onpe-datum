@@ -15,6 +15,7 @@
         <a href="#resumen">Resumen</a>
         <a href="#metodologia">Metodología</a>
         <a href="#actualizacion">Actualización</a>
+        <a href="#umbral">Umbral extranjero</a>
         <a href="#provincias">Provincias</a>
         <a href="#regional">Regiones</a>
         <a href="#descargas">Descargas</a>
@@ -50,6 +51,23 @@
       </div>
     </section>
 
+    <section id="umbral" class="section alt">
+      <div class="section-title">
+        <p class="eyebrow">Umbral extranjero</p>
+        <h2>Qué necesita Keiko del voto extranjero pendiente</h2>
+        <p class="muted">Este bloque compara el porcentaje mínimo que Keiko necesita en el extranjero pendiente con el escenario Datum y con el avance parcial ONPE del extranjero.</p>
+      </div>
+      <div class="threshold-grid" id="thresholdCards"></div>
+      <div class="panel two-col threshold-panel">
+        <div>
+          <h3>Comparación contra el umbral</h3>
+          <p class="muted" id="thresholdSummaryText">Cargando cálculo del umbral...</p>
+          <div class="table-wrap compact"><table id="thresholdTable"></table></div>
+        </div>
+        <div class="callout" id="thresholdCallout"></div>
+      </div>
+    </section>
+
     <section id="metodologia" class="section alt">
       <div class="section-title">
         <p class="eyebrow">Metodología</p>
@@ -73,7 +91,7 @@
         </article>
       </div>
       <div id="actualizacion" class="formula method-note">
-        <strong>Actualización manual:</strong>
+        <strong>Actualización del informe:</strong>
         <span id="manualUpdateNote">Cargando información de actualización...</span>
       </div>
       <div class="formula">
@@ -153,14 +171,14 @@
         </a>
         <a class="download-card" href="README.md" download>
           <strong>README.md</strong>
-          <span>Guía para publicar en GitHub Pages.</span>
+          <span>Documentación del proyecto y metodología.</span>
         </a>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum. Actualización manual mediante Google Colab. No reemplaza resultados oficiales ni proclamación electoral.</p>
+    <p>Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum. Actualización verificada manualmente. No reemplaza resultados oficiales ni proclamación electoral.</p>
   </footer>
 
   <script src="app.js"></script>
