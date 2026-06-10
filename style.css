@@ -340,3 +340,32 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
     gap: 4px;
   }
 }
+
+
+/* ------------------------------------------------------------
+   Control de cambios frente al corte anterior
+   ------------------------------------------------------------ */
+.changes-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
+  margin-bottom:18px;
+}
+.change-card strong{
+  font-size:clamp(1.35rem,2.4vw,2.05rem);
+}
+#cambios table th,
+#cambios table td{
+  white-space:normal;
+  vertical-align:top;
+}
+#cambios table th:first-child,
+#cambios table td:first-child{
+  min-width:170px;
+}
+@media (max-width:1100px){
+  .changes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .changes-grid{grid-template-columns:1fr}
+}

@@ -20,6 +20,7 @@ El objetivo es presentar, de forma clara y verificable:
 - una proyección ajustada incorporando el voto extranjero;
 - una tabla regional y provincial para revisar dónde se concentra la variación del conteo;
 - una prueba de sensibilidad del volumen extranjero mientras exista voto extranjero pendiente;
+- una comparación automática contra el corte válido anterior.
 - un historial de cortes válidos para auditar la evolución del análisis.
 
 ## Metodología resumida
@@ -116,7 +117,7 @@ data/history.json
 
 - `index.html`: estructura principal de la página.
 - `style.css`: estilos visuales y diseño responsive.
-- `app.js`: renderiza tarjetas, resumen nacional, metodología, historial, tablas, filtros, fallback departamental y prueba de sensibilidad del volumen extranjero.
+- `app.js`: renderiza tarjetas, resumen nacional, metodología, historial, comparación contra el corte anterior, tablas, filtros, fallback departamental y prueba de sensibilidad del volumen extranjero.
 - `data/report-data.json`: archivo principal usado por la página para mostrar los resultados y métricas calculadas.
 - `data/regions.csv`: detalle por departamento o región.
 - `data/provinces.csv`: detalle por provincia usado para la proyección más desagregada.
@@ -135,3 +136,21 @@ La proyección puede cambiar entre cortes porque las actas pendientes dentro de 
 Cuando una provincia no puede procesarse temporalmente, el modelo usa el total departamental como respaldo para evitar sesgos por omisión. Esto mejora la estabilidad del cálculo, pero debe ser leído como una decisión metodológica de respaldo.
 
 Por eso, el informe debe leerse como una **estimación dinámica por corte**, no como una predicción definitiva ni como resultado oficial.
+
+## Cambios frente al corte anterior
+
+La página compara automáticamente el último corte válido contra el corte previo registrado en `data/history.json`.
+
+Esta sección ayuda a revisar rápidamente:
+
+```text
+avance de actas contabilizadas
+cambio del margen actual ONPE
+cambio de la proyección Perú sin extranjero
+incremento del voto extranjero contabilizado
+variación del umbral extranjero
+cambio de la diferencia final ajustada
+calidad metodológica del corte: provincia completa o modelo híbrido con fallback
+```
+
+Esta comparación no reemplaza una auditoría por mesa o acta, pero funciona como control de consistencia entre cortes publicados.

@@ -322,6 +322,7 @@ function render(){
   renderForeignSectionHeader();
   renderThreshold();
   renderSensitivity();
+  renderCutChanges();
   renderHistory();
   setupProvinceDepartmentFilter();
   renderProvinces();
@@ -469,6 +470,177 @@ function renderSensitivity(){
       <td>${pct(r.sanchezPct, 2)}</td>
       <td>${leadText(r.finalLeadKeiko)}</td>
       <td class="winner ${r.winner === 'Keiko' ? 'keiko' : 'sanchez'}">${r.winner}</td>
+    </tr>`).join('')}</tbody>`;
+}
+
+
+
+function formatMarginShift(delta){
+  const n = Number(delta || 0);
+  if(n === 0) return 'Sin cambio';
+  return `${n > 0 ? 'Keiko' : 'Sánchez'} +${moneyish(Math.abs(n))}`;
+}
+
+function formatVoteDelta(delta){
+  const n = Number(delta || 0);
+  if(n === 0) return '0';
+  return `${n > 0 ? '+' : '−'}${moneyish(Math.abs(n))}`;
+}
+
+function formatPctDelta(delta, digits = 3){
+  const n = Number(delta || 0);
+  if(n === 0) return '0.000 pts';
+  return `${n > 0 ? '+' : '−'}${Math.abs(n).toFixed(digits)} pts`;
+}
+
+function numericDelta(current, previous){
+  const a = Number(current);
+  const b = Number(previous);
+  if(!Number.isFinite(a) || !Number.isFinite(b)) return null;
+  return a - b;
+}
+
+function qualityText(e){
+  if(!e) return 'N/D';
+  const errors = Number(e.provinceErrors || 0);
+  const fallback = Number(e.fallbackDepartmentCount || 0);
+  if(errors > 0 || fallback > 0){
+    return `Híbrido: fallback ${moneyish(fallback)} / errores ${moneyish(errors)}`;
+  }
+  return 'Provincia completa';
+}
+
+function renderCutChanges(){
+  const table = document.getElementById('changesTable');
+  const cards = document.getElementById('changesCards');
+  if(!table || !cards) return;
+
+  const entries = state.history || [];
+  if(entries.length < 2){
+    cards.innerHTML = `<article class="card"><small>Cambios</small><strong>No disponible</strong><span>Se necesitan al menos dos cortes válidos en history.json.</span></article>`;
+    table.innerHTML = '';
+    return;
+  }
+
+  const latest = entries[0];
+  const prev = entries[1];
+
+  const actasDelta = numericDelta(latest.actasContabilizadasPct, prev.actasContabilizadasPct);
+  const currentMarginDelta = numericDelta(latest.currentLeadKeiko, prev.currentLeadKeiko);
+  const adjustedMarginDelta = numericDelta(latest.adjustedLeadKeiko, prev.adjustedLeadKeiko);
+  const thresholdDelta = numericDelta(latest.keikoNeededPctPendingForeign, prev.keikoNeededPctPendingForeign);
+  const foreignKeikoDelta = numericDelta(latest.foreignOnpeKeiko, prev.foreignOnpeKeiko);
+  const foreignSanchezDelta = numericDelta(latest.foreignOnpeSanchez, prev.foreignOnpeSanchez);
+
+  const sourceChanged = (latest.projectionSource || '') !== (prev.projectionSource || '');
+  const qualityChanged = qualityText(latest) !== qualityText(prev);
+
+  cards.innerHTML = [
+    [
+      'Actas contabilizadas',
+      actasDelta === null ? 'N/D' : formatPctDelta(actasDelta, 3),
+      `${valueOrDash(prev.actasContabilizadasPct, x => pct(x, 3))} → ${valueOrDash(latest.actasContabilizadasPct, x => pct(x, 3))}`
+    ],
+    [
+      'Cambio margen ONPE',
+      currentMarginDelta === null ? 'N/D' : formatMarginShift(currentMarginDelta),
+      `Conteo actual: ${leadText(prev.currentLeadKeiko)} → ${leadText(latest.currentLeadKeiko)}`
+    ],
+    [
+      adjustedMetricLabel(),
+      adjustedMarginDelta === null ? 'N/D' : formatMarginShift(adjustedMarginDelta),
+      `Diferencia final: ${leadText(prev.adjustedLeadKeiko)} → ${leadText(latest.adjustedLeadKeiko)}`
+    ],
+    [
+      'Calidad del corte',
+      sourceChanged || qualityChanged ? 'Cambió' : 'Estable',
+      `${qualityText(prev)} → ${qualityText(latest)}`
+    ]
+  ].map(([label, value, desc]) => `<article class="card change-card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
+
+  const rows = [
+    {
+      label: 'Corte',
+      prev: prev.cutoff,
+      latest: latest.cutoff,
+      change: 'Nuevo corte válido',
+      note: 'Comparación cronológica'
+    },
+    {
+      label: 'Actas contabilizadas',
+      prev: valueOrDash(prev.actasContabilizadasPct, x => pct(x, 3)),
+      latest: valueOrDash(latest.actasContabilizadasPct, x => pct(x, 3)),
+      change: actasDelta === null ? 'N/D' : formatPctDelta(actasDelta, 3),
+      note: 'Avance del conteo'
+    },
+    {
+      label: 'Diferencia actual ONPE',
+      prev: leadText(prev.currentLeadKeiko),
+      latest: leadText(latest.currentLeadKeiko),
+      change: currentMarginDelta === null ? 'N/D' : formatMarginShift(currentMarginDelta),
+      note: 'Cambio en margen contabilizado'
+    },
+    {
+      label: 'Perú sin extranjero',
+      prev: leadText(prev.peruNoForeignLeadKeiko),
+      latest: leadText(latest.peruNoForeignLeadKeiko),
+      change: formatMarginShift(numericDelta(latest.peruNoForeignLeadKeiko, prev.peruNoForeignLeadKeiko)),
+      note: 'Cambio de la proyección interna'
+    },
+    {
+      label: 'Extranjero ONPE Keiko',
+      prev: moneyish(prev.foreignOnpeKeiko),
+      latest: moneyish(latest.foreignOnpeKeiko),
+      change: foreignKeikoDelta === null ? 'N/D' : formatVoteDelta(foreignKeikoDelta),
+      note: 'Votos extranjeros ya contabilizados'
+    },
+    {
+      label: 'Extranjero ONPE Sánchez',
+      prev: moneyish(prev.foreignOnpeSanchez),
+      latest: moneyish(latest.foreignOnpeSanchez),
+      change: foreignSanchezDelta === null ? 'N/D' : formatVoteDelta(foreignSanchezDelta),
+      note: 'Votos extranjeros ya contabilizados'
+    },
+    {
+      label: '% Keiko extranjero',
+      prev: valueOrDash(prev.foreignPartialKeikoPct, x => pct(x, 3)),
+      latest: valueOrDash(latest.foreignPartialKeikoPct, x => pct(x, 3)),
+      change: numericDelta(latest.foreignPartialKeikoPct, prev.foreignPartialKeikoPct) === null ? 'N/D' : formatPctDelta(numericDelta(latest.foreignPartialKeikoPct, prev.foreignPartialKeikoPct), 3),
+      note: 'Participación Keiko dentro del extranjero contado'
+    },
+    {
+      label: 'Umbral extranjero',
+      prev: prev.foreignClosed ? 'Cerrado' : valueOrDash(prev.keikoNeededPctPendingForeign, x => pct(x, 3)),
+      latest: latest.foreignClosed ? 'Cerrado' : valueOrDash(latest.keikoNeededPctPendingForeign, x => pct(x, 3)),
+      change: latest.foreignClosed || prev.foreignClosed ? 'Cerrado' : (thresholdDelta === null ? 'N/D' : formatPctDelta(thresholdDelta, 3)),
+      note: 'Mínimo requerido para Keiko en extranjero pendiente'
+    },
+    {
+      label: 'Diferencia final ajustada',
+      prev: leadText(prev.adjustedLeadKeiko),
+      latest: leadText(latest.adjustedLeadKeiko),
+      change: adjustedMarginDelta === null ? 'N/D' : formatMarginShift(adjustedMarginDelta),
+      note: isForeignClosed() ? 'Con extranjero ONPE' : 'Con escenario mixto ONPE + Datum'
+    },
+    {
+      label: 'Fuente / calidad',
+      prev: `${historySourceLabel(prev.projectionSource || '')}; ${qualityText(prev)}`,
+      latest: `${historySourceLabel(latest.projectionSource || '')}; ${qualityText(latest)}`,
+      change: sourceChanged || qualityChanged ? 'Revisar calidad' : 'Sin cambio relevante',
+      note: 'Indica si hubo fallback o errores provinciales'
+    }
+  ];
+
+  table.innerHTML = `
+    <thead><tr>
+      <th>Indicador</th><th>Corte anterior</th><th>Último corte</th><th>Cambio</th><th>Lectura</th>
+    </tr></thead>
+    <tbody>${rows.map(r => `<tr>
+      <td data-label="Indicador">${r.label}</td>
+      <td data-label="Corte anterior">${r.prev}</td>
+      <td data-label="Último corte">${r.latest}</td>
+      <td data-label="Cambio"><b>${r.change}</b></td>
+      <td data-label="Lectura">${r.note}</td>
     </tr>`).join('')}</tbody>`;
 }
 
