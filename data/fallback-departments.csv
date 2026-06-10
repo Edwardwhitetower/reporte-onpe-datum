@@ -1,1 +1,2 @@
-﻿
+﻿departamento,departamento_ubigeo,provinciasEsperadas,provinciasProcesadas,metodo,motivo
+HUÁNUCO,090000,11,7,departamento,fallback_departamental_por_provincias_faltantes

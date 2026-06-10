@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-10T11:59:24-05:00",
-  "description": "Historial resumido de cortes válidos generados durante el seguimiento ONPE + escenario extranjero Datum. No incluye preflights bloqueados ni diagnósticos.",
+  "updatedAt": "2026-06-10T13:42:30.126805-05:00",
+  "description": "Historial resumido de cortes válidos. No incluye preflights bloqueados ni diagnósticos.",
   "entries": [
     {
       "cutoff": "2026-06-08 13:12:00",
@@ -210,6 +210,42 @@
       "fallbackDepartmentCount": 0,
       "foreignClosed": false,
       "note": "Corte provincial completo."
+    },
+    {
+      "cutoff": "2026-06-10 13:35:18",
+      "generatedAt": "2026-06-10T13:42:30.034077-05:00",
+      "actasContabilizadasPct": 97.827,
+      "projectionSource": "hibrido_provincia_departamento",
+      "processSource": "endpoint_activo",
+      "currentLeadKeiko": -5963,
+      "peruNoForeignLeadKeiko": -32982,
+      "foreignOnpeKeiko": 160679,
+      "foreignOnpeSanchez": 92886,
+      "foreignPartialKeikoPct": 63.368,
+      "foreignPartialSanchezPct": 36.632,
+      "foreignVotesEstimated": 303300,
+      "foreignRemainingVotesEstimated": 49735,
+      "keikoNeededPctPendingForeign": 15.004,
+      "datumMarginVsThreshold": 47.666,
+      "adjustedLeadKeiko": 47414,
+      "adjustedKeikoPct": 50.129,
+      "adjustedSanchezPct": 49.871,
+      "provinceCountExpected": 196,
+      "provinceCountProcessed": 192,
+      "provinceErrors": 4,
+      "fallbackDepartmentCount": 1,
+      "fallbackDepartments": [
+        {
+          "departamento": "HUÁNUCO",
+          "departamento_ubigeo": "090000",
+          "provinciasEsperadas": 11,
+          "provinciasProcesadas": 7,
+          "metodo": "departamento",
+          "motivo": "fallback_departamental_por_provincias_faltantes"
+        }
+      ],
+      "foreignClosed": false,
+      "valid": true
     }
   ]
 }
