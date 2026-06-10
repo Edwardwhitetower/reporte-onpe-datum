@@ -19,7 +19,7 @@ El objetivo es presentar, de forma clara y verificable:
 - una proyección nacional sin voto extranjero;
 - una proyección ajustada incorporando el voto extranjero;
 - una tabla regional y provincial para revisar dónde se concentra la variación del conteo;
-- escenarios de sensibilidad mientras exista voto extranjero pendiente;
+- una prueba de sensibilidad del volumen extranjero mientras exista voto extranjero pendiente;
 - un historial de cortes válidos para auditar la evolución del análisis.
 
 ## Metodología resumida
@@ -62,6 +62,25 @@ Mientras exista voto extranjero pendiente, el informe usa un método mixto:
 
 Cuando el voto extranjero quede contabilizado por ONPE, el cálculo principal deja de usar Datum y pasa a usar solo el voto extranjero oficial ONPE.
 
+## Prueba de sensibilidad del volumen extranjero
+
+Mientras exista voto extranjero pendiente, la página muestra una prueba de sensibilidad con variaciones del volumen estimado de votos extranjeros válidos.
+
+Estos escenarios no son pronósticos independientes. Su objetivo es medir la robustez del resultado si el volumen final de votos extranjeros termina por debajo o por encima del estimado actual.
+
+La tabla usa escenarios como:
+
+```text
+Estimado ONPE -20%
+Estimado ONPE -10%
+Estimado ONPE actual
+Estimado ONPE +10%
+Estimado ONPE +20%
+```
+
+Esto permite evaluar si el resultado depende de un volumen extranjero muy preciso o si se mantiene estable incluso con variaciones razonables del estimado.
+
+
 ```text
 Mientras hay extranjero pendiente:
   Proyección Perú sin extranjero
@@ -97,7 +116,7 @@ data/history.json
 
 - `index.html`: estructura principal de la página.
 - `style.css`: estilos visuales y diseño responsive.
-- `app.js`: renderiza tarjetas, resumen nacional, metodología, historial, tablas, filtros, fallback departamental y escenarios de sensibilidad.
+- `app.js`: renderiza tarjetas, resumen nacional, metodología, historial, tablas, filtros, fallback departamental y prueba de sensibilidad del volumen extranjero.
 - `data/report-data.json`: archivo principal usado por la página para mostrar los resultados y métricas calculadas.
 - `data/regions.csv`: detalle por departamento o región.
 - `data/provinces.csv`: detalle por provincia usado para la proyección más desagregada.

@@ -358,8 +358,8 @@ function renderForeignSectionHeader(){
     if(title) title.textContent = 'Qué necesita Keiko del voto extranjero pendiente';
     if(desc) desc.textContent = 'Este bloque compara el porcentaje mínimo que Keiko necesita en el extranjero pendiente con el escenario Datum y con el avance parcial ONPE del extranjero.';
     if(comparison) comparison.textContent = 'Comparación contra el umbral';
-    if(sensTitle) sensTitle.textContent = 'Qué pasa si cambia el volumen del extranjero';
-    if(sensDesc) sensDesc.textContent = 'La tabla muestra cómo cambia la ventaja final de Keiko con distintos volúmenes de voto extranjero y porcentajes.';
+    if(sensTitle) sensTitle.textContent = 'Prueba de sensibilidad del volumen extranjero';
+    if(sensDesc) sensDesc.textContent = 'Estos escenarios no son pronósticos independientes. Solo prueban cómo cambiaría el resultado si el volumen final de votos extranjeros válidos termina por debajo o por encima del estimado actual.';
   }
 }
 
@@ -460,7 +460,7 @@ function renderSensitivity(){
   if(section) section.style.display = '';
 
   table.innerHTML = `
-    <thead><tr><th>Escenario volumen</th><th>Votos extranjero</th><th>Escenario %</th><th>% Keiko</th><th>% Sánchez</th><th>Diferencia final</th><th>Ganador</th></tr></thead>
+    <thead><tr><th>Escenario de volumen</th><th>Votos extranjeros estimados</th><th>Escenario de porcentaje</th><th>% Keiko</th><th>% Sánchez</th><th>Diferencia final</th><th>Ganador</th></tr></thead>
     <tbody>${rows.map(r => `<tr>
       <td>${r.volumeLabel || 'Escenario'}</td>
       <td>${moneyish(r.foreignVotes)}</td>
