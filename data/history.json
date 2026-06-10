@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-10T13:42:30.126805-05:00",
-  "description": "Historial resumido de cortes válidos. No incluye preflights bloqueados ni diagnósticos.",
+  "updatedAt": "2026-06-10T13:40:14-05:00",
+  "description": "Historial resumido de cortes válidos. No incluye preflights bloqueados ni diagnósticos. Porcentajes de actas completados desde report-data.json originales cuando estuvieron disponibles.",
   "entries": [
     {
       "cutoff": "2026-06-08 13:12:00",
@@ -51,7 +51,7 @@
     },
     {
       "cutoff": "2026-06-08 17:08:00",
-      "actasContabilizadasPct": null,
+      "actasContabilizadasPct": 94.783,
       "projectionSource": "provincia",
       "currentLeadKeiko": -30500,
       "peruNoForeignLeadKeiko": -30670,
@@ -74,7 +74,7 @@
     },
     {
       "cutoff": "2026-06-08 17:56:00",
-      "actasContabilizadasPct": null,
+      "actasContabilizadasPct": 94.859,
       "projectionSource": "provincia",
       "currentLeadKeiko": -35143,
       "peruNoForeignLeadKeiko": -31151,
@@ -97,7 +97,7 @@
     },
     {
       "cutoff": "2026-06-09 07:15:00",
-      "actasContabilizadasPct": null,
+      "actasContabilizadasPct": 95.699,
       "projectionSource": "hibrido_provincia_departamento",
       "currentLeadKeiko": -26356,
       "peruNoForeignLeadKeiko": -25084,
@@ -213,7 +213,6 @@
     },
     {
       "cutoff": "2026-06-10 13:35:18",
-      "generatedAt": "2026-06-10T13:42:30.034077-05:00",
       "actasContabilizadasPct": 97.827,
       "projectionSource": "hibrido_provincia_departamento",
       "processSource": "endpoint_activo",
@@ -237,7 +236,6 @@
       "fallbackDepartments": [
         {
           "departamento": "HUÁNUCO",
-          "departamento_ubigeo": "090000",
           "provinciasEsperadas": 11,
           "provinciasProcesadas": 7,
           "metodo": "departamento",
@@ -245,7 +243,8 @@
         }
       ],
       "foreignClosed": false,
-      "valid": true
+      "valid": true,
+      "note": "Corte generado con v5.1; fallback departamental aplicado en Huánuco por 4 provincias no procesadas."
     }
   ]
 }
