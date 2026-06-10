@@ -203,3 +203,140 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
   }
 }
 
+
+/* Estado público de actualización */
+.status-section {
+  padding-top: 28px;
+  padding-bottom: 0;
+}
+
+.status-alert {
+  border: 1px solid rgba(180, 83, 9, 0.22);
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.96), rgba(255, 247, 237, 0.92));
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.status-alert h2 {
+  margin: 6px 0 10px;
+  font-size: clamp(1.35rem, 2.3vw, 2rem);
+}
+
+.status-alert p {
+  max-width: 980px;
+}
+
+.status-alert p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .status-section {
+    padding-top: 18px;
+  }
+
+  .status-alert {
+    padding: 18px;
+    border-radius: 18px;
+  }
+}
+
+
+/* Historial de cortes */
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.history-card strong {
+  font-size: clamp(1.05rem, 1.8vw, 1.55rem);
+}
+
+#historyTable td,
+#historyTable th {
+  vertical-align: top;
+}
+
+#historyTable .winner {
+  font-weight: 800;
+}
+
+@media (max-width: 980px) {
+  .history-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .history-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #historial .table-wrap {
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  #historyTable {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  #historyTable thead {
+    display: none;
+  }
+
+  #historyTable tbody,
+  #historyTable tr,
+  #historyTable td {
+    display: block;
+    width: 100%;
+  }
+
+  #historyTable tr {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  #historyTable td {
+    display: grid;
+    grid-template-columns: 42% 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--line);
+    text-align: right;
+    white-space: normal;
+  }
+
+  #historyTable td:last-child {
+    border-bottom: 0;
+  }
+
+  #historyTable td::before {
+    content: attr(data-label);
+    text-align: left;
+    color: var(--muted);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-size: .72rem;
+  }
+}
+
+@media (max-width: 420px) {
+  #historyTable td {
+    grid-template-columns: 1fr;
+    text-align: left;
+    gap: 4px;
+  }
+}

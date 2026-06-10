@@ -2,7 +2,7 @@ const fmt = new Intl.NumberFormat('es-PE');
 const pct = (n, digits = 2) => `${Number(n || 0).toFixed(digits)}%`;
 const moneyish = n => fmt.format(Math.round(Number(n || 0)));
 
-const state = { data: null, regions: [], provinces: [] };
+const state = { data: null, regions: [], provinces: [], history: [] };
 
 function formatDateTime(value){
   if(!value) return 'no disponible';
@@ -50,6 +50,39 @@ function getForeignActual(){
     keikoPct: total ? keiko / total * 100 : null,
     sanchezPct: total ? sanchez / total * 100 : null
   };
+}
+
+
+function normalizeHistory(payload){
+  const entries = Array.isArray(payload) ? payload : (payload?.entries || []);
+  return entries
+    .filter(x => x && x.cutoff)
+    .sort((a, b) => String(b.cutoff).localeCompare(String(a.cutoff)));
+}
+
+function isForeignClosed(){
+  const p = state.data?.projection || {};
+  const pending = Number(p.foreignRemainingVotesEstimated || 0);
+  return pending <= 0;
+}
+
+function foreignModeText(){
+  return isForeignClosed()
+    ? 'Extranjero oficial ONPE completo; Datum queda como referencia histórica.'
+    : 'ONPE para votos extranjeros ya contabilizados + Datum solo para el extranjero pendiente.';
+}
+
+function adjustedMetricLabel(){
+  return isForeignClosed() ? 'Diferencia con extranjero ONPE' : 'Diferencia ajustada Datum';
+}
+
+function historySourceLabel(source){
+  return projectionLabel(source).replace('proyección lineal por ', '').replace('modelo híbrido: ', 'híbrido: ');
+}
+
+function valueOrDash(v, formatter = x => x){
+  if(v === null || v === undefined || Number.isNaN(Number(v))) return 'N/D';
+  return formatter(v);
 }
 
 function calculateForeignThreshold(){
@@ -192,8 +225,20 @@ function decorateRows(rows){
 }
 
 async function loadData(){
-  const res = await fetch(`data/report-data.json?v=${Date.now()}`);
+  const stamp = Date.now();
+  const res = await fetch(`data/report-data.json?v=${stamp}`);
   state.data = await res.json();
+
+  try{
+    const historyRes = await fetch(`data/history.json?v=${stamp}`);
+    if(historyRes.ok){
+      state.history = normalizeHistory(await historyRes.json());
+    }
+  }catch(err){
+    console.warn('No se pudo cargar history.json', err);
+    state.history = [];
+  }
+
   state.regions = decorateRows(state.data.regions);
   state.provinces = decorateRows(state.data.provinces || []);
   render();
@@ -204,7 +249,11 @@ function render(){
   const keiko = c.find(x => x.id === 'keiko');
   const sanchez = c.find(x => x.id === 'sanchez');
   const sourceText = projectionLabel(p.projectionSource || m.projectionSource);
+  const foreignClosed = isForeignClosed();
+  const adjustedLabel = adjustedMetricLabel();
 
+  const heroTitle = document.getElementById('heroTitle');
+  if(heroTitle) heroTitle.textContent = foreignClosed ? 'ONPE + voto extranjero oficial' : 'ONPE + escenario extranjero Datum';
   document.getElementById('heroSubtitle').textContent = `${m.subtitle} · Corte ONPE ${n.fechaActualizacion}`;
 
   const cutoff = document.getElementById('cutoffNotice');
@@ -213,14 +262,14 @@ function render(){
       <strong>Última actualización manual del informe:</strong> ${formatDateTime(m.generatedAt)}<br>
       <strong>Corte ONPE:</strong> ${n.fechaActualizacion} · ${pct(n.actasContabilizadasPct, 3)} de actas contabilizadas.<br>
       <strong>Fuente de proyección Perú:</strong> ${sourceText}.<br>
-      <strong>Escenario extranjero:</strong> ONPE para votos ya contabilizados + Datum (${pct(p.datumForeignKeikoPct, 2)} Keiko / ${pct(p.datumForeignSanchezPct, 2)} Sánchez) solo para lo pendiente.<br>
+      <strong>Tratamiento del extranjero:</strong> ${foreignClosed ? 'bloque extranjero contabilizado por ONPE; Datum ya no se usa en el cálculo principal.' : `ONPE para votos ya contabilizados + Datum (${pct(p.datumForeignKeikoPct, 2)} Keiko / ${pct(p.datumForeignSanchezPct, 2)} Sánchez) solo para lo pendiente.`}<br>
       <strong>Nota:</strong> este informe es una proyección analítica y no reemplaza los resultados oficiales de ONPE/JNE.
     `;
   }
 
   const projectionSourceText = document.getElementById('projectionSourceText');
   if(projectionSourceText){
-    projectionSourceText.textContent = `Suma la ${sourceText} para Perú y el escenario extranjero mixto ONPE + Datum.`;
+    projectionSourceText.textContent = foreignClosed ? `Suma la ${sourceText} para Perú y el voto extranjero oficial ONPE.` : `Suma la ${sourceText} para Perú y el escenario extranjero mixto ONPE + Datum.`;
   }
 
   const projectionMethodText = document.getElementById('projectionMethodText');
@@ -234,12 +283,17 @@ function render(){
     }
   }
 
+  const foreignMethodTitle = document.getElementById('foreignMethodCardTitle');
+  const foreignMethodText = document.getElementById('foreignMethodCardText');
+  if(foreignMethodTitle) foreignMethodTitle.textContent = foreignClosed ? 'Extranjero oficial ONPE' : 'Extranjero ONPE + Datum';
+  if(foreignMethodText) foreignMethodText.textContent = foreignClosed ? 'El voto extranjero ya está contabilizado por ONPE. Datum deja de aplicarse al cálculo principal y queda solo como referencia histórica de cortes anteriores.' : 'Si ONPE ya contabilizó votos del extranjero, se respetan esos votos oficiales. Datum se aplica solo al extranjero pendiente.';
+
   const methodNote = document.getElementById('manualUpdateNote');
   if(methodNote){
     const fallbackText = (p.projectionSource === 'hibrido_provincia_departamento')
       ? ` Fallback departamental: <b>${fallbackSummaryText()}</b>.`
       : ' Sin fallback departamental en este corte.';
-    methodNote.innerHTML = `Datos actualizados mediante control manual antes de publicarse. Método extranjero actual: <b>${m.foreignVolumeMethod || 'no especificado'}</b>. Fuente de proyección Perú: <b>${sourceText}</b>.${fallbackText} Si la actualización falla, la página mantiene el último corte válido publicado.`;
+    methodNote.innerHTML = `Datos actualizados mediante control manual antes de publicarse. Tratamiento extranjero: <b>${foreignModeText()}</b>. Fuente de proyección Perú: <b>${sourceText}</b>.${fallbackText} Si la actualización falla, la página mantiene el último corte válido publicado.`;
   }
 
   renderFallbackNotice();
@@ -249,7 +303,7 @@ function render(){
     ['Actas contabilizadas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)} actas`],
     ['Diferencia actual ONPE', leadText(p.currentLeadKeiko), 'Diferencia con actas contabilizadas'],
     ['Diferencia Perú sin extranjero', leadText(p.withoutForeignLeadKeiko), sourceText],
-    ['Diferencia ajustada Datum', leadText(p.adjustedLeadKeiko), `Keiko ${pct(p.adjustedKeikoPct, 3)} vs Sánchez ${pct(p.adjustedSanchezPct, 3)}`]
+    [adjustedLabel, leadText(p.adjustedLeadKeiko), `Keiko ${pct(p.adjustedKeikoPct, 3)} vs Sánchez ${pct(p.adjustedSanchezPct, 3)}`]
   ].map(([label, value, desc]) => `<article class="card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
 
   const max = Math.max(Number(keiko.projectedAdjusted || 0), Number(sanchez.projectedAdjusted || 0));
@@ -261,12 +315,14 @@ function render(){
 
   document.getElementById('mainCallout').innerHTML = `
     <strong>Lectura principal</strong>
-    <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al aplicar el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente— la diferencia ajustada queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
+    <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al aplicar ${foreignClosed ? 'el extranjero oficial ONPE' : 'el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente—'} la diferencia queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
     ${p.projectionSource === 'hibrido_provincia_departamento' ? `<p class="muted"><b>Nota de calidad del corte:</b> se usó fallback departamental en ${moneyish(p.fallbackDepartmentCount || getFallbackDepartments().length)} departamento(s) para evitar omitir provincias que no respondieron. ${fallbackSummaryText()}.</p>` : ''}
-    <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.</p>`;
+    <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. ${foreignClosed ? 'El bloque extranjero está cerrado para efectos del cálculo principal.' : `Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.`}</p>`;
 
+  renderForeignSectionHeader();
   renderThreshold();
   renderSensitivity();
+  renderHistory();
   setupProvinceDepartmentFilter();
   renderProvinces();
   renderRegions();
@@ -279,6 +335,34 @@ function render(){
 }
 
 
+
+function renderForeignSectionHeader(){
+  const eyebrow = document.getElementById('foreignSectionEyebrow');
+  const title = document.getElementById('foreignSectionTitle');
+  const desc = document.getElementById('foreignSectionDescription');
+  const comparison = document.getElementById('thresholdComparisonTitle');
+  const sensTitle = document.getElementById('sensitivityTitle');
+  const sensDesc = document.getElementById('sensitivityDescription');
+  const footer = document.getElementById('footerText');
+
+  if(isForeignClosed()){
+    if(eyebrow) eyebrow.textContent = 'Extranjero ONPE';
+    if(title) title.textContent = 'Voto extranjero contabilizado oficialmente';
+    if(desc) desc.textContent = 'El bloque extranjero ya no requiere estimación Datum para el cálculo principal. Se usa el voto extranjero contabilizado por ONPE.';
+    if(comparison) comparison.textContent = 'Resultado extranjero ONPE';
+    if(sensTitle) sensTitle.textContent = 'Sensibilidad cerrada';
+    if(sensDesc) sensDesc.textContent = 'El extranjero ya no se simula porque no queda voto pendiente significativo en ese bloque.';
+    if(footer) footer.textContent = 'Informe analítico. Datos oficiales: ONPE. Datum queda como referencia histórica si el extranjero ya fue contabilizado. No reemplaza resultados oficiales ni proclamación electoral.';
+  }else{
+    if(eyebrow) eyebrow.textContent = 'Umbral extranjero';
+    if(title) title.textContent = 'Qué necesita Keiko del voto extranjero pendiente';
+    if(desc) desc.textContent = 'Este bloque compara el porcentaje mínimo que Keiko necesita en el extranjero pendiente con el escenario Datum y con el avance parcial ONPE del extranjero.';
+    if(comparison) comparison.textContent = 'Comparación contra el umbral';
+    if(sensTitle) sensTitle.textContent = 'Qué pasa si cambia el volumen del extranjero';
+    if(sensDesc) sensDesc.textContent = 'La tabla muestra cómo cambia la ventaja final de Keiko con distintos volúmenes de voto extranjero y porcentajes.';
+  }
+}
+
 function renderThreshold(){
   const cardsEl = document.getElementById('thresholdCards');
   const tableEl = document.getElementById('thresholdTable');
@@ -288,6 +372,35 @@ function renderThreshold(){
 
   const t = calculateForeignThreshold();
   const p = state.data.projection || {};
+
+  if(isForeignClosed()){
+    cardsEl.innerHTML = [
+      ['Extranjero ONPE Keiko', moneyish(t.foreignActual.keiko), t.foreignActual.keikoPct === null ? 'Porcentaje no disponible' : pct(t.foreignActual.keikoPct, 2)],
+      ['Extranjero ONPE Sánchez', moneyish(t.foreignActual.sanchez), t.foreignActual.sanchezPct === null ? 'Porcentaje no disponible' : pct(t.foreignActual.sanchezPct, 2)],
+      ['Diferencia extranjero', leadText(t.foreignActual.leadKeiko), 'Margen oficial en el bloque extranjero'],
+      ['Datum', 'No activo', 'Solo referencia histórica; no se usa en el cálculo principal']
+    ].map(([label, value, desc]) => `<article class="card threshold-card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
+
+    if(summaryEl){
+      summaryEl.innerHTML = `El voto extranjero ya fue incorporado como dato ONPE. La diferencia combinada antes de cualquier pendiente extranjero queda en <b class="${leadClass(t.leadBeforePending)}">${leadText(t.leadBeforePending)}</b>.`;
+    }
+
+    tableEl.innerHTML = `
+      <thead><tr><th>Bloque</th><th>Keiko</th><th>Sánchez</th><th>Diferencia</th></tr></thead>
+      <tbody><tr>
+        <td data-label="Bloque">Extranjero ONPE</td>
+        <td data-label="Keiko">${moneyish(t.foreignActual.keiko)} (${t.foreignActual.keikoPct === null ? 'N/D' : pct(t.foreignActual.keikoPct, 2)})</td>
+        <td data-label="Sánchez">${moneyish(t.foreignActual.sanchez)} (${t.foreignActual.sanchezPct === null ? 'N/D' : pct(t.foreignActual.sanchezPct, 2)})</td>
+        <td data-label="Diferencia" class="winner ${leadClass(t.foreignActual.leadKeiko)}">${leadText(t.foreignActual.leadKeiko)}</td>
+      </tr></tbody>`;
+
+    calloutEl.className = 'callout threshold-safe';
+    calloutEl.innerHTML = `
+      <strong>Extranjero cerrado</strong>
+      <p>El cálculo principal ya no necesita escenario Datum para el extranjero. El bloque extranjero se toma de ONPE y Datum queda como referencia metodológica histórica.</p>
+      <p class="muted">Fórmula actual: Perú proyectado sin extranjero + extranjero oficial ONPE.</p>`;
+    return;
+  }
   const currentForeignPct = t.foreignActual.keikoPct;
   const thresholdText = t.neededPct === null ? 'No disponible' : pct(t.neededPct, 2);
   const datumMarginText = t.datumMargin === null ? 'No disponible' : signedPoints(t.datumMargin);
@@ -339,6 +452,12 @@ function renderSensitivity(){
   const rows = state.data.sensitivity || [];
   const table = document.getElementById('sensitivityTable');
   if(!table) return;
+  const section = table.closest('section');
+  if(isForeignClosed()){
+    if(section) section.style.display = 'none';
+    return;
+  }
+  if(section) section.style.display = '';
 
   table.innerHTML = `
     <thead><tr><th>Escenario volumen</th><th>Votos extranjero</th><th>Escenario %</th><th>% Keiko</th><th>% Sánchez</th><th>Diferencia final</th><th>Ganador</th></tr></thead>
@@ -351,6 +470,54 @@ function renderSensitivity(){
       <td>${leadText(r.finalLeadKeiko)}</td>
       <td class="winner ${r.winner === 'Keiko' ? 'keiko' : 'sanchez'}">${r.winner}</td>
     </tr>`).join('')}</tbody>`;
+}
+
+
+function renderHistory(){
+  const table = document.getElementById('historyTable');
+  const cards = document.getElementById('historyCards');
+  if(!table || !cards) return;
+
+  const entries = state.history || [];
+  if(!entries.length){
+    cards.innerHTML = `<article class="card"><small>Historial</small><strong>No disponible</strong><span>No se encontró data/history.json.</span></article>`;
+    table.innerHTML = '';
+    return;
+  }
+
+  const latest = entries[0];
+  const first = entries[entries.length - 1];
+  const threshold = latest.foreignClosed ? 'Cerrado' : valueOrDash(latest.keikoNeededPctPendingForeign, x => pct(x, 2));
+  const trend = Number(latest.adjustedLeadKeiko || 0) - Number(first.adjustedLeadKeiko || 0);
+
+  cards.innerHTML = [
+    ['Cortes válidos', moneyish(entries.length), 'Solo cortes con ZIP de datos generado'],
+    ['Último corte', latest.cutoff, `${valueOrDash(latest.actasContabilizadasPct, x => pct(x, 3))} actas contabilizadas`],
+    ['Último umbral extranjero', threshold, latest.foreignClosed ? 'Datum ya no está activo' : 'Porcentaje mínimo Keiko del extranjero pendiente'],
+    ['Cambio desde primer corte', leadText(trend), 'Variación de la ventaja ajustada en el historial']
+  ].map(([label, value, desc]) => `<article class="card history-card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
+
+  table.innerHTML = `
+    <thead><tr>
+      <th>Corte</th><th>Actas</th><th>Fuente</th><th>ONPE actual</th><th>Perú sin extranjero</th><th>Extranjero Keiko</th><th>Umbral</th><th>Diferencia final</th><th>Calidad</th>
+    </tr></thead>
+    <tbody>${entries.map(e => {
+      const quality = Number(e.provinceErrors || 0) > 0 || Number(e.fallbackDepartmentCount || 0) > 0
+        ? `Fallback ${moneyish(e.fallbackDepartmentCount || 0)} / errores ${moneyish(e.provinceErrors || 0)}`
+        : 'Provincia completa';
+      const thresholdText = e.foreignClosed ? 'Cerrado' : valueOrDash(e.keikoNeededPctPendingForeign, x => pct(x, 2));
+      return `<tr>
+        <td data-label="Corte">${e.cutoff}</td>
+        <td data-label="Actas">${valueOrDash(e.actasContabilizadasPct, x => pct(x, 3))}</td>
+        <td data-label="Fuente">${historySourceLabel(e.projectionSource || '')}</td>
+        <td data-label="ONPE actual" class="winner ${leadClass(e.currentLeadKeiko)}">${leadText(e.currentLeadKeiko)}</td>
+        <td data-label="Perú sin extranjero" class="winner ${leadClass(e.peruNoForeignLeadKeiko)}">${leadText(e.peruNoForeignLeadKeiko)}</td>
+        <td data-label="Extranjero Keiko">${valueOrDash(e.foreignPartialKeikoPct, x => pct(x, 3))}</td>
+        <td data-label="Umbral">${thresholdText}</td>
+        <td data-label="Diferencia final" class="winner ${leadClass(e.adjustedLeadKeiko)}">${leadText(e.adjustedLeadKeiko)}</td>
+        <td data-label="Calidad">${quality}</td>
+      </tr>`;
+    }).join('')}</tbody>`;
 }
 
 function setupProvinceDepartmentFilter(){

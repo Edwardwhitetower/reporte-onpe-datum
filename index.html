@@ -15,7 +15,8 @@
         <a href="#resumen">Resumen</a>
         <a href="#metodologia">Metodología</a>
         <a href="#actualizacion">Actualización</a>
-        <a href="#umbral">Umbral extranjero</a>
+        <a href="#umbral">Extranjero</a>
+        <a href="#historial">Historial</a>
         <a href="#provincias">Provincias</a>
         <a href="#regional">Regiones</a>
         <a href="#descargas">Descargas</a>
@@ -23,7 +24,7 @@
     </nav>
     <section class="hero-content">
       <span class="badge">Escenario analítico no oficial</span>
-      <h1>ONPE + escenario extranjero Datum</h1>
+      <h1 id="heroTitle">ONPE + escenario extranjero Datum</h1>
       <p id="heroSubtitle">Segunda vuelta presidencial Perú 2026</p>
       <div id="cutoffNotice" class="notice" aria-live="polite"></div>
       <div class="hero-actions">
@@ -34,11 +35,21 @@
   </header>
 
   <main>
+
+    <section id="estado-datos" class="section status-section">
+      <div class="status-alert">
+        <p class="eyebrow">Control de calidad</p>
+        <h2>Actualización con validación técnica automática</h2>
+        <p>El informe solo publica cortes cuando la fuente oficial entrega respuestas JSON válidas. Si ONPE devuelve HTML u ocurre un fallo de descarga, el sistema bloquea el corte y mantiene el último corte válido publicado.</p>
+        <p>Esta validación no altera los datos oficiales ni reemplaza los resultados de ONPE/JNE; solo evita publicar archivos incompletos o respuestas inválidas como si fueran data.</p>
+      </div>
+    </section>
+
     <section id="resumen" class="section">
       <div class="section-title">
         <p class="eyebrow">Resumen ejecutivo</p>
         <h2>Resultado actual y proyección ajustada</h2>
-        <p class="muted">Los resultados oficiales corresponden a ONPE. El componente extranjero Datum se usa como escenario de simulación.</p>
+        <p class="muted">Los resultados oficiales corresponden a ONPE. Datum solo se usa mientras exista voto extranjero pendiente por estimar.</p>
       </div>
       <div class="cards" id="summaryCards"></div>
       <div class="panel two-col">
@@ -53,14 +64,14 @@
 
     <section id="umbral" class="section alt">
       <div class="section-title">
-        <p class="eyebrow">Umbral extranjero</p>
-        <h2>Qué necesita Keiko del voto extranjero pendiente</h2>
-        <p class="muted">Este bloque compara el porcentaje mínimo que Keiko necesita en el extranjero pendiente con el escenario Datum y con el avance parcial ONPE del extranjero.</p>
+        <p class="eyebrow" id="foreignSectionEyebrow">Umbral extranjero</p>
+        <h2 id="foreignSectionTitle">Qué necesita Keiko del voto extranjero pendiente</h2>
+        <p class="muted" id="foreignSectionDescription">Este bloque compara el porcentaje mínimo que Keiko necesita en el extranjero pendiente con el escenario Datum y con el avance parcial ONPE del extranjero.</p>
       </div>
       <div class="threshold-grid" id="thresholdCards"></div>
       <div class="panel two-col threshold-panel">
         <div>
-          <h3>Comparación contra el umbral</h3>
+          <h3 id="thresholdComparisonTitle">Comparación contra el umbral</h3>
           <p class="muted" id="thresholdSummaryText">Cargando cálculo del umbral...</p>
           <div class="table-wrap compact"><table id="thresholdTable"></table></div>
         </div>
@@ -86,8 +97,8 @@
         </article>
         <article class="method-card">
           <span>3</span>
-          <h3>Extranjero ONPE + Datum</h3>
-          <p>Si ONPE ya contabilizó votos del extranjero, se respetan esos votos oficiales. Datum se aplica solo al extranjero pendiente.</p>
+          <h3 id="foreignMethodCardTitle">Extranjero ONPE + Datum</h3>
+          <p id="foreignMethodCardText">Si ONPE ya contabilizó votos del extranjero, se respetan esos votos oficiales. Datum se aplica solo al extranjero pendiente.</p>
         </article>
       </div>
       <div id="actualizacion" class="formula method-note">
@@ -102,10 +113,21 @@
     <section id="sensibilidad" class="section">
       <div class="section-title">
         <p class="eyebrow">Sensibilidad</p>
-        <h2>Qué pasa si cambia el volumen del extranjero</h2>
-        <p class="muted">La tabla muestra cómo cambia la ventaja final de Keiko con distintos volúmenes de voto extranjero y porcentajes.</p>
+        <h2 id="sensitivityTitle">Qué pasa si cambia el volumen del extranjero</h2>
+        <p class="muted" id="sensitivityDescription">La tabla muestra cómo cambia la ventaja final de Keiko con distintos volúmenes de voto extranjero y porcentajes.</p>
       </div>
       <div class="table-wrap"><table id="sensitivityTable"></table></div>
+    </section>
+
+
+    <section id="historial" class="section alt">
+      <div class="section-title">
+        <p class="eyebrow">Historial</p>
+        <h2>Evolución de cortes válidos</h2>
+        <p class="muted">Esta sección conserva solo cortes que pasaron la validación técnica y generaron ZIP de datos. Los intentos bloqueados por preflight no se incluyen como resultados.</p>
+      </div>
+      <div class="history-grid" id="historyCards"></div>
+      <div class="table-wrap"><table id="historyTable"></table></div>
     </section>
 
     <section id="provincias" class="section alt">
@@ -169,6 +191,10 @@
           <strong>province-errors.csv</strong>
           <span>Errores de descarga provincial, si los hubiera.</span>
         </a>
+        <a class="download-card" href="data/history.json" download>
+          <strong>history.json</strong>
+          <span>Historial resumido de cortes válidos.</span>
+        </a>
         <a class="download-card" href="README.md" download>
           <strong>README.md</strong>
           <span>Documentación del proyecto y metodología.</span>
@@ -178,7 +204,7 @@
   </main>
 
   <footer>
-    <p>Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum. Actualización verificada manualmente. No reemplaza resultados oficiales ni proclamación electoral.</p>
+    <p id="footerText">Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum mientras exista voto extranjero pendiente. Actualización verificada manualmente. No reemplaza resultados oficiales ni proclamación electoral.</p>
   </footer>
 
   <script src="app.js"></script>
