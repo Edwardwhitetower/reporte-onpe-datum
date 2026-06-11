@@ -369,3 +369,54 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
 @media (max-width:640px){
   .changes-grid{grid-template-columns:1fr}
 }
+
+
+/* ------------------------------------------------------------
+   Umbral extranjero ya superado
+   ------------------------------------------------------------ */
+.threshold-card strong{
+  line-height:1.08;
+}
+
+
+/* ------------------------------------------------------------
+   Estado del escenario
+   ------------------------------------------------------------ */
+.scenario-section{
+  background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.98));
+}
+.scenario-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
+  margin-bottom:18px;
+}
+.scenario-card strong{
+  font-size:clamp(1.1rem,2vw,1.65rem);
+  line-height:1.15;
+}
+.scenario-callout{
+  border-left-width:6px;
+}
+.scenario-safe,
+.scenario-card.safe{
+  border-color:rgba(22,101,52,.35);
+}
+.scenario-strong,
+.scenario-card.strong{
+  border-color:rgba(37,99,235,.32);
+}
+.scenario-favorable,
+.scenario-card.favorable{
+  border-color:rgba(202,138,4,.35);
+}
+.scenario-danger,
+.scenario-card.danger{
+  border-color:rgba(185,28,28,.35);
+}
+@media (max-width:1100px){
+  .scenario-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .scenario-grid{grid-template-columns:1fr}
+}

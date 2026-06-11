@@ -63,6 +63,18 @@ Mientras exista voto extranjero pendiente, el informe usa un método mixto:
 
 Cuando el voto extranjero quede contabilizado por ONPE, el cálculo principal deja de usar Datum y pasa a usar solo el voto extranjero oficial ONPE.
 
+
+## Umbral extranjero ya superado
+
+Cuando el porcentaje requerido para Keiko en el extranjero pendiente es negativo, la web ya no lo muestra como un porcentaje negativo. En su lugar, lo presenta como:
+
+```text
+Ya superado
+Keiko no depende del extranjero pendiente
+```
+
+Esto significa que, bajo el modelo publicado, el voto extranjero ya contabilizado alcanza para compensar la desventaja interna proyectada antes de aplicar el escenario Datum al extranjero pendiente.
+
 ## Prueba de sensibilidad del volumen extranjero
 
 Mientras exista voto extranjero pendiente, la página muestra una prueba de sensibilidad con variaciones del volumen estimado de votos extranjeros válidos.
@@ -136,6 +148,36 @@ La proyección puede cambiar entre cortes porque las actas pendientes dentro de 
 Cuando una provincia no puede procesarse temporalmente, el modelo usa el total departamental como respaldo para evitar sesgos por omisión. Esto mejora la estabilidad del cálculo, pero debe ser leído como una decisión metodológica de respaldo.
 
 Por eso, el informe debe leerse como una **estimación dinámica por corte**, no como una predicción definitiva ni como resultado oficial.
+
+
+## Estado del escenario
+
+La página incorpora una sección de lectura matemática bajo el modelo publicado.
+
+El estado puede mostrarse como:
+
+```text
+Escenario abierto bajo el modelo
+Escenario favorable a Keiko bajo el modelo
+Victoria virtual de Keiko bajo el modelo
+Alta confianza: victoria virtual de Keiko bajo el modelo
+Escenario matemáticamente consolidado bajo el modelo
+```
+
+La condición fuerte usa esta prueba:
+
+```text
+ventaja segura ante extranjero =
+Perú sin extranjero
++ ventaja del extranjero ONPE ya contabilizado
+- votos extranjeros pendientes estimados
+```
+
+Si esa ventaja sigue siendo positiva incluso asignando todo el extranjero pendiente a Sánchez, el modelo considera que Keiko ya no depende del extranjero pendiente.
+
+La sección también revisa la composición territorial de las actas enviadas al JEE. Si la mayoría se concentra en territorios donde la proyección favorece a Keiko —por ejemplo Lima—, la página lo declara como refuerzo territorial del escenario.
+
+Esta lectura no reemplaza la proclamación oficial de ONPE/JNE.
 
 ## Cambios frente al corte anterior
 

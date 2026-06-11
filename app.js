@@ -85,6 +85,33 @@ function valueOrDash(v, formatter = x => x){
   return formatter(v);
 }
 
+function thresholdDisplay(value, digits = 2){
+  const n = Number(value);
+  if(!Number.isFinite(n)) return 'N/D';
+  if(n < 0) return 'Ya superado';
+  if(n > 100) return '>100%';
+  return pct(n, digits);
+}
+
+function thresholdDescription(value){
+  const n = Number(value);
+  if(!Number.isFinite(n)) return 'No disponible';
+  if(n < 0) return 'Keiko no depende del extranjero pendiente';
+  if(n > 100) return 'Ni ganando todo el pendiente alcanzaría';
+  return 'Porcentaje mínimo Keiko del extranjero pendiente';
+}
+
+function thresholdDeltaDisplay(current, previous){
+  const a = Number(current);
+  const b = Number(previous);
+  if(!Number.isFinite(a) || !Number.isFinite(b)) return 'N/D';
+  if(a < 0 && b < 0) return 'Ya estaba superado';
+  if(a < 0 && b >= 0) return 'Umbral superado';
+  if(a >= 0 && b < 0) return 'Vuelve a requerir votos';
+  return formatPctDelta(a - b, 3);
+}
+
+
 function calculateForeignThreshold(){
   const p = state.data?.projection || {};
   const foreignActual = getForeignActual();
@@ -101,8 +128,8 @@ function calculateForeignThreshold(){
   }
 
   const neededPct = rawNeededPct === null ? null : clampPct(rawNeededPct);
-  const datumMargin = neededPct === null ? null : datumKeikoPct - neededPct;
-  const onpePartialMargin = (neededPct === null || foreignActual.keikoPct === null) ? null : foreignActual.keikoPct - neededPct;
+  const datumMargin = rawNeededPct === null ? null : datumKeikoPct - rawNeededPct;
+  const onpePartialMargin = (rawNeededPct === null || foreignActual.keikoPct === null) ? null : foreignActual.keikoPct - rawNeededPct;
 
   let status = 'neutral';
   let statusText = 'No disponible';
@@ -244,6 +271,155 @@ async function loadData(){
   render();
 }
 
+
+function getJeeTerritorialContext(){
+  const rows = state.data?.regions || [];
+  const totalJee = rows.reduce((sum, r) => sum + Number(r.enviadasJee || 0), 0);
+  const keikoJee = rows
+    .filter(r => Number(r.diferencia_proyectada_keiko || 0) > 0)
+    .reduce((sum, r) => sum + Number(r.enviadasJee || 0), 0);
+
+  const top = [...rows]
+    .filter(r => Number(r.enviadasJee || 0) > 0)
+    .sort((a, b) => Number(b.enviadasJee || 0) - Number(a.enviadasJee || 0))[0] || null;
+
+  const lima = rows.find(r => String(r.region || '').toUpperCase() === 'LIMA') || null;
+  const limaJee = Number(lima?.enviadasJee || 0);
+  const limaShare = totalJee ? limaJee / totalJee * 100 : null;
+  const limaLead = Number(lima?.diferencia_proyectada_keiko || 0);
+
+  return {
+    totalJee,
+    keikoJee,
+    keikoJeeShare: totalJee ? keikoJee / totalJee * 100 : null,
+    topRegion: top?.region || null,
+    topRegionJee: Number(top?.enviadasJee || 0),
+    topRegionLead: Number(top?.diferencia_proyectada_keiko || 0),
+    limaJee,
+    limaShare,
+    limaLead
+  };
+}
+
+function calculateScenarioState(){
+  const p = state.data?.projection || {};
+  const n = state.data?.nationalOnpe || {};
+  const t = calculateForeignThreshold();
+  const jee = getJeeTerritorialContext();
+  const fallback = getFallbackDepartments();
+
+  const currentLead = Number(p.currentLeadKeiko || 0);
+  const adjustedLead = Number(p.adjustedLeadKeiko || 0);
+  const pendingForeign = Math.max(0, Number(p.foreignRemainingVotesEstimated || 0));
+  const leadBeforePending = Number(t.leadBeforePending || 0);
+  const safeLeadWorstForeign = leadBeforePending - pendingForeign;
+  const thresholdCleared = Number(t.rawNeededPct) < 0;
+  const currentOnpeAhead = currentLead > 0;
+  const adjustedAhead = adjustedLead > 0;
+  const worstForeignAhead = safeLeadWorstForeign > 0;
+  const jeeFavorsKeiko = Number(jee.keikoJeeShare || 0) >= 50;
+  const limaReinforces = Number(jee.limaJee || 0) > 0 && Number(jee.limaLead || 0) > 0;
+  const fallbackWarning = fallback.length > 0 || Number(p.fallbackDepartmentCount || 0) > 0 || Number(p.provinceErrors || 0) > 0;
+  const limaFallback = fallback.some(x => String(x.departamento || '').toUpperCase() === 'LIMA');
+
+  let level = 'neutral';
+  let title = 'Escenario abierto bajo el modelo';
+  let confidence = 'Media';
+  let explanation = 'El modelo todavía no muestra una ventaja consolidada. Conviene esperar nuevos cortes válidos.';
+
+  if(adjustedAhead && !thresholdCleared){
+    level = 'favorable';
+    title = 'Escenario favorable a Keiko bajo el modelo';
+    confidence = 'Alta';
+    explanation = 'Keiko lidera el cálculo ajustado, pero todavía depende del comportamiento del extranjero pendiente o de la evolución de actas no cerradas.';
+  }
+
+  if(thresholdCleared && worstForeignAhead){
+    level = 'strong';
+    title = 'Victoria virtual de Keiko bajo el modelo';
+    confidence = 'Muy alta';
+    explanation = 'El extranjero ya contabilizado alcanza para compensar la desventaja interna proyectada. Incluso asignando todo el extranjero pendiente a Sánchez, Keiko conserva ventaja bajo este modelo.';
+  }
+
+  if(currentOnpeAhead && thresholdCleared && worstForeignAhead){
+    level = 'safe';
+    title = 'Alta confianza: victoria virtual de Keiko bajo el modelo';
+    confidence = 'Muy alta';
+    explanation = 'Keiko ya lidera el conteo ONPE contabilizado y, bajo la proyección territorial publicada, conserva ventaja incluso en el escenario extremo de que todo el extranjero pendiente vaya a Sánchez.';
+  }
+
+  if(currentOnpeAhead && thresholdCleared && worstForeignAhead && (jeeFavorsKeiko || limaReinforces)){
+    level = 'safe';
+    title = 'Escenario matemáticamente consolidado bajo el modelo';
+    confidence = 'Muy alta';
+    explanation = 'Keiko lidera el conteo ONPE, no depende del extranjero pendiente y las actas enviadas al JEE se concentran mayoritariamente en territorios donde el modelo favorece a Keiko, especialmente Lima si aparece como principal bloque pendiente.';
+  }
+
+  if(!adjustedAhead){
+    level = 'danger';
+    title = 'Escenario no favorable a Keiko bajo el modelo';
+    confidence = 'Baja';
+    explanation = 'El cálculo ajustado no muestra ventaja de Keiko. Se requiere revisar el corte o esperar nuevas actualizaciones.';
+  }
+
+  return {
+    level,
+    title,
+    confidence,
+    explanation,
+    currentLead,
+    adjustedLead,
+    leadBeforePending,
+    pendingForeign,
+    safeLeadWorstForeign,
+    thresholdCleared,
+    currentOnpeAhead,
+    adjustedAhead,
+    worstForeignAhead,
+    jee,
+    fallbackWarning,
+    limaFallback,
+    actasPct: Number(n.actasContabilizadasPct || 0),
+    fallback
+  };
+}
+
+function renderScenarioState(){
+  const cards = document.getElementById('scenarioCards');
+  const callout = document.getElementById('scenarioCallout');
+  if(!cards || !callout) return;
+
+  const s = calculateScenarioState();
+  const jee = s.jee;
+
+  const jeeText = jee.totalJee
+    ? `${moneyish(jee.keikoJee)} de ${moneyish(jee.totalJee)} actas JEE en territorios Keiko (${pct(jee.keikoJeeShare, 1)})`
+    : 'No disponible';
+
+  const limaText = jee.limaJee
+    ? `Lima: ${moneyish(jee.limaJee)} actas JEE (${pct(jee.limaShare, 1)}) · ${leadText(jee.limaLead)} proyectados`
+    : 'Lima no concentra actas JEE en este corte';
+
+  cards.innerHTML = [
+    ['Estado', s.title, `Confianza bajo el modelo: ${s.confidence}`],
+    ['Conteo ONPE actual', leadText(s.currentLead), s.currentOnpeAhead ? 'Keiko ya aparece adelante en el conteo contabilizado' : 'Keiko aún no lidera el conteo contabilizado'],
+    ['Ventaja segura ante extranjero', leadText(s.safeLeadWorstForeign), 'Escenario extremo: todo el extranjero pendiente para Sánchez'],
+    ['Actas JEE y territorio', jeeText, limaText]
+  ].map(([label, value, desc]) => `<article class="card scenario-card ${s.level}"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
+
+  const fallbackNote = s.fallbackWarning
+    ? `<p class="muted"><b>Nota metodológica:</b> este corte usa fallback departamental${s.limaFallback ? ' e incluye Lima, por lo que conviene confirmarlo con un corte provincial completo' : ''}. Esto no invalida el cálculo, pero debe declararse en la lectura pública.</p>`
+    : `<p class="muted"><b>Calidad del corte:</b> sin fallback departamental relevante; lectura metodológica más limpia.</p>`;
+
+  callout.className = `callout scenario-callout scenario-${s.level}`;
+  callout.innerHTML = `
+    <strong>${s.title}</strong>
+    <p>${s.explanation}</p>
+    <p>La cuenta de seguridad frente al extranjero pendiente es: Perú sin extranjero + extranjero ONPE ya contado − extranjero pendiente máximo para Sánchez = <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>.</p>
+    <p class="muted">Esta es una lectura matemática del modelo publicado, no una proclamación oficial. La proclamación corresponde a las autoridades electorales.</p>
+    ${fallbackNote}`;
+}
+
 function render(){
   const { nationalOnpe:n, projection:p, candidates:c, meta:m } = state.data;
   const keiko = c.find(x => x.id === 'keiko');
@@ -298,6 +474,7 @@ function render(){
 
   renderFallbackNotice();
   ensureFallbackDownload();
+  renderScenarioState();
 
   document.getElementById('summaryCards').innerHTML = [
     ['Actas contabilizadas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)} actas`],
@@ -403,23 +580,29 @@ function renderThreshold(){
     return;
   }
   const currentForeignPct = t.foreignActual.keikoPct;
-  const thresholdText = t.neededPct === null ? 'No disponible' : pct(t.neededPct, 2);
+  const thresholdText = t.rawNeededPct === null ? 'No disponible' : thresholdDisplay(t.rawNeededPct, 2);
   const datumMarginText = t.datumMargin === null ? 'No disponible' : signedPoints(t.datumMargin);
   const onpeMarginText = t.onpePartialMargin === null ? 'No disponible' : signedPoints(t.onpePartialMargin);
 
   cardsEl.innerHTML = [
-    ['Umbral mínimo Keiko', thresholdText, 'Porcentaje necesario del extranjero pendiente'],
+    ['Umbral extranjero', thresholdText, thresholdDescription(t.rawNeededPct)],
     ['Escenario Datum', pct(t.datumKeikoPct, 2), `${datumMarginText} frente al umbral`],
     ['ONPE extranjero parcial', currentForeignPct === null ? 'No disponible' : pct(currentForeignPct, 2), `${onpeMarginText} frente al umbral`],
     ['Extranjero pendiente estimado', moneyish(t.pendingForeign), `Total extranjero estimado: ${moneyish(p.foreignVotesEstimated || 0)}`]
   ].map(([label, value, desc]) => `<article class="card threshold-card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
 
   if(summaryEl){
-    summaryEl.innerHTML = `Con este corte, antes de estimar el extranjero pendiente, la diferencia queda en <b class="${leadClass(t.leadBeforePending)}">${leadText(t.leadBeforePending)}</b>. Para revertir o sostener el resultado final, Keiko necesita aproximadamente <b>${thresholdText}</b> del extranjero pendiente.`;
+    if(Number(t.rawNeededPct) < 0){
+      summaryEl.innerHTML = `Con este corte, antes de estimar el extranjero pendiente, la diferencia queda en <b class="${leadClass(t.leadBeforePending)}">${leadText(t.leadBeforePending)}</b>. El umbral extranjero ya está superado: Keiko no depende del extranjero pendiente para mantenerse arriba bajo este modelo.`;
+    }else if(Number(t.rawNeededPct) > 100){
+      summaryEl.innerHTML = `Con este corte, antes de estimar el extranjero pendiente, la diferencia queda en <b class="${leadClass(t.leadBeforePending)}">${leadText(t.leadBeforePending)}</b>. El umbral supera 100%, por lo que ni ganando todo el extranjero pendiente alcanzaría bajo este modelo.`;
+    }else{
+      summaryEl.innerHTML = `Con este corte, antes de estimar el extranjero pendiente, la diferencia queda en <b class="${leadClass(t.leadBeforePending)}">${leadText(t.leadBeforePending)}</b>. Para revertir o sostener el resultado final, Keiko necesita aproximadamente <b>${thresholdText}</b> del extranjero pendiente.`;
+    }
   }
 
   const comparisonRows = [
-    { label: 'Umbral mínimo para Keiko', value: t.neededPct, diff: 0, type: 'threshold' },
+    { label: 'Umbral extranjero', value: t.rawNeededPct, diff: 0, type: 'threshold' },
     { label: 'ONPE extranjero parcial', value: currentForeignPct, diff: t.onpePartialMargin, type: 'onpe' },
     { label: 'Escenario Datum extranjero', value: t.datumKeikoPct, diff: t.datumMargin, type: 'datum' }
   ];
@@ -427,11 +610,11 @@ function renderThreshold(){
   tableEl.innerHTML = `
     <thead><tr><th>Referencia</th><th>% Keiko</th><th>Distancia frente al umbral</th><th>Lectura</th></tr></thead>
     <tbody>${comparisonRows.map(r => {
-      const value = r.value === null ? 'No disponible' : pct(r.value, 2);
+      const value = r.value === null ? 'No disponible' : (r.type === 'threshold' ? thresholdDisplay(r.value, 2) : pct(r.value, 2));
       const diff = r.type === 'threshold' ? 'Base' : (r.diff === null ? 'No disponible' : signedPoints(r.diff));
-      const ok = r.type === 'threshold' ? 'neutral' : (Number(r.diff || 0) >= 0 ? 'keiko' : 'sanchez');
+      const ok = r.type === 'threshold' ? (Number(r.value) < 0 ? 'keiko' : 'neutral') : (Number(r.diff || 0) >= 0 ? 'keiko' : 'sanchez');
       const lectura = r.type === 'threshold'
-        ? 'Mínimo requerido'
+        ? thresholdDescription(r.value)
         : Number(r.diff || 0) >= 0 ? 'Por encima del umbral' : 'Por debajo del umbral';
       return `<tr>
         <td data-label="Referencia">${r.label}</td>
@@ -610,10 +793,10 @@ function renderCutChanges(){
     },
     {
       label: 'Umbral extranjero',
-      prev: prev.foreignClosed ? 'Cerrado' : valueOrDash(prev.keikoNeededPctPendingForeign, x => pct(x, 3)),
-      latest: latest.foreignClosed ? 'Cerrado' : valueOrDash(latest.keikoNeededPctPendingForeign, x => pct(x, 3)),
-      change: latest.foreignClosed || prev.foreignClosed ? 'Cerrado' : (thresholdDelta === null ? 'N/D' : formatPctDelta(thresholdDelta, 3)),
-      note: 'Mínimo requerido para Keiko en extranjero pendiente'
+      prev: prev.foreignClosed ? 'Cerrado' : thresholdDisplay(prev.keikoNeededPctPendingForeign, 3),
+      latest: latest.foreignClosed ? 'Cerrado' : thresholdDisplay(latest.keikoNeededPctPendingForeign, 3),
+      change: latest.foreignClosed || prev.foreignClosed ? 'Cerrado' : thresholdDeltaDisplay(latest.keikoNeededPctPendingForeign, prev.keikoNeededPctPendingForeign),
+      note: thresholdDescription(latest.keikoNeededPctPendingForeign)
     },
     {
       label: 'Diferencia final ajustada',
@@ -659,13 +842,13 @@ function renderHistory(){
 
   const latest = entries[0];
   const first = entries[entries.length - 1];
-  const threshold = latest.foreignClosed ? 'Cerrado' : valueOrDash(latest.keikoNeededPctPendingForeign, x => pct(x, 2));
+  const threshold = latest.foreignClosed ? 'Cerrado' : thresholdDisplay(latest.keikoNeededPctPendingForeign, 2);
   const trend = Number(latest.adjustedLeadKeiko || 0) - Number(first.adjustedLeadKeiko || 0);
 
   cards.innerHTML = [
     ['Cortes válidos', moneyish(entries.length), 'Solo cortes con ZIP de datos generado'],
     ['Último corte', latest.cutoff, `${valueOrDash(latest.actasContabilizadasPct, x => pct(x, 3))} actas contabilizadas`],
-    ['Último umbral extranjero', threshold, latest.foreignClosed ? 'Datum ya no está activo' : 'Porcentaje mínimo Keiko del extranjero pendiente'],
+    ['Último umbral extranjero', threshold, latest.foreignClosed ? 'Datum ya no está activo' : thresholdDescription(latest.keikoNeededPctPendingForeign)],
     ['Cambio desde primer corte', leadText(trend), 'Variación de la ventaja ajustada en el historial']
   ].map(([label, value, desc]) => `<article class="card history-card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
 
@@ -677,7 +860,7 @@ function renderHistory(){
       const quality = Number(e.provinceErrors || 0) > 0 || Number(e.fallbackDepartmentCount || 0) > 0
         ? `Fallback ${moneyish(e.fallbackDepartmentCount || 0)} / errores ${moneyish(e.provinceErrors || 0)}`
         : 'Provincia completa';
-      const thresholdText = e.foreignClosed ? 'Cerrado' : valueOrDash(e.keikoNeededPctPendingForeign, x => pct(x, 2));
+      const thresholdText = e.foreignClosed ? 'Cerrado' : thresholdDisplay(e.keikoNeededPctPendingForeign, 2);
       return `<tr>
         <td data-label="Corte">${e.cutoff}</td>
         <td data-label="Actas">${valueOrDash(e.actasContabilizadasPct, x => pct(x, 3))}</td>
