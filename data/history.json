@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-10T13:40:14-05:00",
-  "description": "Historial resumido de cortes válidos. No incluye preflights bloqueados ni diagnósticos. Porcentajes de actas completados desde report-data.json originales cuando estuvieron disponibles.",
+  "updatedAt": "2026-06-11T12:46:11.513433-05:00",
+  "description": "Historial resumido de cortes válidos. No incluye preflights bloqueados ni diagnósticos.",
   "entries": [
     {
       "cutoff": "2026-06-08 13:12:00",
@@ -245,6 +245,50 @@
       "foreignClosed": false,
       "valid": true,
       "note": "Corte generado con v5.1; fallback departamental aplicado en Huánuco por 4 provincias no procesadas."
+    },
+    {
+      "cutoff": "2026-06-11 12:42:00",
+      "generatedAt": "2026-06-11T12:46:11.386700-05:00",
+      "actasContabilizadasPct": 98.23,
+      "projectionSource": "hibrido_provincia_departamento",
+      "processSource": "endpoint_activo",
+      "currentLeadKeiko": 922,
+      "peruNoForeignLeadKeiko": -33587,
+      "foreignOnpeKeiko": 184435,
+      "foreignOnpeSanchez": 106338,
+      "foreignPartialKeikoPct": 63.429,
+      "foreignPartialSanchezPct": 36.571,
+      "foreignVotesEstimated": 307714,
+      "foreignRemainingVotesEstimated": 16941,
+      "keikoNeededPctPendingForeign": -81.368,
+      "datumMarginVsThreshold": 144.038,
+      "adjustedLeadKeiko": 48803,
+      "adjustedKeikoPct": 50.133,
+      "adjustedSanchezPct": 49.867,
+      "provinceCountExpected": 196,
+      "provinceCountProcessed": 194,
+      "provinceErrors": 2,
+      "fallbackDepartmentCount": 2,
+      "fallbackDepartments": [
+        {
+          "departamento": "LAMBAYEQUE",
+          "departamento_ubigeo": "130000",
+          "provinciasEsperadas": 3,
+          "provinciasProcesadas": 2,
+          "metodo": "departamento",
+          "motivo": "fallback_departamental_por_provincias_faltantes"
+        },
+        {
+          "departamento": "LIMA",
+          "departamento_ubigeo": "140000",
+          "provinciasEsperadas": 10,
+          "provinciasProcesadas": 9,
+          "metodo": "departamento",
+          "motivo": "fallback_departamental_por_provincias_faltantes"
+        }
+      ],
+      "foreignClosed": false,
+      "valid": true
     }
   ]
 }
