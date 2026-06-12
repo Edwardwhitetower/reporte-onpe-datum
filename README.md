@@ -284,3 +284,28 @@ Descargas y auditoría
 ```
 
 Esto conserva transparencia y auditabilidad, pero mejora la experiencia para lectores no técnicos.
+
+
+## Carrera hacia la meta
+
+La página incluye un visual dinámico tipo carrera con sprites pixel-art.
+
+Assets incluidos:
+
+```text
+assets/race/track-bg.png
+assets/race/keiko-run.png
+assets/race/sanchez-run.png
+```
+
+La visualización se alimenta de `data/report-data.json`.
+
+Reglas:
+
+```text
+avance hacia la meta = porcentaje de actas contabilizadas
+separación entre corredores = diferencia ajustada entre candidatos
+líder visual = candidato con ventaja ajustada positiva o negativa
+```
+
+La distancia visual entre corredores se amplifica moderadamente para que el margen sea legible en pantalla, pero el número exacto de votos y puntos porcentuales siempre se muestra en las tarjetas del componente.

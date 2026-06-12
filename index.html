@@ -15,6 +15,7 @@
         <a href="#resumen">Resumen</a>
         <a href="#lectura-rapida">Lectura rápida</a>
         <a href="#territorio">Mapa</a>
+        <a href="#carrera">Carrera</a>
         <a href="#escenario">Estado</a>
         <a href="#metodologia">Metodología</a>
         <a href="#actualizacion">Actualización</a>
@@ -77,6 +78,65 @@
       </div>
       <div class="quick-read-grid" id="quickReadCards"></div>
       <div class="quick-read-strip" id="quickReadStrip"></div>
+    </section>
+
+
+    <section id="carrera" class="section race-section">
+      <div class="section-title compact-title">
+        <p class="eyebrow">Visual dinámico</p>
+        <h2>Carrera hacia la meta</h2>
+        <p class="muted">Los corredores avanzan con el porcentaje de actas contabilizadas. La separación entre ellos representa la ventaja ajustada del último corte.</p>
+      </div>
+
+      <div class="race-card-live" id="raceCardLive">
+        <div class="race-live-header">
+          <div>
+            <span class="race-badge">🏁 En vivo con JSON</span>
+            <h3>Carrera hacia la meta</h3>
+            <p>Actualizado automáticamente con <code>data/report-data.json</code></p>
+          </div>
+          <div class="race-status-pill" id="raceStatusPill">Cargando...</div>
+        </div>
+
+        <div class="race-live-stats">
+          <article>
+            <small>Actas contabilizadas</small>
+            <strong id="raceActasPct">--%</strong>
+            <span>Avance hacia la meta</span>
+          </article>
+          <article>
+            <small>Ventaja ajustada</small>
+            <strong id="raceAdjustedLead">--</strong>
+            <span id="raceLeadExplanation">Separación proporcional al margen</span>
+          </article>
+          <article>
+            <small>Diferencia porcentual</small>
+            <strong id="racePctGap">-- p.p.</strong>
+            <span>Distancia visual entre corredores</span>
+          </article>
+        </div>
+
+        <div class="race-track-stage" id="raceTrackStage">
+          <img class="race-track-bg" src="assets/race/track-bg.png" alt="Pista pixel art con meta" loading="lazy" />
+
+          <div class="race-distance-line keiko-line" id="raceKeikoLine"></div>
+          <div class="race-distance-line sanchez-line" id="raceSanchezLine"></div>
+
+          <div class="race-runner race-keiko" id="raceRunnerKeiko">
+            <div class="race-sprite race-sprite-keiko" role="img" aria-label="Keiko corriendo"></div>
+            <div class="race-runner-label keiko-label" id="raceKeikoLabel">Keiko</div>
+          </div>
+
+          <div class="race-runner race-sanchez" id="raceRunnerSanchez">
+            <div class="race-sprite race-sprite-sanchez" role="img" aria-label="Sánchez corriendo"></div>
+            <div class="race-runner-label sanchez-label" id="raceSanchezLabel">Sánchez</div>
+          </div>
+        </div>
+
+        <p class="race-method-note" id="raceMethodNote">
+          Visual explicativo: la posición general sigue el avance de actas; la separación usa la diferencia ajustada. Los números exactos siempre se muestran arriba.
+        </p>
+      </div>
     </section>
 
     <section id="territorio" class="section territory-section">

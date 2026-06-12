@@ -918,6 +918,107 @@ function bindOnce(id, eventName, handler){
 }
 
 
+
+function calculateRaceState(){
+  const p = state.data?.projection || {};
+  const n = state.data?.nationalOnpe || {};
+  const candidates = state.data?.candidates || [];
+
+  const keikoCandidate = candidates.find(x => x.id === 'keiko') || {};
+  const sanchezCandidate = candidates.find(x => x.id === 'sanchez') || {};
+
+  const actasPct = Number(n.actasContabilizadasPct || 0);
+  const adjustedLead = Number(p.adjustedLeadKeiko || 0);
+  const keikoPct = Number(p.adjustedKeikoPct || keikoCandidate.adjustedPct || 0);
+  const sanchezPct = Number(p.adjustedSanchezPct || sanchezCandidate.adjustedPct || (100 - keikoPct));
+  const pctGap = Math.abs(keikoPct - sanchezPct);
+
+  const keikoVotes = Number(keikoCandidate.projectedAdjusted || p.adjustedKeikoVotes || 0);
+  const sanchezVotes = Number(sanchezCandidate.projectedAdjusted || p.adjustedSanchezVotes || 0);
+  const totalVotes = keikoVotes + sanchezVotes;
+  const marginShare = totalVotes ? Math.abs(adjustedLead) / totalVotes : pctGap / 100;
+
+  const leader = adjustedLead >= 0 ? 'Keiko' : 'Sánchez';
+  const leaderClass = adjustedLead >= 0 ? 'keiko' : 'sanchez';
+
+  const startPct = 7;
+  const finishPct = 78.5;
+  const progress = clamp(Number.isFinite(actasPct) ? actasPct / 100 : 0, 0, 1);
+  const basePct = startPct + (finishPct - startPct) * progress;
+
+  const visualGapPct = clamp((marginShare * 100) * 22, 1.4, 9.5);
+
+  let keikoX = basePct;
+  let sanchezX = basePct;
+  if(adjustedLead >= 0){
+    keikoX += visualGapPct / 2;
+    sanchezX -= visualGapPct / 2;
+  }else{
+    keikoX -= visualGapPct / 2;
+    sanchezX += visualGapPct / 2;
+  }
+
+  keikoX = clamp(keikoX, startPct, finishPct + 2);
+  sanchezX = clamp(sanchezX, startPct, finishPct + 2);
+
+  return {
+    actasPct,
+    adjustedLead,
+    keikoPct,
+    sanchezPct,
+    pctGap,
+    keikoVotes,
+    sanchezVotes,
+    totalVotes,
+    marginShare,
+    leader,
+    leaderClass,
+    keikoX,
+    sanchezX,
+    basePct,
+    visualGapPct
+  };
+}
+
+function renderRaceToFinish(){
+  const stage = document.getElementById('raceTrackStage');
+  const keiko = document.getElementById('raceRunnerKeiko');
+  const sanchez = document.getElementById('raceRunnerSanchez');
+  if(!stage || !keiko || !sanchez) return;
+
+  const r = calculateRaceState();
+
+  const actasEl = document.getElementById('raceActasPct');
+  const leadEl = document.getElementById('raceAdjustedLead');
+  const gapEl = document.getElementById('racePctGap');
+  const pillEl = document.getElementById('raceStatusPill');
+  const leadExp = document.getElementById('raceLeadExplanation');
+
+  if(actasEl) actasEl.textContent = pct(r.actasPct, 3);
+  if(leadEl) leadEl.innerHTML = `<span class="${r.leaderClass}">${r.leader} ${r.adjustedLead >= 0 ? '+' : '−'}${moneyish(Math.abs(r.adjustedLead))}</span>`;
+  if(gapEl) gapEl.textContent = `${r.pctGap.toFixed(3)} p.p.`;
+  if(pillEl) pillEl.textContent = `${r.leader} lidera el escenario ajustado`;
+  if(leadExp) leadExp.textContent = `Margen real: ${moneyish(Math.abs(r.adjustedLead))} votos`;
+
+  const keikoLabel = document.getElementById('raceKeikoLabel');
+  const sanchezLabel = document.getElementById('raceSanchezLabel');
+  if(keikoLabel) keikoLabel.textContent = `Keiko · ${pct(r.keikoPct, 3)}`;
+  if(sanchezLabel) sanchezLabel.textContent = `Sánchez · ${pct(r.sanchezPct, 3)}`;
+
+  keiko.style.setProperty('--runner-x', `${r.keikoX}%`);
+  sanchez.style.setProperty('--runner-x', `${r.sanchezX}%`);
+
+  const keikoLine = document.getElementById('raceKeikoLine');
+  const sanchezLine = document.getElementById('raceSanchezLine');
+  if(keikoLine) keikoLine.style.width = `${Math.max(0, r.keikoX - 7)}%`;
+  if(sanchezLine) sanchezLine.style.width = `${Math.max(0, r.sanchezX - 7)}%`;
+
+  const method = document.getElementById('raceMethodNote');
+  if(method){
+    method.innerHTML = `Visual explicativo: avance general = <b>${pct(r.actasPct, 3)}</b> de actas contabilizadas; separación = margen ajustado real de <b>${moneyish(Math.abs(r.adjustedLead))}</b> votos (${r.pctGap.toFixed(3)} p.p.), amplificado visualmente para que sea legible.`;
+  }
+}
+
 function render(){
   const { nationalOnpe:n, projection:p, candidates:c, meta:m } = state.data;
   const keiko = c.find(x => x.id === 'keiko');
@@ -975,6 +1076,7 @@ function render(){
   renderScenarioState();
   renderTerritoryMap();
   renderQuickRead();
+  renderRaceToFinish();
 
   document.getElementById('summaryCards').innerHTML = [
     ['Actas contabilizadas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)} actas`],
