@@ -13,6 +13,7 @@
       <div class="brand">Reporte Electoral</div>
       <div class="navlinks">
         <a href="#resumen">Resumen</a>
+        <a href="#territorio">Mapa</a>
         <a href="#escenario">Estado</a>
         <a href="#metodologia">Metodología</a>
         <a href="#actualizacion">Actualización</a>
@@ -64,6 +65,37 @@
       </div>
     </section>
 
+
+
+    <section id="territorio" class="section territory-section">
+      <div class="section-title">
+        <p class="eyebrow">Lectura territorial</p>
+        <h2>Mapa dinámico del Perú por regiones</h2>
+        <p class="muted">El mapa se genera con los datos del último corte publicado. El color indica qué candidato lidera en cada región y la intensidad muestra la amplitud de la ventaja.</p>
+      </div>
+      <div class="territory-controls">
+        <label for="mapMetric">Modo de visualización</label>
+        <select id="mapMetric">
+          <option value="margin" selected>Diferencia proyectada de votos</option>
+          <option value="pct">Porcentaje proyectado por región</option>
+          <option value="jee">Actas enviadas al JEE</option>
+          <option value="counted">Actas contabilizadas</option>
+        </select>
+      </div>
+      <div class="territory-layout">
+        <div class="map-panel">
+          <div class="peru-map-wrap">
+            <svg id="peruTileMap" class="peru-tile-map" viewBox="0 0 420 620" role="img" aria-label="Mapa dinámico del Perú por regiones"></svg>
+            <div class="map-tooltip" id="mapTooltip" aria-live="polite"></div>
+          </div>
+          <div class="map-legend" id="mapLegend"></div>
+        </div>
+        <div class="territory-side">
+          <article class="card territory-summary" id="territorySummary"></article>
+          <div class="chart-card"><h3>Regiones que más aportan al margen</h3><div id="regionalMarginChart" class="regional-margin-chart"></div></div>
+        </div>
+      </div>
+    </section>
 
     <section id="escenario" class="section scenario-section">
       <div class="section-title">

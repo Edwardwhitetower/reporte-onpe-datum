@@ -150,6 +150,26 @@ Cuando una provincia no puede procesarse temporalmente, el modelo usa el total d
 Por eso, el informe debe leerse como una **estimación dinámica por corte**, no como una predicción definitiva ni como resultado oficial.
 
 
+
+## Mapa territorial dinámico
+
+La página incorpora una sección visual por regiones del Perú.
+
+El mapa se genera dinámicamente desde `data/report-data.json`, usando los datos del último corte publicado. No es una imagen fija.
+
+Modos incluidos:
+
+```text
+Diferencia proyectada de votos
+Porcentaje proyectado por región
+Actas enviadas al JEE
+Actas contabilizadas
+```
+
+También se incluye un ranking visual de las regiones que más aportan al margen. Esto permite que un lector no técnico entienda rápidamente dónde se concentra la ventaja de cada candidato.
+
+El mapa usa una representación territorial simplificada tipo cartograma para mantener la página ligera, estática y sin dependencia de APIs externas.
+
 ## Estado del escenario
 
 La página incorpora una sección de lectura matemática bajo el modelo publicado.
