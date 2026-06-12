@@ -434,8 +434,8 @@ function renderScenarioState(){
 
 const PERU_GEOJSON_URLS = [
   'data/peru_departamental_simple.geojson',
-  'https://cdn.jsdelivr.net/gh/juaneladio/peru-geojson@master/peru_departamental_simple.geojson',
-  'https://raw.githubusercontent.com/juaneladio/peru-geojson/master/peru_departamental_simple.geojson'
+  'https://code.highcharts.com/mapdata/countries/pe/pe-all.geo.json',
+  'https://cdn.jsdelivr.net/gh/highcharts/map-collection-dist@master/countries/pe/pe-all.geo.json'
 ];
 
 let territoryGeojsonCache = null;

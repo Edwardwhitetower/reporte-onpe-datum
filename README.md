@@ -166,7 +166,7 @@ Actas enviadas al JEE
 Actas contabilizadas
 ```
 
-La geometría geográfica se carga como GeoJSON departamental. La página primero intenta usar una copia local en `data/peru_departamental_simple.geojson`; si no existe, usa una fuente pública externa de respaldo.
+La geometría geográfica se carga como GeoJSON departamental. La página primero intenta usar una copia local en `data/peru_departamental_simple.geojson`; si no existe, usa fuentes externas de respaldo de Highcharts Map Collection.
 
 Cada región muestra tooltip con:
 
@@ -237,6 +237,23 @@ Para que el mapa no dependa de CDN externos, se recomienda subir al repositorio 
 data/peru_departamental_simple.geojson
 ```
 
-Puede descargarse desde el repositorio público `juaneladio/peru-geojson`, archivo `peru_departamental_simple.geojson`.
+El archivo usado en esta página fue tomado de **Highcharts Map Collection**, específicamente del mapa de Perú:
 
-Si ese archivo no está en el repositorio, la página intentará cargarlo desde CDN externo. Si el navegador, la red o GitHub bloquean esa descarga, el mapa no aparecerá aunque el resto de la página funcione.
+```text
+countries/pe/pe-all.geo.json
+```
+
+Ese GeoJSON forma parte de la colección pública de mapas de Highcharts, que ofrece mapas pre-generados en formatos geográficos como GeoJSON/TopoJSON para visualizaciones coropléticas.
+
+Si el archivo local no está en el repositorio, la página intentará cargar el mapa desde fuentes externas de respaldo:
+
+```text
+https://code.highcharts.com/mapdata/countries/pe/pe-all.geo.json
+https://cdn.jsdelivr.net/gh/highcharts/map-collection-dist@master/countries/pe/pe-all.geo.json
+```
+
+Para mayor estabilidad, la versión publicada debe usar la copia local en:
+
+```text
+data/peru_departamental_simple.geojson
+```
