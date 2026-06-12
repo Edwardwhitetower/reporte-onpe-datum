@@ -13,6 +13,7 @@
       <div class="brand">Reporte Electoral</div>
       <div class="navlinks">
         <a href="#resumen">Resumen</a>
+        <a href="#lectura-rapida">Lectura rápida</a>
         <a href="#territorio">Mapa</a>
         <a href="#escenario">Estado</a>
         <a href="#metodologia">Metodología</a>
@@ -66,6 +67,17 @@
     </section>
 
 
+
+
+    <section id="lectura-rapida" class="section quick-read-section">
+      <div class="section-title compact-title">
+        <p class="eyebrow">Lectura rápida</p>
+        <h2>Lo esencial en 30 segundos</h2>
+        <p class="muted">Una vista pensada para público general: estado del escenario, seguridad matemática y dónde se concentra territorialmente la ventaja.</p>
+      </div>
+      <div class="quick-read-grid" id="quickReadCards"></div>
+      <div class="quick-read-strip" id="quickReadStrip"></div>
+    </section>
 
     <section id="territorio" class="section territory-section">
       <div class="section-title">
@@ -182,7 +194,15 @@
         <h2 id="sensitivityTitle">Prueba de sensibilidad del volumen extranjero</h2>
         <p class="muted" id="sensitivityDescription">Estos escenarios no son pronósticos independientes. Solo prueban cómo cambiaría el resultado si el volumen final de votos extranjeros válidos termina por debajo o por encima del estimado actual.</p>
       </div>
+      <details class="fold-card">
+        <summary>
+          <span>Ver prueba de sensibilidad</span>
+          <small>Opcional: escenarios de volumen extranjero.</small>
+        </summary>
+        <div class="fold-content">
       <div class="table-wrap"><table id="sensitivityTable"></table></div>
+        </div>
+      </details>
     </section>
 
 
@@ -193,8 +213,16 @@
         <h2>Cambios frente al corte anterior</h2>
         <p class="muted">Compara automáticamente el último corte válido contra el corte previo del historial. Sirve como control rápido para detectar variaciones relevantes en el margen, el extranjero, el umbral y la calidad metodológica del corte.</p>
       </div>
+      <details class="fold-card">
+        <summary>
+          <span>Ver cambios frente al corte anterior</span>
+          <small>Auditoría rápida entre cortes válidos.</small>
+        </summary>
+        <div class="fold-content">
       <div class="changes-grid" id="changesCards"></div>
       <div class="table-wrap"><table id="changesTable"></table></div>
+        </div>
+      </details>
     </section>
 
     <section id="historial" class="section">
@@ -203,16 +231,30 @@
         <h2>Evolución de cortes válidos</h2>
         <p class="muted">Esta sección conserva solo cortes que pasaron la validación técnica y generaron ZIP de datos. Los intentos bloqueados por preflight no se incluyen como resultados.</p>
       </div>
+      <details class="fold-card">
+        <summary>
+          <span>Ver historial de cortes</span>
+          <small>Serie de cortes válidos publicados.</small>
+        </summary>
+        <div class="fold-content">
       <div class="history-grid" id="historyCards"></div>
       <div class="table-wrap"><table id="historyTable"></table></div>
+        </div>
+      </details>
     </section>
 
     <section id="provincias" class="section alt">
       <div class="section-title">
         <p class="eyebrow">Detalle provincial</p>
-        <h2>Proyección por provincia</h2>
+        <h2>Tabla provincial completa</h2>
         <p class="muted">Esta tabla permite revisar el cálculo más fino usado para la proyección Perú sin extranjero, cuando la fuente del modelo es provincial.</p>
       </div>
+      <details class="fold-card">
+        <summary>
+          <span>Ver tabla provincial</span>
+          <small>Detalle técnico completo por provincia.</small>
+        </summary>
+        <div class="fold-content">
       <div class="controls">
         <input id="provinceSearch" type="search" placeholder="Buscar departamento o provincia..." />
         <select id="provinceDepartmentFilter"><option value="all">Todos los departamentos</option></select>
@@ -226,14 +268,22 @@
       </div>
       <p class="muted" id="provinceCount"></p>
       <div class="table-wrap"><table id="provinceTable"></table></div>
+        </div>
+      </details>
     </section>
 
     <section id="regional" class="section">
       <div class="section-title">
         <p class="eyebrow">Detalle regional</p>
-        <h2>Regiones con mayor pendiente y ganador proyectado</h2>
+        <h2>Tabla regional complementaria</h2>
         <p class="muted">La tabla regional se mantiene como vista resumida; la proyección principal puede estar basada en provincias si el JSON contiene ese nivel.</p>
       </div>
+      <details class="fold-card">
+        <summary>
+          <span>Ver tabla regional</span>
+          <small>Resumen tabular complementario al mapa.</small>
+        </summary>
+        <div class="fold-content">
       <div class="controls">
         <input id="regionSearch" type="search" placeholder="Buscar región..." />
         <select id="regionFilter">
@@ -244,6 +294,8 @@
         </select>
       </div>
       <div class="table-wrap"><table id="regionalTable"></table></div>
+        </div>
+      </details>
     </section>
 
     <section id="descargas" class="section alt">
@@ -251,6 +303,12 @@
         <p class="eyebrow">Descargas y auditoría</p>
         <h2>Archivos incluidos</h2>
       </div>
+      <details class="fold-card">
+        <summary>
+          <span>Ver archivos de auditoría y descarga</span>
+          <small>JSON, CSV, GeoJSON y documentación.</small>
+        </summary>
+        <div class="fold-content">
       <div class="download-grid">
         <a class="download-card" href="data/report-data.json" download>
           <strong>report-data.json</strong>
@@ -281,6 +339,8 @@
           <span>Documentación del proyecto y metodología.</span>
         </a>
       </div>
+        </div>
+      </details>
     </section>
   </main>
 

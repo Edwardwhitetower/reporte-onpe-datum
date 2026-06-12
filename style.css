@@ -665,3 +665,129 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
   .map-labels text{font-size:8px}
   .rank-head{display:grid;gap:2px}
 }
+
+
+/* ------------------------------------------------------------
+   UX simplificado: lectura pública + tablas replegadas
+   ------------------------------------------------------------ */
+.quick-read-section{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
+  padding-top:54px;
+  padding-bottom:54px;
+}
+.compact-title{
+  margin-bottom:20px;
+}
+.quick-read-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
+}
+.quick-card strong{
+  font-size:clamp(1.15rem,2.1vw,1.7rem);
+  line-height:1.12;
+}
+.quick-read-strip{
+  margin-top:16px;
+  padding:16px 18px;
+  border-radius:18px;
+  border:1px solid rgba(47,128,237,.18);
+  background:rgba(47,128,237,.06);
+  color:var(--ink);
+  line-height:1.6;
+}
+.quick-read-strip a{
+  display:inline-flex;
+  margin-left:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--blue);
+  font-weight:900;
+  text-decoration:none;
+}
+.fold-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.fold-card summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  padding:20px 22px;
+  font-weight:900;
+  color:var(--ink);
+}
+.fold-card summary::-webkit-details-marker{display:none}
+.fold-card summary::after{
+  content:'Mostrar';
+  flex:0 0 auto;
+  border:1px solid rgba(47,128,237,.22);
+  background:rgba(47,128,237,.08);
+  color:var(--blue);
+  border-radius:999px;
+  padding:7px 11px;
+  font-size:.82rem;
+  font-weight:900;
+}
+.fold-card[open] summary::after{
+  content:'Ocultar';
+}
+.fold-card summary span{
+  font-size:1.05rem;
+}
+.fold-card summary small{
+  color:var(--muted);
+  font-weight:700;
+  margin-left:auto;
+}
+.fold-content{
+  padding:0 22px 22px;
+}
+.fold-content > .table-wrap{
+  max-height:520px;
+  overflow:auto;
+}
+#provincias .fold-content > .table-wrap{
+  max-height:600px;
+}
+.fold-content .controls{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:#fff;
+  padding:12px 0;
+  margin-bottom:12px;
+}
+#descargas .fold-content .download-grid{
+  margin-top:0;
+}
+@media (max-width:1100px){
+  .quick-read-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:700px){
+  .quick-read-grid{grid-template-columns:1fr}
+  .quick-read-strip a{
+    margin:8px 8px 0 0;
+  }
+  .fold-card summary{
+    display:grid;
+    gap:8px;
+  }
+  .fold-card summary small{
+    margin-left:0;
+  }
+  .fold-card summary::after{
+    justify-self:start;
+  }
+  .fold-content{
+    padding:0 14px 16px;
+  }
+}

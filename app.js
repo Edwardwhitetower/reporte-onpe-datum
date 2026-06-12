@@ -862,6 +862,62 @@ async function renderTerritoryMap(){
   }
 }
 
+
+function getTopRegionalContributors(){
+  const rows = state.data?.regions || [];
+  const keiko = [...rows].filter(r => Number(r.diferencia_proyectada_keiko || 0) > 0)
+    .sort((a,b) => Number(b.diferencia_proyectada_keiko || 0) - Number(a.diferencia_proyectada_keiko || 0))[0] || null;
+  const sanchez = [...rows].filter(r => Number(r.diferencia_proyectada_keiko || 0) < 0)
+    .sort((a,b) => Number(a.diferencia_proyectada_keiko || 0) - Number(b.diferencia_proyectada_keiko || 0))[0] || null;
+  return { keiko, sanchez };
+}
+
+function renderQuickRead(){
+  const grid = document.getElementById('quickReadCards');
+  const strip = document.getElementById('quickReadStrip');
+  if(!grid || !strip) return;
+
+  const p = state.data?.projection || {};
+  const n = state.data?.nationalOnpe || {};
+  const scenario = calculateScenarioState();
+  const threshold = calculateForeignThreshold();
+  const top = getTopRegionalContributors();
+  const rows = state.data?.regions || [];
+  const keikoRegions = rows.filter(r => Number(r.diferencia_proyectada_keiko || 0) > 0).length;
+  const sanchezRegions = rows.filter(r => Number(r.diferencia_proyectada_keiko || 0) < 0).length;
+
+  const thresholdText = thresholdDisplay(threshold.rawNeededPct, 2);
+  const safeText = leadText(scenario.safeLeadWorstForeign);
+  const mapSummary = `${keikoRegions} regiones Keiko / ${sanchezRegions} regiones Sánchez`;
+
+  grid.innerHTML = [
+    ['Estado', scenario.title, `Confianza bajo el modelo: ${scenario.confidence}`],
+    ['Diferencia ajustada', leadText(p.adjustedLeadKeiko), `Keiko ${pct(p.adjustedKeikoPct, 3)} vs Sánchez ${pct(p.adjustedSanchezPct, 3)}`],
+    ['Umbral extranjero', thresholdText, thresholdDescription(threshold.rawNeededPct)],
+    ['Territorio', mapSummary, `Mayor aporte Keiko: ${top.keiko ? top.keiko.region : 'N/D'} · mayor aporte Sánchez: ${top.sanchez ? top.sanchez.region : 'N/D'}`]
+  ].map(([label, value, desc]) => `<article class="card quick-card ${scenario.level}"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
+
+  strip.innerHTML = `
+    <b>Lectura pública:</b>
+    Keiko figura con ${leadText(p.currentLeadKeiko)} en el conteo ONPE actual.
+    Bajo el modelo publicado, la ventaja ajustada es ${leadText(p.adjustedLeadKeiko)}.
+    La prueba extrema frente al extranjero pendiente deja ${safeText}.
+    <a href="#territorio">Ver mapa</a>
+    <a href="#provincias">Ver auditoría técnica</a>
+  `;
+}
+
+
+function bindOnce(id, eventName, handler){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const key = `bound${eventName}`;
+  if(el.dataset[key]) return;
+  el.dataset[key] = '1';
+  el.addEventListener(eventName, handler);
+}
+
+
 function render(){
   const { nationalOnpe:n, projection:p, candidates:c, meta:m } = state.data;
   const keiko = c.find(x => x.id === 'keiko');
@@ -918,6 +974,7 @@ function render(){
   ensureFallbackDownload();
   renderScenarioState();
   renderTerritoryMap();
+  renderQuickRead();
 
   document.getElementById('summaryCards').innerHTML = [
     ['Actas contabilizadas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)} actas`],
@@ -948,11 +1005,11 @@ function render(){
   renderProvinces();
   renderRegions();
 
-  document.getElementById('regionSearch')?.addEventListener('input', renderRegions);
-  document.getElementById('regionFilter')?.addEventListener('change', renderRegions);
-  document.getElementById('provinceSearch')?.addEventListener('input', renderProvinces);
-  document.getElementById('provinceFilter')?.addEventListener('change', renderProvinces);
-  document.getElementById('provinceDepartmentFilter')?.addEventListener('change', renderProvinces);
+  bindOnce('regionSearch', 'input', renderRegions);
+  bindOnce('regionFilter', 'change', renderRegions);
+  bindOnce('provinceSearch', 'input', renderProvinces);
+  bindOnce('provinceFilter', 'change', renderProvinces);
+  bindOnce('provinceDepartmentFilter', 'change', renderProvinces);
 }
 
 

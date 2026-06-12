@@ -264,3 +264,23 @@ data/peru_departamental_simple.geojson
 El mapa usa propiedades del GeoJSON de Highcharts como `name` / `woe-name` para emparejar cada polígono con la región ONPE correspondiente.
 
 Se evita comparar contra valores vacíos del GeoJSON, porque eso podía hacer que todos los polígonos se vincularan accidentalmente con la primera región del JSON de datos.
+
+
+## UX simplificado para lectura pública
+
+La página separa la lectura pública de la auditoría técnica.
+
+Se agregó una sección de **Lectura rápida** con el estado del escenario, diferencia ajustada, umbral extranjero y resumen territorial. Las tablas extensas quedan replegadas por defecto mediante bloques desplegables (`details/summary`), para que el mapa y la lectura principal no queden enterrados bajo tablas largas.
+
+Se mantienen disponibles, pero plegadas:
+
+```text
+Prueba de sensibilidad
+Cambios frente al corte anterior
+Historial de cortes
+Tabla provincial completa
+Tabla regional complementaria
+Descargas y auditoría
+```
+
+Esto conserva transparencia y auditabilidad, pero mejora la experiencia para lectores no técnicos.
