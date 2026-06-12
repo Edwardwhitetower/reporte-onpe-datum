@@ -151,24 +151,35 @@ Por eso, el informe debe leerse como una **estimación dinámica por corte**, no
 
 
 
-## Mapa territorial dinámico
+## Mapa territorial profesional
 
-La página incorpora una sección visual por regiones del Perú.
+La página incluye un mapa coroplético dinámico con la silueta real del Perú y sus departamentos.
 
-El mapa se genera dinámicamente desde `data/report-data.json`, usando los datos del último corte publicado. No es una imagen fija.
+El mapa se renderiza en el navegador con D3 y se llena automáticamente con `data/report-data.json`.
 
-Modos incluidos:
+Modos de visualización:
 
 ```text
 Diferencia proyectada de votos
-Porcentaje proyectado por región
+Porcentaje proyectado de Keiko
 Actas enviadas al JEE
 Actas contabilizadas
 ```
 
-También se incluye un ranking visual de las regiones que más aportan al margen. Esto permite que un lector no técnico entienda rápidamente dónde se concentra la ventaja de cada candidato.
+La geometría geográfica se carga como GeoJSON departamental. La página primero intenta usar una copia local en `data/peru_departamental_simple.geojson`; si no existe, usa una fuente pública externa de respaldo.
 
-El mapa usa una representación territorial simplificada tipo cartograma para mantener la página ligera, estática y sin dependencia de APIs externas.
+Cada región muestra tooltip con:
+
+```text
+ganador proyectado
+diferencia proyectada
+votos Keiko / Sánchez
+porcentajes regionales
+actas contabilizadas
+actas enviadas al JEE
+```
+
+Esta visualización mejora la lectura pública porque permite identificar de forma inmediata qué territorios empujan el margen de cada candidato.
 
 ## Estado del escenario
 

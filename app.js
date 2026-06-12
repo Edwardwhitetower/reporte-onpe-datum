@@ -421,32 +421,383 @@ function renderScenarioState(){
 }
 
 
-const REGION_TILE_LAYOUT = {
-  'TUMBES':{x:80,y:20,w:78,h:42,label:'Tumbes'}, 'PIURA':{x:76,y:66,w:88,h:55,label:'Piura'},
-  'LAMBAYEQUE':{x:98,y:125,w:88,h:42,label:'Lamb.'}, 'CAJAMARCA':{x:188,y:80,w:92,h:72,label:'Caja.'},
-  'AMAZONAS':{x:284,y:62,w:82,h:72,label:'Amazonas'}, 'LORETO':{x:286,y:140,w:104,h:108,label:'Loreto'},
-  'LA LIBERTAD':{x:122,y:170,w:92,h:52,label:'La Lib.'}, 'ÁNCASH':{x:145,y:226,w:92,h:58,label:'Áncash'},
-  'SAN MARTÍN':{x:238,y:202,w:86,h:68,label:'San Martín'}, 'HUÁNUCO':{x:208,y:278,w:82,h:58,label:'Huánuco'},
-  'UCAYALI':{x:294,y:276,w:88,h:94,label:'Ucayali'}, 'PASCO':{x:196,y:340,w:72,h:46,label:'Pasco'},
-  'JUNÍN':{x:188,y:390,w:86,h:62,label:'Junín'}, 'LIMA':{x:92,y:312,w:100,h:86,label:'Lima'},
-  'CALLAO':{x:68,y:350,w:26,h:28,label:'C.'}, 'HUANCAVELICA':{x:154,y:456,w:86,h:52,label:'Huanc.'},
-  'ICA':{x:94,y:408,w:70,h:74,label:'Ica'}, 'AYACUCHO':{x:242,y:456,w:84,h:58,label:'Ayac.'},
-  'APURÍMAC':{x:244,y:518,w:76,h:50,label:'Apur.'}, 'CUSCO':{x:320,y:446,w:82,h:86,label:'Cusco'},
-  'MADRE DE DIOS':{x:330,y:360,w:78,h:76,label:'M. Dios'}, 'AREQUIPA':{x:178,y:520,w:72,h:70,label:'Arequipa'},
-  'PUNO':{x:322,y:536,w:80,h:60,label:'Puno'}, 'MOQUEGUA':{x:258,y:574,w:70,h:34,label:'Moque.'},
-  'TACNA':{x:330,y:598,w:64,h:28,label:'Tacna'}
-};
-function escapeHtml(value){return String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');}
-function normalizeRegionName(name){return String(name||'').trim().toUpperCase();}
-function regionProjectedTotals(r){const k=Number(r.keiko_proyectado??r.keiko_actual??0), s=Number(r.sanchez_proyectado??r.sanchez_actual??0), total=k+s; return {k,s,total,keikoPct:total?k/total*100:null,sanchezPct:total?s/total*100:null};}
-function regionMetricValue(r,metric){const t=regionProjectedTotals(r); if(metric==='pct') return t.keikoPct===null?0:t.keikoPct-50; if(metric==='jee') return Number(r.enviadasJee||0); if(metric==='counted') return Number(r.actasContabilizadas||0); return Number(r.diferencia_proyectada_keiko||0);}
-function colorByRegionMetric(r,metric,maxAbs,maxJee){const v=regionMetricValue(r,metric); if(metric==='jee'){const n=maxJee?Math.min(1,v/maxJee):0; return `hsl(262 62% ${94-Math.round(n*32)}%)`;} if(metric==='counted'){if(v>=99.5) return 'hsl(154 54% 42%)'; if(v>=98) return 'hsl(154 48% 58%)'; if(v>=95) return 'hsl(43 86% 62%)'; return 'hsl(18 82% 64%)';} const den=metric==='pct'?35:maxAbs; const n=den?Math.min(1,Math.abs(v)/den):0; const light=92-Math.round(n*42); if(v>0) return `hsl(18 82% ${light}%)`; if(v<0) return `hsl(224 70% ${light}%)`; return 'hsl(220 12% 88%)';}
-function regionTooltipHtml(r){const t=regionProjectedTotals(r), margin=Number(r.diferencia_proyectada_keiko||0), winner=margin>=0?'Keiko':'Sánchez'; return `<strong>${escapeHtml(r.region||'')}</strong><span>Ganador proyectado: <b>${winner}</b></span><span>Ventaja: <b>${leadText(margin)}</b></span><span>Keiko: ${moneyish(t.k)} · ${valueOrDash(t.keikoPct,x=>pct(x,2))}</span><span>Sánchez: ${moneyish(t.s)} · ${valueOrDash(t.sanchezPct,x=>pct(x,2))}</span><span>Actas contabilizadas: ${valueOrDash(r.actasContabilizadas,x=>pct(x,3))}</span><span>Actas JEE: ${moneyish(r.enviadasJee||0)}</span>`;}
-function updateMapLegend(metric){const legend=document.getElementById('mapLegend'); if(!legend) return; if(metric==='jee'){legend.innerHTML=`<span><i style="background:hsl(262 62% 86%)"></i>Menos actas JEE</span><span><i style="background:hsl(262 62% 62%)"></i>Más actas JEE</span>`;return;} if(metric==='counted'){legend.innerHTML=`<span><i style="background:hsl(154 54% 42%)"></i>≥ 99.5%</span><span><i style="background:hsl(154 48% 58%)"></i>≥ 98%</span><span><i style="background:hsl(43 86% 62%)"></i>≥ 95%</span><span><i style="background:hsl(18 82% 64%)"></i>&lt; 95%</span>`;return;} legend.innerHTML=`<span><i style="background:hsl(18 82% 54%)"></i>Ventaja Keiko</span><span><i style="background:hsl(220 12% 88%)"></i>Competitivo</span><span><i style="background:hsl(224 70% 54%)"></i>Ventaja Sánchez</span>`;}
-function renderPeruTileMap(){const svg=document.getElementById('peruTileMap'), tooltip=document.getElementById('mapTooltip'); if(!svg||!tooltip) return; const metric=document.getElementById('mapMetric')?.value||'margin'; const regions=state.data?.regions||[]; const byName=Object.fromEntries(regions.map(r=>[normalizeRegionName(r.region),r])); const maxAbs=Math.max(1,...regions.map(r=>Math.abs(Number(r.diferencia_proyectada_keiko||0)))); const maxJee=Math.max(1,...regions.map(r=>Number(r.enviadasJee||0))); const tiles=Object.entries(REGION_TILE_LAYOUT).map(([name,l])=>{const r=byName[name]; const fill=r?colorByRegionMetric(r,metric,maxAbs,maxJee):'hsl(220 12% 90%)'; return `<g class="region-tile" tabindex="0" data-region="${escapeHtml(name)}"><rect x="${l.x}" y="${l.y}" width="${l.w}" height="${l.h}" rx="10" fill="${fill}" stroke="rgba(15,23,42,.42)" stroke-width="1.5"></rect><text x="${l.x+l.w/2}" y="${l.y+l.h/2-1}" text-anchor="middle" dominant-baseline="middle">${escapeHtml(l.label||name)}</text></g>`;}).join(''); svg.innerHTML=`<path d="M74 18 C118 6 156 15 185 45 C226 38 260 49 288 71 C336 69 388 104 398 155 C414 234 389 291 390 356 C410 421 404 492 384 547 C359 613 302 626 244 595 C199 614 158 602 146 552 C106 527 86 489 92 438 C60 398 55 341 91 306 C70 258 84 218 120 194 C72 151 46 83 74 18 Z" class="peru-silhouette"></path>${tiles}`; svg.querySelectorAll('.region-tile').forEach(g=>{const r=byName[normalizeRegionName(g.getAttribute('data-region'))]; if(!r) return; const show=(event)=>{tooltip.innerHTML=regionTooltipHtml(r); tooltip.classList.add('visible'); const wrap=svg.closest('.peru-map-wrap'), rect=wrap.getBoundingClientRect(), p=event.touches?event.touches[0]:event; const x=Math.min(rect.width-220,Math.max(8,p.clientX-rect.left+14)), y=Math.min(rect.height-170,Math.max(8,p.clientY-rect.top+14)); tooltip.style.left=`${x}px`; tooltip.style.top=`${y}px`;}; const hide=()=>tooltip.classList.remove('visible'); g.addEventListener('mousemove',show); g.addEventListener('mouseenter',show); g.addEventListener('mouseleave',hide); g.addEventListener('blur',hide); g.addEventListener('focus',e=>{const b=g.getBoundingClientRect(); show({clientX:b.left+b.width/2,clientY:b.top+b.height/2});}); g.addEventListener('click',show); g.addEventListener('touchstart',show,{passive:true});}); updateMapLegend(metric);}
-function renderRegionalMarginChart(){const el=document.getElementById('regionalMarginChart'); if(!el) return; const rows=[...(state.data?.regions||[])].sort((a,b)=>Math.abs(Number(b.diferencia_proyectada_keiko||0))-Math.abs(Number(a.diferencia_proyectada_keiko||0))).slice(0,10); const maxAbs=Math.max(1,...rows.map(r=>Math.abs(Number(r.diferencia_proyectada_keiko||0)))); el.innerHTML=rows.map(r=>{const margin=Number(r.diferencia_proyectada_keiko||0), width=Math.max(3,Math.abs(margin)/maxAbs*100), side=margin>=0?'keiko':'sanchez', winner=margin>=0?'Keiko':'Sánchez'; return `<div class="regional-bar-row"><div class="regional-bar-head"><strong>${escapeHtml(r.region)}</strong><span>${winner} · ${moneyish(Math.abs(margin))}</span></div><div class="regional-bar-track"><div class="regional-bar-fill ${side}" style="width:${width}%"></div></div></div>`;}).join('');}
-function renderTerritorySummary(){const el=document.getElementById('territorySummary'); if(!el) return; const rows=state.data?.regions||[], kr=rows.filter(r=>Number(r.diferencia_proyectada_keiko||0)>0), sr=rows.filter(r=>Number(r.diferencia_proyectada_keiko||0)<0), topK=[...kr].sort((a,b)=>Number(b.diferencia_proyectada_keiko||0)-Number(a.diferencia_proyectada_keiko||0))[0], topS=[...sr].sort((a,b)=>Number(a.diferencia_proyectada_keiko||0)-Number(b.diferencia_proyectada_keiko||0))[0], totalJee=rows.reduce((s,r)=>s+Number(r.enviadasJee||0),0), lima=rows.find(r=>normalizeRegionName(r.region)==='LIMA'); el.innerHTML=`<small>Resumen territorial</small><strong>${kr.length} regiones Keiko / ${sr.length} regiones Sánchez</strong><span>Mayor aporte Keiko: <b>${escapeHtml(topK?.region||'N/D')}</b> (${topK?leadText(topK.diferencia_proyectada_keiko):'N/D'})</span><span>Mayor aporte Sánchez: <b>${escapeHtml(topS?.region||'N/D')}</b> (${topS?leadText(topS.diferencia_proyectada_keiko):'N/D'})</span><span>Actas JEE: ${moneyish(totalJee)} · Lima: ${lima?moneyish(lima.enviadasJee||0):'N/D'}</span>`;}
-function renderTerritoryVisuals(){renderPeruTileMap(); renderRegionalMarginChart(); renderTerritorySummary(); const sel=document.getElementById('mapMetric'); if(sel&&!sel.dataset.bound){sel.dataset.bound='1'; sel.addEventListener('change',renderPeruTileMap);}}
+const PERU_GEOJSON_URLS = [
+  'data/peru_departamental_simple.geojson',
+  'https://cdn.jsdelivr.net/gh/juaneladio/peru-geojson@master/peru_departamental_simple.geojson',
+  'https://raw.githubusercontent.com/juaneladio/peru-geojson/master/peru_departamental_simple.geojson'
+];
+
+let territoryGeojsonCache = null;
+let territorySelectedRegion = null;
+
+function normalizeMapKey(value){
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .replace(/PROVINCIA CONSTITUCIONAL DEL/g, '')
+    .replace(/DEPARTAMENTO DE/g, '')
+    .replace(/[^A-Z]/g, '');
+}
+
+function getRegionRowsByName(){
+  const rows = state.data?.regions || state.regions || [];
+  return Object.fromEntries(rows.map(r => [normalizeMapKey(r.region), r]));
+}
+
+function detectFeatureRegionName(feature){
+  const regionNames = Object.keys(getRegionRowsByName());
+  const values = Object.values(feature?.properties || {}).map(v => normalizeMapKey(v));
+  for(const regionKey of regionNames){
+    if(values.some(v => v === regionKey || v.includes(regionKey) || regionKey.includes(v))) return regionKey;
+  }
+  return null;
+}
+
+async function fetchFirstGeojson(){
+  if(territoryGeojsonCache) return territoryGeojsonCache;
+
+  let lastError = null;
+  for(const url of PERU_GEOJSON_URLS){
+    try{
+      const res = await fetch(`${url}${url.includes('?') ? '&' : '?'}v=20260612`);
+      if(!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      const json = await res.json();
+      if(json?.type === 'FeatureCollection' && Array.isArray(json.features)){
+        territoryGeojsonCache = json;
+        return territoryGeojsonCache;
+      }
+      throw new Error('GeoJSON inválido');
+    }catch(err){
+      lastError = err;
+    }
+  }
+  throw lastError || new Error('No se pudo cargar el mapa GeoJSON del Perú');
+}
+
+function regionTotals(row){
+  const keiko = Number(row?.keiko_proyectado ?? row?.keiko_actual ?? 0);
+  const sanchez = Number(row?.sanchez_proyectado ?? row?.sanchez_actual ?? 0);
+  const total = keiko + sanchez;
+  return {
+    keiko,
+    sanchez,
+    total,
+    keikoPct: total ? keiko / total * 100 : null,
+    sanchezPct: total ? sanchez / total * 100 : null,
+    margin: Number(row?.diferencia_proyectada_keiko ?? (keiko - sanchez))
+  };
+}
+
+function territoryModeMeta(mode){
+  const rows = state.data?.regions || [];
+  const margins = rows.map(r => Math.abs(Number(r.diferencia_proyectada_keiko || 0)));
+  const jee = rows.map(r => Number(r.enviadasJee || 0));
+  return {
+    maxMargin: Math.max(1, ...margins),
+    maxJee: Math.max(1, ...jee)
+  };
+}
+
+function territoryFill(row, mode, meta){
+  if(!row) return '#eef2f7';
+
+  const t = regionTotals(row);
+  if(mode === 'pct'){
+    const diff = Number(t.keikoPct || 0) - 50;
+    const n = Math.min(1, Math.abs(diff) / 32);
+    return diff >= 0
+      ? d3.interpolateRgb('#fff7ed', '#c2410c')(Math.pow(n, .72))
+      : d3.interpolateRgb('#eff6ff', '#1d4ed8')(Math.pow(n, .72));
+  }
+
+  if(mode === 'jee'){
+    const n = Math.min(1, Number(row.enviadasJee || 0) / meta.maxJee);
+    return d3.interpolateRgb('#f5f3ff', '#6d28d9')(Math.pow(n, .7));
+  }
+
+  if(mode === 'counted'){
+    const p = Number(row.actasContabilizadas || 0);
+    if(p >= 99.5) return '#047857';
+    if(p >= 98) return '#34d399';
+    if(p >= 95) return '#fbbf24';
+    return '#f97316';
+  }
+
+  const margin = Number(t.margin || 0);
+  const n = Math.min(1, Math.abs(margin) / meta.maxMargin);
+  return margin >= 0
+    ? d3.interpolateRgb('#fff7ed', '#c2410c')(Math.pow(n, .68))
+    : d3.interpolateRgb('#eff6ff', '#1d4ed8')(Math.pow(n, .68));
+}
+
+function territoryMetricText(row, mode){
+  if(!row) return 'Sin datos';
+  const t = regionTotals(row);
+  if(mode === 'pct') return `Keiko ${valueOrDash(t.keikoPct, x => pct(x, 2))}`;
+  if(mode === 'jee') return `${moneyish(row.enviadasJee || 0)} actas JEE`;
+  if(mode === 'counted') return `${valueOrDash(row.actasContabilizadas, x => pct(x, 3))} actas`;
+  return leadText(t.margin);
+}
+
+function territoryWinner(row){
+  if(!row) return 'N/D';
+  const margin = regionTotals(row).margin;
+  return margin >= 0 ? 'Keiko' : 'Sánchez';
+}
+
+function renderTerritoryLegend(mode){
+  const legend = document.getElementById('territoryLegend');
+  const note = document.getElementById('territoryMetricNote');
+  const title = document.getElementById('territoryMapTitle');
+  if(!legend) return;
+
+  if(mode === 'jee'){
+    title && (title.textContent = 'Actas enviadas al JEE por región');
+    note && (note.textContent = 'Morado más intenso = más actas enviadas al JEE.');
+    legend.innerHTML = `
+      <span><i style="background:#f5f3ff"></i>Menos JEE</span>
+      <span><i style="background:#a78bfa"></i>Intermedio</span>
+      <span><i style="background:#6d28d9"></i>Más JEE</span>`;
+    return;
+  }
+
+  if(mode === 'counted'){
+    title && (title.textContent = 'Avance de actas contabilizadas');
+    note && (note.textContent = 'Verde = avance casi completo; naranja = avance más bajo.');
+    legend.innerHTML = `
+      <span><i style="background:#047857"></i>≥ 99.5%</span>
+      <span><i style="background:#34d399"></i>≥ 98%</span>
+      <span><i style="background:#fbbf24"></i>≥ 95%</span>
+      <span><i style="background:#f97316"></i>&lt; 95%</span>`;
+    return;
+  }
+
+  if(mode === 'pct'){
+    title && (title.textContent = 'Porcentaje proyectado por región');
+    note && (note.textContent = 'Naranja = Keiko arriba; azul = Sánchez arriba. La intensidad indica distancia frente al 50%.');
+  }else{
+    title && (title.textContent = 'Diferencia proyectada de votos');
+    note && (note.textContent = 'Naranja = ventaja Keiko; azul = ventaja Sánchez. La intensidad indica amplitud del margen.');
+  }
+
+  legend.innerHTML = `
+    <span><i style="background:#c2410c"></i>Ventaja Keiko</span>
+    <span><i style="background:#f8fafc"></i>Competitivo</span>
+    <span><i style="background:#1d4ed8"></i>Ventaja Sánchez</span>`;
+}
+
+function renderTerritorySelected(row){
+  const el = document.getElementById('territorySelected');
+  if(!el) return;
+
+  if(!row){
+    el.innerHTML = `
+      <small>Región seleccionada</small>
+      <strong>Perú</strong>
+      <span>Selecciona una región del mapa para ver votos, porcentajes, actas JEE y avance.</span>`;
+    return;
+  }
+
+  const t = regionTotals(row);
+  const winner = territoryWinner(row);
+  el.innerHTML = `
+    <small>Región seleccionada</small>
+    <strong>${escapeHtml(row.region)}</strong>
+    <span>Ganador proyectado: <b class="${t.margin >= 0 ? 'keiko' : 'sanchez'}">${winner}</b></span>
+    <span>Diferencia: <b class="${leadClass(t.margin)}">${leadText(t.margin)}</b></span>
+    <span>Keiko: ${moneyish(t.keiko)} · ${valueOrDash(t.keikoPct, x => pct(x, 2))}</span>
+    <span>Sánchez: ${moneyish(t.sanchez)} · ${valueOrDash(t.sanchezPct, x => pct(x, 2))}</span>
+    <span>Actas contabilizadas: ${valueOrDash(row.actasContabilizadas, x => pct(x, 3))} · JEE: ${moneyish(row.enviadasJee || 0)}</span>`;
+}
+
+function renderTerritoryTooltip(row, event){
+  const tooltip = document.getElementById('territoryTooltip');
+  const shell = document.querySelector('.peru-map-shell');
+  if(!tooltip || !shell || !row) return;
+
+  const t = regionTotals(row);
+  tooltip.innerHTML = `
+    <strong>${escapeHtml(row.region)}</strong>
+    <span>Ganador proyectado: <b class="${t.margin >= 0 ? 'keiko' : 'sanchez'}">${territoryWinner(row)}</b></span>
+    <span>Diferencia: <b>${leadText(t.margin)}</b></span>
+    <span>Keiko: ${moneyish(t.keiko)} · ${valueOrDash(t.keikoPct, x => pct(x, 2))}</span>
+    <span>Sánchez: ${moneyish(t.sanchez)} · ${valueOrDash(t.sanchezPct, x => pct(x, 2))}</span>
+    <span>Actas: ${valueOrDash(row.actasContabilizadas, x => pct(x, 3))} · JEE: ${moneyish(row.enviadasJee || 0)}</span>`;
+
+  const shellRect = shell.getBoundingClientRect();
+  const point = event?.touches ? event.touches[0] : event;
+  const x = point ? point.clientX - shellRect.left + 14 : shellRect.width / 2;
+  const y = point ? point.clientY - shellRect.top + 14 : shellRect.height / 2;
+  tooltip.style.left = `${Math.min(Math.max(8, x), Math.max(8, shellRect.width - 270))}px`;
+  tooltip.style.top = `${Math.min(Math.max(8, y), Math.max(8, shellRect.height - 190))}px`;
+  tooltip.classList.add('visible');
+}
+
+function hideTerritoryTooltip(){
+  document.getElementById('territoryTooltip')?.classList.remove('visible');
+}
+
+function renderTerritoryRanking(){
+  const el = document.getElementById('territoryRanking');
+  if(!el) return;
+
+  const rows = [...(state.data?.regions || [])]
+    .sort((a, b) => Math.abs(regionTotals(b).margin) - Math.abs(regionTotals(a).margin))
+    .slice(0, 10);
+  const maxAbs = Math.max(1, ...rows.map(r => Math.abs(regionTotals(r).margin)));
+
+  el.innerHTML = rows.map(row => {
+    const t = regionTotals(row);
+    const width = Math.max(4, Math.abs(t.margin) / maxAbs * 100);
+    const side = t.margin >= 0 ? 'keiko' : 'sanchez';
+    return `
+      <button class="territory-rank-row" type="button" data-region="${escapeHtml(normalizeMapKey(row.region))}">
+        <span class="rank-head"><b>${escapeHtml(row.region)}</b><em>${territoryWinner(row)} · ${moneyish(Math.abs(t.margin))}</em></span>
+        <span class="rank-track"><i class="${side}" style="width:${width}%"></i></span>
+      </button>`;
+  }).join('');
+
+  el.querySelectorAll('.territory-rank-row').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-region');
+      const row = getRegionRowsByName()[key];
+      territorySelectedRegion = key;
+      renderTerritorySelected(row);
+      document.querySelectorAll('#peruRegionMap .department-path').forEach(p => {
+        p.classList.toggle('selected', p.getAttribute('data-region') === key);
+      });
+    });
+  });
+}
+
+async function renderTerritoryMap(){
+  const svgNode = document.getElementById('peruRegionMap');
+  const panel = document.querySelector('.peru-map-shell');
+  if(!svgNode || !panel) return;
+
+  if(typeof d3 === 'undefined'){
+    panel.innerHTML = `<div class="map-error">No se pudo cargar D3 desde el CDN. Revisa la conexión o usa una copia local de la librería.</div>`;
+    return;
+  }
+
+  const mode = document.getElementById('territoryMetric')?.value || 'margin';
+  renderTerritoryLegend(mode);
+  renderTerritoryRanking();
+
+  const svg = d3.select(svgNode);
+  const width = Math.max(360, Math.round(svgNode.clientWidth || panel.clientWidth || 620));
+  const height = Math.max(620, Math.round(width * 1.28));
+  svg.attr('viewBox', `0 0 ${width} ${height}`).attr('preserveAspectRatio', 'xMidYMid meet');
+  svg.html(`<text x="${width/2}" y="${height/2}" text-anchor="middle" fill="#667085">Cargando mapa real del Perú...</text>`);
+
+  try{
+    const geojson = await fetchFirstGeojson();
+    const rowsByName = getRegionRowsByName();
+    const meta = territoryModeMeta(mode);
+    const projection = d3.geoMercator();
+    const path = d3.geoPath(projection);
+    projection.fitExtent([[18, 18], [width - 18, height - 18]], geojson);
+
+    svg.html('');
+
+    svg.append('defs').html(`
+      <filter id="mapSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.14"/>
+      </filter>
+    `);
+
+    svg.append('g')
+      .attr('class', 'map-country-shadow')
+      .selectAll('path')
+      .data(geojson.features)
+      .join('path')
+      .attr('d', path)
+      .attr('fill', '#ffffff')
+      .attr('stroke', 'rgba(15,23,42,.12)')
+      .attr('stroke-width', 1.2)
+      .attr('filter', 'url(#mapSoftShadow)');
+
+    const departments = svg.append('g').attr('class', 'departments');
+
+    departments.selectAll('path')
+      .data(geojson.features)
+      .join('path')
+      .attr('class', 'department-path')
+      .attr('data-region', d => detectFeatureRegionName(d) || '')
+      .attr('d', path)
+      .attr('fill', d => territoryFill(rowsByName[detectFeatureRegionName(d)], mode, meta))
+      .attr('stroke', '#ffffff')
+      .attr('stroke-width', 1.05)
+      .attr('tabindex', 0)
+      .attr('aria-label', d => {
+        const row = rowsByName[detectFeatureRegionName(d)];
+        return row ? `${row.region}: ${territoryMetricText(row, mode)}` : 'Región sin datos';
+      })
+      .on('mousemove', function(event, d){
+        const row = rowsByName[detectFeatureRegionName(d)];
+        d3.select(this).raise().classed('hovered', true);
+        renderTerritoryTooltip(row, event);
+      })
+      .on('mouseenter', function(){ d3.select(this).classed('hovered', true); })
+      .on('mouseleave', function(){ d3.select(this).classed('hovered', false); hideTerritoryTooltip(); })
+      .on('focus', function(event, d){
+        const row = rowsByName[detectFeatureRegionName(d)];
+        d3.select(this).raise().classed('hovered', true);
+        renderTerritoryTooltip(row, event);
+      })
+      .on('blur', function(){ d3.select(this).classed('hovered', false); hideTerritoryTooltip(); })
+      .on('click', function(event, d){
+        const key = detectFeatureRegionName(d);
+        const row = rowsByName[key];
+        territorySelectedRegion = key;
+        svg.selectAll('.department-path').classed('selected', false);
+        d3.select(this).classed('selected', true).raise();
+        renderTerritorySelected(row);
+        renderTerritoryTooltip(row, event);
+      });
+
+    const labelRows = geojson.features
+      .map(f => ({feature: f, key: detectFeatureRegionName(f)}))
+      .filter(x => x.key && rowsByName[x.key])
+      .filter(x => {
+        const row = rowsByName[x.key];
+        const margin = Math.abs(regionTotals(row).margin);
+        return ['LIMA','CALLAO','PUNO','CUSCO','AREQUIPA','LORETO','PIURA','LA LIBERTAD','CAJAMARCA'].includes(x.key) || margin > meta.maxMargin * .11;
+      });
+
+    svg.append('g')
+      .attr('class', 'map-labels')
+      .selectAll('text')
+      .data(labelRows)
+      .join('text')
+      .attr('x', d => path.centroid(d.feature)[0])
+      .attr('y', d => path.centroid(d.feature)[1])
+      .attr('dy', '.35em')
+      .attr('text-anchor', 'middle')
+      .text(d => rowsByName[d.key].region.replace('MADRE DE DIOS', 'M. DE DIOS'));
+
+    if(territorySelectedRegion && rowsByName[territorySelectedRegion]){
+      svg.selectAll('.department-path').classed('selected', function(){
+        return this.getAttribute('data-region') === territorySelectedRegion;
+      });
+      renderTerritorySelected(rowsByName[territorySelectedRegion]);
+    }else{
+      const lima = rowsByName['LIMA'] || Object.values(rowsByName)[0];
+      renderTerritorySelected(lima);
+    }
+  }catch(err){
+    console.error(err);
+    svg.html('');
+    panel.insertAdjacentHTML('beforeend', `<div class="map-error">No se pudo cargar el GeoJSON real del Perú. La página mantiene el resto de gráficos; revisa conexión al CDN o sube el GeoJSON como archivo local.</div>`);
+  }
+
+  const select = document.getElementById('territoryMetric');
+  if(select && !select.dataset.bound){
+    select.dataset.bound = '1';
+    select.addEventListener('change', () => renderTerritoryMap());
+  }
+}
 
 function render(){
   const { nationalOnpe:n, projection:p, candidates:c, meta:m } = state.data;
@@ -503,7 +854,7 @@ function render(){
   renderFallbackNotice();
   ensureFallbackDownload();
   renderScenarioState();
-  renderTerritoryVisuals();
+  renderTerritoryMap();
 
   document.getElementById('summaryCards').innerHTML = [
     ['Actas contabilizadas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)} actas`],

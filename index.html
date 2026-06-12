@@ -70,30 +70,51 @@
     <section id="territorio" class="section territory-section">
       <div class="section-title">
         <p class="eyebrow">Lectura territorial</p>
-        <h2>Mapa dinámico del Perú por regiones</h2>
-        <p class="muted">El mapa se genera con los datos del último corte publicado. El color indica qué candidato lidera en cada región y la intensidad muestra la amplitud de la ventaja.</p>
+        <h2>Mapa real del Perú por regiones</h2>
+        <p class="muted">Mapa coroplético dinámico basado en la silueta real del Perú y sus departamentos. Se llena automáticamente con el último <code>data/report-data.json</code>.</p>
       </div>
-      <div class="territory-controls">
-        <label for="mapMetric">Modo de visualización</label>
-        <select id="mapMetric">
-          <option value="margin" selected>Diferencia proyectada de votos</option>
-          <option value="pct">Porcentaje proyectado por región</option>
-          <option value="jee">Actas enviadas al JEE</option>
-          <option value="counted">Actas contabilizadas</option>
-        </select>
+
+      <div class="territory-toolbar">
+        <div>
+          <label for="territoryMetric">Visualizar</label>
+          <select id="territoryMetric">
+            <option value="margin" selected>Diferencia proyectada de votos</option>
+            <option value="pct">Porcentaje proyectado de Keiko</option>
+            <option value="jee">Actas enviadas al JEE</option>
+            <option value="counted">Actas contabilizadas</option>
+          </select>
+        </div>
+        <div class="territory-note" id="territoryMetricNote">Cargando mapa territorial...</div>
       </div>
-      <div class="territory-layout">
-        <div class="map-panel">
-          <div class="peru-map-wrap">
-            <svg id="peruTileMap" class="peru-tile-map" viewBox="0 0 420 620" role="img" aria-label="Mapa dinámico del Perú por regiones"></svg>
-            <div class="map-tooltip" id="mapTooltip" aria-live="polite"></div>
+
+      <div class="territory-dashboard">
+        <div class="territory-map-card">
+          <div class="map-header">
+            <div>
+              <h3 id="territoryMapTitle">Mapa regional</h3>
+              <p class="muted" id="territoryMapSubtitle">Pasa el cursor o toca una región para ver su detalle.</p>
+            </div>
+            <div class="map-source">GeoJSON + ONPE</div>
           </div>
-          <div class="map-legend" id="mapLegend"></div>
+          <div class="peru-map-shell">
+            <svg id="peruRegionMap" class="peru-region-map" role="img" aria-label="Mapa coroplético del Perú por departamentos"></svg>
+            <div id="territoryTooltip" class="territory-tooltip"></div>
+          </div>
+          <div id="territoryLegend" class="territory-legend"></div>
         </div>
-        <div class="territory-side">
-          <article class="card territory-summary" id="territorySummary"></article>
-          <div class="chart-card"><h3>Regiones que más aportan al margen</h3><div id="regionalMarginChart" class="regional-margin-chart"></div></div>
-        </div>
+
+        <aside class="territory-insights">
+          <article class="card territory-selected" id="territorySelected">
+            <small>Región seleccionada</small>
+            <strong>Perú</strong>
+            <span>Selecciona una región del mapa para ver votos, porcentajes, actas JEE y avance.</span>
+          </article>
+          <article class="chart-card">
+            <h3>Regiones que más pesan en el margen</h3>
+            <p class="muted">Barras ordenadas por aporte absoluto a la diferencia proyectada.</p>
+            <div id="territoryRanking" class="territory-ranking"></div>
+          </article>
+        </aside>
       </div>
     </section>
 
@@ -263,6 +284,7 @@
     <p id="footerText">Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum mientras exista voto extranjero pendiente. Actualización verificada manualmente. No reemplaza resultados oficiales ni proclamación electoral.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="app.js"></script>
 </body>
 </html>
