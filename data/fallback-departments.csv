@@ -1,3 +1,3 @@
 ﻿departamento,departamento_ubigeo,provinciasEsperadas,provinciasProcesadas,metodo,motivo
-LAMBAYEQUE,130000,3,2,departamento,fallback_departamental_por_provincias_faltantes
-LIMA,140000,10,9,departamento,fallback_departamental_por_provincias_faltantes
+LIMA,140000,10,8,departamento,fallback_departamental_por_provincias_faltantes
+LORETO,150000,8,5,departamento,fallback_departamental_por_provincias_faltantes

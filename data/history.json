@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-11T12:46:11.513433-05:00",
+  "updatedAt": "2026-06-12T08:14:25.981901-05:00",
   "description": "Historial resumido de cortes válidos. No incluye preflights bloqueados ni diagnósticos.",
   "entries": [
     {
@@ -283,6 +283,50 @@
           "departamento_ubigeo": "140000",
           "provinciasEsperadas": 10,
           "provinciasProcesadas": 9,
+          "metodo": "departamento",
+          "motivo": "fallback_departamental_por_provincias_faltantes"
+        }
+      ],
+      "foreignClosed": false,
+      "valid": true
+    },
+    {
+      "cutoff": "2026-06-12 08:05:18",
+      "generatedAt": "2026-06-12T08:14:25.901257-05:00",
+      "actasContabilizadasPct": 98.258,
+      "projectionSource": "hibrido_provincia_departamento",
+      "processSource": "endpoint_activo",
+      "currentLeadKeiko": 1303,
+      "peruNoForeignLeadKeiko": -34312,
+      "foreignOnpeKeiko": 184435,
+      "foreignOnpeSanchez": 106338,
+      "foreignPartialKeikoPct": 63.429,
+      "foreignPartialSanchezPct": 36.571,
+      "foreignVotesEstimated": 307714,
+      "foreignRemainingVotesEstimated": 16941,
+      "keikoNeededPctPendingForeign": -79.228,
+      "datumMarginVsThreshold": 141.898,
+      "adjustedLeadKeiko": 48078,
+      "adjustedKeikoPct": 50.131,
+      "adjustedSanchezPct": 49.869,
+      "provinceCountExpected": 196,
+      "provinceCountProcessed": 191,
+      "provinceErrors": 5,
+      "fallbackDepartmentCount": 2,
+      "fallbackDepartments": [
+        {
+          "departamento": "LIMA",
+          "departamento_ubigeo": "140000",
+          "provinciasEsperadas": 10,
+          "provinciasProcesadas": 8,
+          "metodo": "departamento",
+          "motivo": "fallback_departamental_por_provincias_faltantes"
+        },
+        {
+          "departamento": "LORETO",
+          "departamento_ubigeo": "150000",
+          "provinciasEsperadas": 8,
+          "provinciasProcesadas": 5,
           "metodo": "departamento",
           "motivo": "fallback_departamental_por_provincias_faltantes"
         }
