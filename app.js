@@ -37,6 +37,14 @@ function clampPct(n){
   return Math.max(0, Math.min(100, n));
 }
 
+function clamp(value, min, max){
+  const n = Number(value);
+  if(!Number.isFinite(n)) return min;
+  return Math.min(Math.max(n, min), max);
+}
+
+
+
 function getForeignActual(){
   const rows = state.data?.foreign || [];
   const keiko = rows.reduce((sum, r) => sum + Number(r.keiko_actual || 0), 0);
