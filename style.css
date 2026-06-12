@@ -998,3 +998,50 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
   .race-runner,.race-distance-line{transition:none}
   .race-sprite{animation:none}
 }
+
+
+/* ------------------------------------------------------------
+   Refinamiento carrera: más separación visible y carriles limpios
+   ------------------------------------------------------------ */
+.race-keiko{
+  bottom:39%;
+}
+.race-sanchez{
+  bottom:14.5%;
+}
+.race-distance-line.keiko-line{
+  bottom:43.8%;
+}
+.race-distance-line.sanchez-line{
+  bottom:19.5%;
+}
+.race-runner-label{
+  z-index:10;
+  left:72%;
+  bottom:14px;
+  transform:translateX(0);
+  max-width:min(260px, 48vw);
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.race-sanchez .race-runner-label{
+  bottom:-2px;
+}
+.race-sprite{
+  position:relative;
+  z-index:7;
+}
+@media (max-width:620px){
+  .race-keiko{bottom:40%}
+  .race-sanchez{bottom:15%}
+  .race-distance-line.keiko-line{bottom:44.5%}
+  .race-distance-line.sanchez-line{bottom:20.5%}
+  .race-runner-label{
+    left:66%;
+    bottom:8px;
+    max-width:52vw;
+  }
+  .race-sanchez .race-runner-label{
+    bottom:-6px;
+  }
+}

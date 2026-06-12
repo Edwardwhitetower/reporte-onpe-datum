@@ -954,7 +954,9 @@ function calculateRaceState(){
   const progress = clamp(Number.isFinite(actasPct) ? actasPct / 100 : 0, 0, 1);
   const basePct = startPct + (finishPct - startPct) * progress;
 
-  const visualGapPct = clamp((marginShare * 100) * 22, 1.4, 9.5);
+  // Separación visual amplificada para que una carrera cerrada siga siendo legible.
+  // Los datos reales se mantienen visibles en votos y puntos porcentuales.
+  const visualGapPct = clamp((marginShare * 100) * 42, 4.2, 15.5);
 
   let keikoX = basePct;
   let sanchezX = basePct;
@@ -1023,7 +1025,7 @@ function renderRaceToFinish(){
 
   const method = document.getElementById('raceMethodNote');
   if(method){
-    method.innerHTML = `Visual explicativo: avance general = <b>${pct(r.actasPct, 3)}</b> de actas contabilizadas; separación = margen ajustado real de <b>${moneyish(Math.abs(r.adjustedLead))}</b> votos (${r.pctGap.toFixed(3)} p.p.), amplificado visualmente para que sea legible.`;
+    method.innerHTML = `Visual explicativo: avance general = <b>${pct(r.actasPct, 3)}</b> de actas contabilizadas; separación = margen ajustado real de <b>${moneyish(Math.abs(r.adjustedLead))}</b> votos (${r.pctGap.toFixed(3)} p.p.), amplificado visualmente para que la diferencia se aprecie en pantalla.`;
   }
 }
 

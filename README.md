@@ -309,3 +309,16 @@ líder visual = candidato con ventaja ajustada positiva o negativa
 ```
 
 La distancia visual entre corredores se amplifica moderadamente para que el margen sea legible en pantalla, pero el número exacto de votos y puntos porcentuales siempre se muestra en las tarjetas del componente.
+
+
+### Refinamiento visual de la carrera
+
+La separación visual entre corredores usa una escala amplificada para que una diferencia electoral pequeña siga siendo visible en pantalla.
+
+La fórmula actual mantiene los datos reales en las tarjetas superiores y solo amplifica la distancia visual:
+
+```text
+separación visual = margen ajustado real × escala visual
+```
+
+Además, los carriles fueron separados verticalmente para evitar que los sprites y etiquetas se superpongan en móvil.
