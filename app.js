@@ -706,7 +706,10 @@ async function renderTerritoryMap(){
     const geojson = await fetchFirstGeojson();
     const rowsByName = getRegionRowsByName();
     const meta = territoryModeMeta(mode);
-    const projection = d3.geoMercator();
+    const isProjectedGeojson = geojson?.crs?.properties?.name && !String(geojson.crs.properties.name).includes('4326');
+    const projection = isProjectedGeojson
+      ? d3.geoIdentity().reflectY(true)
+      : d3.geoMercator();
     const path = d3.geoPath(projection);
     projection.fitExtent([[18, 18], [width - 18, height - 18]], geojson);
 

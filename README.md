@@ -243,7 +243,7 @@ El archivo usado en esta página fue tomado de **Highcharts Map Collection**, es
 countries/pe/pe-all.geo.json
 ```
 
-Ese GeoJSON forma parte de la colección pública de mapas de Highcharts, que ofrece mapas pre-generados en formatos geográficos como GeoJSON/TopoJSON para visualizaciones coropléticas.
+Ese GeoJSON usa coordenadas proyectadas de mapa. Por eso el renderizado D3 usa `geoIdentity().reflectY(true)` cuando detecta un CRS proyectado, en lugar de `geoMercator()`, que solo corresponde a coordenadas longitud/latitud.
 
 Si el archivo local no está en el repositorio, la página intentará cargar el mapa desde fuentes externas de respaldo:
 
