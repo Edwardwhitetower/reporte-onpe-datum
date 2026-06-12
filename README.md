@@ -257,3 +257,10 @@ Para mayor estabilidad, la versión publicada debe usar la copia local en:
 ```text
 data/peru_departamental_simple.geojson
 ```
+
+
+### Corrección de emparejamiento región-polígono
+
+El mapa usa propiedades del GeoJSON de Highcharts como `name` / `woe-name` para emparejar cada polígono con la región ONPE correspondiente.
+
+Se evita comparar contra valores vacíos del GeoJSON, porque eso podía hacer que todos los polígonos se vincularan accidentalmente con la primera región del JSON de datos.

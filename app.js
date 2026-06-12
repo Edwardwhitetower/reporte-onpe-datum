@@ -457,11 +457,60 @@ function getRegionRowsByName(){
 }
 
 function detectFeatureRegionName(feature){
-  const regionNames = Object.keys(getRegionRowsByName());
-  const values = Object.values(feature?.properties || {}).map(v => normalizeMapKey(v));
+  const props = feature?.properties || {};
+  const regionRows = getRegionRowsByName();
+  const regionNames = Object.keys(regionRows);
+
+  // Highcharts pe-all.geo.json names departments in English/Spanish-like names.
+  // We map by explicit property first to avoid accidental matches.
+  const rawName = props.name || props['woe-name'] || props['postal-code'] || props['hc-key'] || '';
+  const key = normalizeMapKey(rawName);
+
+  const explicit = {
+    'AMAZONAS': 'AMAZONAS',
+    'ANCASH': 'ÁNCASH',
+    'APURIMAC': 'APURÍMAC',
+    'AREQUIPA': 'AREQUIPA',
+    'AYACUCHO': 'AYACUCHO',
+    'CAJAMARCA': 'CAJAMARCA',
+    'CALLAO': 'CALLAO',
+    'CUSCO': 'CUSCO',
+    'HUANCAVELICA': 'HUANCAVELICA',
+    'HUANUCO': 'HUÁNUCO',
+    'ICA': 'ICA',
+    'JUNIN': 'JUNÍN',
+    'LALIBERTAD': 'LA LIBERTAD',
+    'LAMBAYEQUE': 'LAMBAYEQUE',
+    'LIMA': 'LIMA',
+    'LIMAPROVINCE': 'LIMA',
+    'LORETO': 'LORETO',
+    'MADREDEDIOS': 'MADRE DE DIOS',
+    'MOQUEGUA': 'MOQUEGUA',
+    'PASCO': 'PASCO',
+    'PIURA': 'PIURA',
+    'PUNO': 'PUNO',
+    'SANMARTIN': 'SAN MARTÍN',
+    'TACNA': 'TACNA',
+    'TUMBES': 'TUMBES',
+    'UCAYALI': 'UCAYALI'
+  };
+
+  if(explicit[key]){
+    const normalized = normalizeMapKey(explicit[key]);
+    if(regionRows[normalized]) return normalized;
+  }
+
+  // Fallback: compare only non-empty textual property values.
+  // Important: never test regionKey.includes(''), because every string includes
+  // the empty string and that would map every polygon to the first region.
+  const values = Object.values(props)
+    .map(v => normalizeMapKey(v))
+    .filter(v => v && v.length >= 3);
+
   for(const regionKey of regionNames){
     if(values.some(v => v === regionKey || v.includes(regionKey) || regionKey.includes(v))) return regionKey;
   }
+
   return null;
 }
 
