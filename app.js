@@ -85,6 +85,17 @@ function valueOrDash(v, formatter = x => x){
   return formatter(v);
 }
 
+
+function escapeHtml(value){
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+
 function thresholdDisplay(value, digits = 2){
   const n = Number(value);
   if(!Number.isFinite(n)) return 'N/D';
@@ -789,7 +800,7 @@ async function renderTerritoryMap(){
   }catch(err){
     console.error(err);
     svg.html('');
-    panel.insertAdjacentHTML('beforeend', `<div class="map-error">No se pudo cargar el GeoJSON real del Perú. La página mantiene el resto de gráficos; revisa conexión al CDN o sube el GeoJSON como archivo local.</div>`);
+    panel.insertAdjacentHTML('beforeend', `<div class="map-error">No se pudo cargar el GeoJSON real del Perú. Solución recomendada: subir el archivo data/peru_departamental_simple.geojson al repositorio. La página mantiene el resto de gráficos mientras tanto.</div>`);
   }
 
   const select = document.getElementById('territoryMetric');

@@ -227,3 +227,16 @@ calidad metodológica del corte: provincia completa o modelo híbrido con fallba
 ```
 
 Esta comparación no reemplaza una auditoría por mesa o acta, pero funciona como control de consistencia entre cortes publicados.
+
+
+### Archivo GeoJSON local recomendado
+
+Para que el mapa no dependa de CDN externos, se recomienda subir al repositorio el archivo:
+
+```text
+data/peru_departamental_simple.geojson
+```
+
+Puede descargarse desde el repositorio público `juaneladio/peru-geojson`, archivo `peru_departamental_simple.geojson`.
+
+Si ese archivo no está en el repositorio, la página intentará cargarlo desde CDN externo. Si el navegador, la red o GitHub bloquean esa descarga, el mapa no aparecerá aunque el resto de la página funcione.
