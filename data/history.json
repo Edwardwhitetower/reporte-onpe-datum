@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-12T08:14:25.981901-05:00",
+  "updatedAt": "2026-06-12T20:32:20.434631-05:00",
   "description": "Historial resumido de cortes válidos. No incluye preflights bloqueados ni diagnósticos.",
   "entries": [
     {
@@ -327,6 +327,42 @@
           "departamento_ubigeo": "150000",
           "provinciasEsperadas": 8,
           "provinciasProcesadas": 5,
+          "metodo": "departamento",
+          "motivo": "fallback_departamental_por_provincias_faltantes"
+        }
+      ],
+      "foreignClosed": false,
+      "valid": true
+    },
+    {
+      "cutoff": "2026-06-12 20:25:25",
+      "generatedAt": "2026-06-12T20:32:20.320384-05:00",
+      "actasContabilizadasPct": 98.323,
+      "projectionSource": "hibrido_provincia_departamento",
+      "processSource": "endpoint_activo",
+      "currentLeadKeiko": 4310,
+      "peruNoForeignLeadKeiko": -30254,
+      "foreignOnpeKeiko": 184639,
+      "foreignOnpeSanchez": 106607,
+      "foreignPartialKeikoPct": 63.396,
+      "foreignPartialSanchezPct": 36.604,
+      "foreignVotesEstimated": 307958,
+      "foreignRemainingVotesEstimated": 16712,
+      "keikoNeededPctPendingForeign": -92.945,
+      "datumMarginVsThreshold": 155.615,
+      "adjustedLeadKeiko": 52012,
+      "adjustedKeikoPct": 50.141,
+      "adjustedSanchezPct": 49.859,
+      "provinceCountExpected": 196,
+      "provinceCountProcessed": 194,
+      "provinceErrors": 2,
+      "fallbackDepartmentCount": 1,
+      "fallbackDepartments": [
+        {
+          "departamento": "LA LIBERTAD",
+          "departamento_ubigeo": "120000",
+          "provinciasEsperadas": 12,
+          "provinciasProcesadas": 10,
           "metodo": "departamento",
           "motivo": "fallback_departamental_por_provincias_faltantes"
         }
