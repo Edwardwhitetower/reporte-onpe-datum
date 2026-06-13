@@ -2,24 +2,15 @@
   "meta": {
     "title": "Informe electoral: ONPE + escenario extranjero Datum",
     "subtitle": "Segunda vuelta presidencial Peru 2026",
-    "generatedAt": "2026-06-12T20:32:20.320384-05:00",
+    "generatedAt": "2026-06-13T11:12:46.215501-05:00",
     "status": "Escenario analitico no oficial",
     "onpeSource": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
     "datumSource": "Datum Internacional via Gestion: extranjero Keiko 62.67% vs Sanchez 37.33%",
     "foreignVolumeMethod": "Mixto: ONPE extranjero ya contabilizado + faltante extranjero estimado con Datum",
-    "projectionSource": "hibrido_provincia_departamento",
+    "projectionSource": "provincia",
     "processSource": "endpoint_activo",
     "scriptVersion": "v4_autodiscovery_preflight",
-    "fallbackDepartments": [
-      {
-        "departamento": "LA LIBERTAD",
-        "departamento_ubigeo": "120000",
-        "provinciasEsperadas": 12,
-        "provinciasProcesadas": 10,
-        "metodo": "departamento",
-        "motivo": "fallback_departamental_por_provincias_faltantes"
-      }
-    ],
+    "fallbackDepartments": [],
     "completeProvinceDepartments": [
       {
         "departamento": "AMAZONAS",
@@ -103,6 +94,13 @@
         "departamento_ubigeo": "110000",
         "provinciasEsperadas": 9,
         "provinciasProcesadas": 9,
+        "metodo": "provincia"
+      },
+      {
+        "departamento": "LA LIBERTAD",
+        "departamento_ubigeo": "120000",
+        "provinciasEsperadas": 12,
+        "provinciasProcesadas": 12,
         "metodo": "provincia"
       },
       {
@@ -193,45 +191,45 @@
     "note": "El escenario Datum no reemplaza los resultados oficiales de ONPE/JNE. La proyeccion Peru sin extranjero usa provincias cuando el departamento esta completo. Si fallan provincias de un departamento, el modelo usa el total departamental como respaldo para evitar sesgos por omision. La sensibilidad extranjera usa el estimado ONPE actual con variaciones de +-10% y +-20%, no valores arbitrarios."
   },
   "nationalOnpe": {
-    "fechaActualizacion": "2026-06-12 20:25:25",
-    "actasContabilizadasPct": 98.323,
-    "actasEnviadasJeePct": 1.677,
+    "fechaActualizacion": "2026-06-13 11:05:26",
+    "actasContabilizadasPct": 98.332,
+    "actasEnviadasJeePct": 1.668,
     "actasPendientesPct": 0.0,
-    "contabilizadas": 91210,
-    "enviadasJee": 1556,
+    "contabilizadas": 91219,
+    "enviadasJee": 1547,
     "pendientesJee": 0,
     "totalActas": 92766,
-    "totalVotosEmitidos": 19346781,
-    "totalVotosValidos": 18082458
+    "totalVotosEmitidos": 19348516,
+    "totalVotosValidos": 18084097
   },
   "candidates": [
     {
       "id": "keiko",
       "name": "KEIKO SOFIA FUJIMORI HIGUCHI",
       "party": "FUERZA POPULAR",
-      "currentVotes": 9043384,
+      "currentVotes": 9044153,
       "currentPct": 50.012,
-      "projectedWithoutForeign": 9028781,
+      "projectedWithoutForeign": 9029037,
       "foreignEstimated": 195112,
-      "projectedAdjusted": 9223893
+      "projectedAdjusted": 9224149
     },
     {
       "id": "sanchez",
       "name": "ROBERTO HELBERT SANCHEZ PALOMINO",
       "party": "JUNTOS POR EL PERU",
-      "currentVotes": 9039074,
+      "currentVotes": 9039944,
       "currentPct": 49.988,
-      "projectedWithoutForeign": 9059035,
+      "projectedWithoutForeign": 9058925,
       "foreignEstimated": 112846,
-      "projectedAdjusted": 9171881
+      "projectedAdjusted": 9171771
     }
   ],
   "projection": {
-    "projectionSource": "hibrido_provincia_departamento",
-    "fallbackDepartmentCount": 1,
-    "completeProvinceDepartmentCount": 24,
-    "currentLeadKeiko": 4310,
-    "withoutForeignLeadKeiko": -30254,
+    "projectionSource": "provincia",
+    "fallbackDepartmentCount": 0,
+    "completeProvinceDepartmentCount": 25,
+    "currentLeadKeiko": 4209,
+    "withoutForeignLeadKeiko": -29888,
     "foreignVotesEstimated": 307958,
     "foreignActs": 2543,
     "foreignCountedActs": 2405,
@@ -242,11 +240,11 @@
     "datumForeignSanchezPct": 37.33,
     "foreignPartialKeikoPct": 63.3962354847792,
     "foreignPartialSanchezPct": 36.60376451522081,
-    "keikoNeededPctPendingForeign": -92.94518908568693,
-    "datumMarginVsThreshold": 155.61518908568695,
-    "adjustedLeadKeiko": 52012,
-    "adjustedKeikoPct": 50.141369425390856,
-    "adjustedSanchezPct": 49.858630574609144
+    "keikoNeededPctPendingForeign": -94.04021062709431,
+    "datumMarginVsThreshold": 156.7102106270943,
+    "adjustedLeadKeiko": 52378,
+    "adjustedKeikoPct": 50.14236308920673,
+    "adjustedSanchezPct": 49.85763691079326
   },
   "regions": [
     {
@@ -333,32 +331,32 @@
       "ambito": 1,
       "ubigeo": "060000",
       "region": "CAJAMARCA",
-      "actasContabilizadas": 99.458,
-      "contabilizadas": 4217,
+      "actasContabilizadas": 99.552,
+      "contabilizadas": 4221,
       "totalActas": 4240,
       "pendientesJee": 0,
-      "enviadasJee": 23,
-      "keiko_actual": 244749,
-      "sanchez_actual": 491700,
-      "keiko_proyectado": 246083,
-      "sanchez_proyectado": 494380,
-      "diferencia_proyectada_keiko": -248297,
+      "enviadasJee": 19,
+      "keiko_actual": 244864,
+      "sanchez_actual": 492139,
+      "keiko_proyectado": 245966,
+      "sanchez_proyectado": 494354,
+      "diferencia_proyectada_keiko": -248388,
       "ganador_proyectado": "Sánchez"
     },
     {
       "ambito": 1,
       "ubigeo": "240000",
       "region": "CALLAO",
-      "actasContabilizadas": 98.24,
-      "contabilizadas": 2847,
+      "actasContabilizadas": 98.413,
+      "contabilizadas": 2852,
       "totalActas": 2898,
       "pendientesJee": 0,
-      "enviadasJee": 51,
-      "keiko_actual": 396594,
-      "sanchez_actual": 208172,
-      "keiko_proyectado": 403699,
-      "sanchez_proyectado": 211901,
-      "diferencia_proyectada_keiko": 191798,
+      "enviadasJee": 46,
+      "keiko_actual": 397248,
+      "sanchez_actual": 208603,
+      "keiko_proyectado": 403654,
+      "sanchez_proyectado": 211967,
+      "diferencia_proyectada_keiko": 191687,
       "ganador_proyectado": "Keiko"
     },
     {
@@ -1665,16 +1663,16 @@
       "departamento": "CAJAMARCA",
       "provincia_ubigeo": "060600",
       "provincia": "CHOTA",
-      "actasContabilizadas": 99.355,
-      "contabilizadas": 462,
+      "actasContabilizadas": 100.0,
+      "contabilizadas": 465,
       "totalActas": 465,
       "pendientesJee": 0,
-      "enviadasJee": 3,
-      "keiko_actual": 16277,
-      "sanchez_actual": 59829,
-      "keiko_proyectado": 16383,
-      "sanchez_proyectado": 60217,
-      "diferencia_proyectada_keiko": -43834,
+      "enviadasJee": 0,
+      "keiko_actual": 16347,
+      "sanchez_actual": 60185,
+      "keiko_proyectado": 16347,
+      "sanchez_proyectado": 60185,
+      "diferencia_proyectada_keiko": -43838,
       "ganador_proyectado": "Sánchez"
     },
     {
@@ -1827,16 +1825,16 @@
       "departamento": "CAJAMARCA",
       "provincia_ubigeo": "060900",
       "provincia": "SANTA CRUZ",
-      "actasContabilizadas": 99.206,
-      "contabilizadas": 125,
+      "actasContabilizadas": 100.0,
+      "contabilizadas": 126,
       "totalActas": 126,
       "pendientesJee": 0,
-      "enviadasJee": 1,
-      "keiko_actual": 5933,
-      "sanchez_actual": 12775,
-      "keiko_proyectado": 5980,
-      "sanchez_proyectado": 12877,
-      "diferencia_proyectada_keiko": -6897,
+      "enviadasJee": 0,
+      "keiko_actual": 5978,
+      "sanchez_actual": 12858,
+      "keiko_proyectado": 5978,
+      "sanchez_proyectado": 12858,
+      "diferencia_proyectada_keiko": -6880,
       "ganador_proyectado": "Sánchez"
     },
     {
@@ -1845,16 +1843,16 @@
       "departamento": "CALLAO",
       "provincia_ubigeo": "240100",
       "provincia": "CALLAO",
-      "actasContabilizadas": 98.24,
-      "contabilizadas": 2847,
+      "actasContabilizadas": 98.413,
+      "contabilizadas": 2852,
       "totalActas": 2898,
       "pendientesJee": 0,
-      "enviadasJee": 51,
-      "keiko_actual": 396594,
-      "sanchez_actual": 208172,
-      "keiko_proyectado": 403699,
-      "sanchez_proyectado": 211901,
-      "diferencia_proyectada_keiko": 191798,
+      "enviadasJee": 46,
+      "keiko_actual": 397248,
+      "sanchez_actual": 208603,
+      "keiko_proyectado": 403654,
+      "sanchez_proyectado": 211967,
+      "diferencia_proyectada_keiko": 191687,
       "ganador_proyectado": "Keiko"
     },
     {
@@ -2809,6 +2807,42 @@
       "keiko_proyectado": 10931,
       "sanchez_proyectado": 20926,
       "diferencia_proyectada_keiko": -9995,
+      "ganador_proyectado": "Sánchez"
+    },
+    {
+      "ambito": 1,
+      "departamento_ubigeo": "120000",
+      "departamento": "LA LIBERTAD",
+      "provincia_ubigeo": "120300",
+      "provincia": "SÁNCHEZ CARRIÓN",
+      "actasContabilizadas": 99.766,
+      "contabilizadas": 427,
+      "totalActas": 428,
+      "pendientesJee": 0,
+      "enviadasJee": 1,
+      "keiko_actual": 32323,
+      "sanchez_actual": 38062,
+      "keiko_proyectado": 32399,
+      "sanchez_proyectado": 38151,
+      "diferencia_proyectada_keiko": -5752,
+      "ganador_proyectado": "Sánchez"
+    },
+    {
+      "ambito": 1,
+      "departamento_ubigeo": "120000",
+      "departamento": "LA LIBERTAD",
+      "provincia_ubigeo": "120700",
+      "provincia": "SANTIAGO DE CHUCO",
+      "actasContabilizadas": 100.0,
+      "contabilizadas": 155,
+      "totalActas": 155,
+      "pendientesJee": 0,
+      "enviadasJee": 0,
+      "keiko_actual": 10108,
+      "sanchez_actual": 14513,
+      "keiko_proyectado": 10108,
+      "sanchez_proyectado": 14513,
+      "diferencia_proyectada_keiko": -4405,
       "ganador_proyectado": "Sánchez"
     },
     {
@@ -4226,32 +4260,8 @@
       "ganador_proyectado": "Keiko"
     }
   ],
-  "provinceErrors": [
-    {
-      "departamento": "LA LIBERTAD",
-      "departamento_ubigeo": "120000",
-      "provincia": "SÁNCHEZ CARRIÓN",
-      "provincia_ubigeo": "120300",
-      "error": "Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON en endpoint ONPE despues de autodiscovery: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=120000&ubigeoNivel2=120300\npage.fetch | status=200 | content-type=text/html | url=https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFil"
-    },
-    {
-      "departamento": "LA LIBERTAD",
-      "departamento_ubigeo": "120000",
-      "provincia": "SANTIAGO DE CHUCO",
-      "provincia_ubigeo": "120700",
-      "error": "Fallo despues de 3 intentos. Ultimo error: No funciono /presentacion-backend/resumen-general/totales. Ultimo error: No JSON en endpoint ONPE despues de autodiscovery: https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=ubigeo_nivel_02&ubigeoNivel1=120000&ubigeoNivel2=120700\npage.fetch | status=200 | content-type=text/html | url=https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFil"
-    }
-  ],
-  "fallbackDepartments": [
-    {
-      "departamento": "LA LIBERTAD",
-      "departamento_ubigeo": "120000",
-      "provinciasEsperadas": 12,
-      "provinciasProcesadas": 10,
-      "metodo": "departamento",
-      "motivo": "fallback_departamental_por_provincias_faltantes"
-    }
-  ],
+  "provinceErrors": [],
+  "fallbackDepartments": [],
   "sensitivity": [
     {
       "volumeLabel": "Estimado ONPE -20%",
@@ -4263,7 +4273,7 @@
       "sanchezPct": 36.6037645152208,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4276,7 +4286,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4289,7 +4299,7 @@
       "sanchezPct": 45,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4302,7 +4312,7 @@
       "sanchezPct": 40,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4315,7 +4325,7 @@
       "sanchezPct": 35,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4328,7 +4338,7 @@
       "sanchezPct": 36.6037645152208,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4341,7 +4351,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4354,7 +4364,7 @@
       "sanchezPct": 45,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4367,7 +4377,7 @@
       "sanchezPct": 40,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4380,7 +4390,7 @@
       "sanchezPct": 35,
       "keikoForeign": 184639,
       "sanchezForeign": 106607,
-      "finalLeadKeiko": 47778,
+      "finalLeadKeiko": 48144,
       "winner": "Keiko"
     },
     {
@@ -4389,10 +4399,10 @@
       "foreignCurrentValidVotes": 291246,
       "foreignRemainingVotes": 16712,
       "pctLabel": "Umbral minimo Keiko",
-      "keikoPct": -92.94518908568693,
-      "sanchezPct": 192.94518908568693,
-      "keikoForeign": 169106,
-      "sanchezForeign": 138852,
+      "keikoPct": -94.04021062709431,
+      "sanchezPct": 194.04021062709432,
+      "keikoForeign": 168923,
+      "sanchezForeign": 139035,
       "finalLeadKeiko": 0,
       "winner": "Sánchez"
     },
@@ -4406,7 +4416,7 @@
       "sanchezPct": 36.6037645152208,
       "keikoForeign": 195234,
       "sanchezForeign": 112724,
-      "finalLeadKeiko": 52256,
+      "finalLeadKeiko": 52622,
       "winner": "Keiko"
     },
     {
@@ -4419,7 +4429,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 195112,
       "sanchezForeign": 112846,
-      "finalLeadKeiko": 52012,
+      "finalLeadKeiko": 52378,
       "winner": "Keiko"
     },
     {
@@ -4432,7 +4442,7 @@
       "sanchezPct": 45,
       "keikoForeign": 193831,
       "sanchezForeign": 114127,
-      "finalLeadKeiko": 49450,
+      "finalLeadKeiko": 49816,
       "winner": "Keiko"
     },
     {
@@ -4445,7 +4455,7 @@
       "sanchezPct": 40,
       "keikoForeign": 194666,
       "sanchezForeign": 113292,
-      "finalLeadKeiko": 51120,
+      "finalLeadKeiko": 51486,
       "winner": "Keiko"
     },
     {
@@ -4458,7 +4468,7 @@
       "sanchezPct": 35,
       "keikoForeign": 195502,
       "sanchezForeign": 112456,
-      "finalLeadKeiko": 52792,
+      "finalLeadKeiko": 53158,
       "winner": "Keiko"
     },
     {
@@ -4467,10 +4477,10 @@
       "foreignCurrentValidVotes": 291246,
       "foreignRemainingVotes": 47508,
       "pctLabel": "Umbral minimo Keiko",
-      "keikoPct": -0.28416266734023754,
-      "sanchezPct": 100.28416266734024,
-      "keikoForeign": 184504,
-      "sanchezForeign": 154250,
+      "keikoPct": -0.6693609497347763,
+      "sanchezPct": 100.66936094973478,
+      "keikoForeign": 184321,
+      "sanchezForeign": 154433,
       "finalLeadKeiko": 0,
       "winner": "Sánchez"
     },
@@ -4484,7 +4494,7 @@
       "sanchezPct": 36.6037645152208,
       "keikoForeign": 214757,
       "sanchezForeign": 123997,
-      "finalLeadKeiko": 60506,
+      "finalLeadKeiko": 60872,
       "winner": "Keiko"
     },
     {
@@ -4497,7 +4507,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 214412,
       "sanchezForeign": 124342,
-      "finalLeadKeiko": 59816,
+      "finalLeadKeiko": 60182,
       "winner": "Keiko"
     },
     {
@@ -4510,7 +4520,7 @@
       "sanchezPct": 45,
       "keikoForeign": 210768,
       "sanchezForeign": 127986,
-      "finalLeadKeiko": 52528,
+      "finalLeadKeiko": 52894,
       "winner": "Keiko"
     },
     {
@@ -4523,7 +4533,7 @@
       "sanchezPct": 40,
       "keikoForeign": 213144,
       "sanchezForeign": 125610,
-      "finalLeadKeiko": 57280,
+      "finalLeadKeiko": 57646,
       "winner": "Keiko"
     },
     {
@@ -4536,7 +4546,7 @@
       "sanchezPct": 35,
       "keikoForeign": 215519,
       "sanchezForeign": 123235,
-      "finalLeadKeiko": 62030,
+      "finalLeadKeiko": 62396,
       "winner": "Keiko"
     },
     {
@@ -4545,10 +4555,10 @@
       "foreignCurrentValidVotes": 291246,
       "foreignRemainingVotes": 78304,
       "pctLabel": "Umbral minimo Keiko",
-      "keikoPct": 19.491979975480177,
-      "sanchezPct": 80.50802002451982,
-      "keikoForeign": 199902,
-      "sanchezForeign": 169648,
+      "keikoPct": 19.258275439313444,
+      "sanchezPct": 80.74172456068655,
+      "keikoForeign": 199719,
+      "sanchezForeign": 169831,
       "finalLeadKeiko": 0,
       "winner": "Sánchez"
     },
@@ -4562,7 +4572,7 @@
       "sanchezPct": 36.6037645152208,
       "keikoForeign": 234281,
       "sanchezForeign": 135269,
-      "finalLeadKeiko": 68758,
+      "finalLeadKeiko": 69124,
       "winner": "Keiko"
     },
     {
@@ -4575,7 +4585,7 @@
       "sanchezPct": 37.33,
       "keikoForeign": 233712,
       "sanchezForeign": 135838,
-      "finalLeadKeiko": 67620,
+      "finalLeadKeiko": 67986,
       "winner": "Keiko"
     },
     {
@@ -4588,7 +4598,7 @@
       "sanchezPct": 45,
       "keikoForeign": 227706,
       "sanchezForeign": 141844,
-      "finalLeadKeiko": 55608,
+      "finalLeadKeiko": 55974,
       "winner": "Keiko"
     },
     {
@@ -4601,7 +4611,7 @@
       "sanchezPct": 40,
       "keikoForeign": 231621,
       "sanchezForeign": 137929,
-      "finalLeadKeiko": 63438,
+      "finalLeadKeiko": 63804,
       "winner": "Keiko"
     },
     {
@@ -4614,7 +4624,7 @@
       "sanchezPct": 35,
       "keikoForeign": 235537,
       "sanchezForeign": 134013,
-      "finalLeadKeiko": 71270,
+      "finalLeadKeiko": 71636,
       "winner": "Keiko"
     }
   ]

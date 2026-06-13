@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-12T20:32:20.434631-05:00",
+  "updatedAt": "2026-06-13T11:12:46.375331-05:00",
   "description": "Historial resumido de cortes válidos. No incluye preflights bloqueados ni diagnósticos.",
   "entries": [
     {
@@ -367,6 +367,33 @@
           "motivo": "fallback_departamental_por_provincias_faltantes"
         }
       ],
+      "foreignClosed": false,
+      "valid": true
+    },
+    {
+      "cutoff": "2026-06-13 11:05:26",
+      "generatedAt": "2026-06-13T11:12:46.215501-05:00",
+      "actasContabilizadasPct": 98.332,
+      "projectionSource": "provincia",
+      "processSource": "endpoint_activo",
+      "currentLeadKeiko": 4209,
+      "peruNoForeignLeadKeiko": -29888,
+      "foreignOnpeKeiko": 184639,
+      "foreignOnpeSanchez": 106607,
+      "foreignPartialKeikoPct": 63.396,
+      "foreignPartialSanchezPct": 36.604,
+      "foreignVotesEstimated": 307958,
+      "foreignRemainingVotesEstimated": 16712,
+      "keikoNeededPctPendingForeign": -94.04,
+      "datumMarginVsThreshold": 156.71,
+      "adjustedLeadKeiko": 52378,
+      "adjustedKeikoPct": 50.142,
+      "adjustedSanchezPct": 49.858,
+      "provinceCountExpected": 196,
+      "provinceCountProcessed": 196,
+      "provinceErrors": 0,
+      "fallbackDepartmentCount": 0,
+      "fallbackDepartments": [],
       "foreignClosed": false,
       "valid": true
     }
