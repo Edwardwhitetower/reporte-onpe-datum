@@ -322,3 +322,25 @@ separación visual = margen ajustado real × escala visual
 ```
 
 Además, los carriles fueron separados verticalmente para evitar que los sprites y etiquetas se superpongan en móvil.
+
+
+## Conclusión pública dinámica
+
+La página incorpora una conclusión pública automática en la lectura principal y en el estado del escenario.
+
+Cuando se cumplen simultáneamente estas condiciones:
+
+```text
+Keiko lidera el conteo ONPE actual
+el umbral extranjero ya está superado
+la ventaja extrema ante extranjero pendiente sigue siendo positiva
+la diferencia ajustada favorece a Keiko
+```
+
+la página muestra:
+
+```text
+Bajo el modelo publicado, el escenario de victoria de Keiko está matemáticamente consolidado.
+```
+
+La misma caja mantiene la advertencia de que esta lectura no reemplaza la culminación formal del cómputo ni la proclamación oficial de las autoridades electorales. Si hay fallback departamental, la conclusión conserva la nota metodológica correspondiente.

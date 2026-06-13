@@ -433,6 +433,7 @@ function renderScenarioState(){
   callout.className = `callout scenario-callout scenario-${s.level}`;
   callout.innerHTML = `
     <strong>${s.title}</strong>
+    ${buildPublicConclusion(s)}
     <p>${s.explanation}</p>
     <p>La cuenta de seguridad frente al extranjero pendiente es: Perú sin extranjero + extranjero ONPE ya contado − extranjero pendiente máximo para Sánchez = <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>.</p>
     <p class="muted">Esta es una lectura matemática del modelo publicado, no una proclamación oficial. La proclamación corresponde a las autoridades electorales.</p>
@@ -905,10 +906,13 @@ function renderQuickRead(){
     ['Territorio', mapSummary, `Mayor aporte Keiko: ${top.keiko ? top.keiko.region : 'N/D'} · mayor aporte Sánchez: ${top.sanchez ? top.sanchez.region : 'N/D'}`]
   ].map(([label, value, desc]) => `<article class="card quick-card ${scenario.level}"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
 
+  const consolidatedText = scenario.currentOnpeAhead && scenario.thresholdCleared && scenario.worstForeignAhead && scenario.adjustedAhead
+    ? 'Bajo el modelo publicado, el escenario de victoria de Keiko está matemáticamente consolidado.'
+    : 'Bajo el modelo publicado, la lectura debe mantenerse como escenario analítico.';
   strip.innerHTML = `
     <b>Lectura pública:</b>
-    Keiko figura con ${leadText(p.currentLeadKeiko)} en el conteo ONPE actual.
-    Bajo el modelo publicado, la ventaja ajustada es ${leadText(p.adjustedLeadKeiko)}.
+    ${consolidatedText}
+    Keiko figura con ${leadText(p.currentLeadKeiko)} en el conteo ONPE actual y la ventaja ajustada es ${leadText(p.adjustedLeadKeiko)}.
     La prueba extrema frente al extranjero pendiente deja ${safeText}.
     <a href="#territorio">Ver mapa</a>
     <a href="#provincias">Ver auditoría técnica</a>
@@ -1029,6 +1033,49 @@ function renderRaceToFinish(){
   }
 }
 
+
+function buildPublicConclusion(s){
+  if(!s) return '';
+
+  const fallbackText = s.fallbackWarning
+    ? ` La lectura usa fallback departamental en este corte (${fallbackSummaryText()}), por lo que debe mantenerse la nota metodológica.`
+    : ' El corte no reporta fallback departamental relevante, por lo que la lectura territorial es más limpia.';
+
+  if(s.currentOnpeAhead && s.thresholdCleared && s.worstForeignAhead && s.adjustedAhead){
+    return `
+      <div class="public-conclusion strong">
+        <b>Conclusión pública:</b>
+        <span>Bajo el modelo publicado, el escenario de victoria de Keiko está matemáticamente consolidado. Incluso asignando todo el extranjero pendiente a Sánchez, Keiko conserva una ventaja de <b>${leadText(s.safeLeadWorstForeign)}</b> en el cálculo ajustado.</span>
+        <small>Esta lectura no reemplaza la culminación formal del cómputo ni la proclamación oficial de las autoridades electorales.${fallbackText}</small>
+      </div>`;
+  }
+
+  if(s.thresholdCleared && s.worstForeignAhead && s.adjustedAhead){
+    return `
+      <div class="public-conclusion strong">
+        <b>Conclusión pública:</b>
+        <span>Bajo el modelo publicado, Keiko ya no depende del extranjero pendiente y conserva ventaja incluso en el escenario extremo de asignar todo ese faltante a Sánchez.</span>
+        <small>Esta lectura es matemática y no reemplaza la proclamación oficial de las autoridades electorales.${fallbackText}</small>
+      </div>`;
+  }
+
+  if(s.adjustedAhead){
+    return `
+      <div class="public-conclusion favorable">
+        <b>Conclusión pública:</b>
+        <span>Bajo el modelo publicado, el escenario ajustado favorece a Keiko, aunque todavía no alcanza la condición más fuerte de consolidación matemática.</span>
+        <small>Se recomienda seguir actualizando con nuevos cortes válidos.${fallbackText}</small>
+      </div>`;
+  }
+
+  return `
+    <div class="public-conclusion neutral">
+      <b>Conclusión pública:</b>
+      <span>El escenario ajustado no muestra una ventaja consolidada para Keiko bajo el modelo publicado.</span>
+      <small>Se requiere esperar nuevos cortes válidos y mantener la cautela metodológica.${fallbackText}</small>
+    </div>`;
+}
+
 function render(){
   const { nationalOnpe:n, projection:p, candidates:c, meta:m } = state.data;
   const keiko = c.find(x => x.id === 'keiko');
@@ -1102,8 +1149,11 @@ function render(){
       <div class="track"><div class="fill ${x.id === 'sanchez' ? 'sanchez' : ''}" style="width:${max ? (x.projectedAdjusted / max * 100).toFixed(2) : 0}%"></div></div>
     </div>`).join('');
 
+  const publicScenarioConclusion = buildPublicConclusion(calculateScenarioState());
+
   document.getElementById('mainCallout').innerHTML = `
-    <strong>Lectura principal</strong>
+    <strong>Lectura principal y conclusión pública</strong>
+    ${publicScenarioConclusion}
     <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al aplicar ${foreignClosed ? 'el extranjero oficial ONPE' : 'el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente—'} la diferencia queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
     ${p.projectionSource === 'hibrido_provincia_departamento' ? `<p class="muted"><b>Nota de calidad del corte:</b> se usó fallback departamental en ${moneyish(p.fallbackDepartmentCount || getFallbackDepartments().length)} departamento(s) para evitar omitir provincias que no respondieron. ${fallbackSummaryText()}.</p>` : ''}
     <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. ${foreignClosed ? 'El bloque extranjero está cerrado para efectos del cálculo principal.' : `Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.`}</p>`;

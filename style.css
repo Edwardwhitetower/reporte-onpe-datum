@@ -1045,3 +1045,41 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
     bottom:-6px;
   }
 }
+
+
+/* ------------------------------------------------------------
+   Conclusión pública consolidada
+   ------------------------------------------------------------ */
+.public-conclusion{
+  display:grid;
+  gap:7px;
+  margin:0 0 14px;
+  padding:15px 16px;
+  border-radius:18px;
+  border:1px solid rgba(15,23,42,.12);
+  background:#fff;
+  color:var(--ink);
+  line-height:1.55;
+}
+.public-conclusion b{
+  color:var(--ink);
+}
+.public-conclusion span{
+  color:var(--ink);
+}
+.public-conclusion small{
+  color:var(--muted);
+  line-height:1.5;
+}
+.public-conclusion.strong{
+  border-color:rgba(2,122,72,.28);
+  background:linear-gradient(135deg,rgba(236,253,243,.95),rgba(255,255,255,.96));
+}
+.public-conclusion.favorable{
+  border-color:rgba(247,144,9,.28);
+  background:linear-gradient(135deg,rgba(255,249,235,.95),rgba(255,255,255,.96));
+}
+.public-conclusion.neutral{
+  border-color:rgba(102,112,133,.22);
+  background:linear-gradient(135deg,rgba(248,250,252,.95),rgba(255,255,255,.96));
+}
