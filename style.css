@@ -906,11 +906,11 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
 }
 .race-runner{
   position:absolute;
-  left:0;
+  left:var(--runner-x, 7%);
   z-index:5;
-  transform:translateX(var(--runner-x, 7%));
-  transition:transform 1000ms cubic-bezier(.2,.9,.18,1);
-  will-change:transform;
+  transform:translateX(-50%);
+  transition:left 1000ms cubic-bezier(.2,.9,.18,1);
+  will-change:left;
   filter:drop-shadow(0 18px 16px rgba(0,0,0,.35));
 }
 .race-sprite{
@@ -1082,4 +1082,24 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
 .public-conclusion.neutral{
   border-color:rgba(102,112,133,.22);
   background:linear-gradient(135deg,rgba(248,250,252,.95),rgba(255,255,255,.96));
+}
+
+
+/* ------------------------------------------------------------
+   Fix carrera: posición real de sprites
+   ------------------------------------------------------------
+   --runner-x es un porcentaje del escenario. Debe aplicarse en left.
+   translateX(%) usa el ancho del sprite, por eso antes las líneas avanzaban
+   correctamente pero los personajes se quedaban cerca del inicio.
+*/
+.race-runner{
+  left:var(--runner-x, 7%);
+  transform:translateX(-50%);
+  transition:left 1000ms cubic-bezier(.2,.9,.18,1);
+  will-change:left;
+}
+@media (prefers-reduced-motion: reduce){
+  .race-runner{
+    transition:none;
+  }
 }

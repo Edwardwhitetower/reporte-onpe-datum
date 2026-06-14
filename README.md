@@ -344,3 +344,25 @@ Bajo el modelo publicado, el escenario de victoria de Keiko está matemáticamen
 ```
 
 La misma caja mantiene la advertencia de que esta lectura no reemplaza la culminación formal del cómputo ni la proclamación oficial de las autoridades electorales. Si hay fallback departamental, la conclusión conserva la nota metodológica correspondiente.
+
+
+### Fix de posición real de sprites
+
+Se corrigió la posición de los corredores en la carrera dinámica.
+
+Problema detectado:
+
+```css
+transform: translateX(var(--runner-x))
+```
+
+`translateX(%)` usa el ancho del propio sprite, no el ancho de la pista. Por eso las líneas de avance se veían correctas, pero los personajes quedaban casi en la misma zona.
+
+Corrección:
+
+```css
+left: var(--runner-x);
+transform: translateX(-50%);
+```
+
+Ahora los sprites se ubican según el mismo porcentaje de la pista que usan las líneas de avance.
