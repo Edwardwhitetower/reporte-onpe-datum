@@ -402,3 +402,19 @@ Cambios incluidos:
 3. La métrica "Sánchez +..." fue reemplazada por "Cambio del margen", para evitar confundir una variación histórica con el ganador actual.
 4. La gráfica de evolución ahora permite seleccionar cortes: al tocar un punto o una tarjeta, se resalta el corte correspondiente y se muestra su detalle.
 ```
+
+
+
+### Fix final 2 de contraste interno
+
+Se corrigieron los casos restantes donde algunos textos seguían demasiado tenues:
+
+```text
+- Panel del umbral extranjero.
+- Tabla de comparación contra el umbral.
+- Caja verde de lectura del umbral.
+- Cajas internas de actualización/fallback dentro de auditoría técnica.
+- Metodología resumida en tarjetas blancas.
+```
+
+La causa era que reglas de contraste pensadas para fondos oscuros estaban afectando elementos internos con fondo blanco. El fix añade reglas más específicas para que los paneles blancos usen texto oscuro y legible.

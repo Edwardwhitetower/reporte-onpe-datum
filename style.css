@@ -1533,3 +1533,171 @@ details > summary .muted,
     grid-template-columns:1fr;
   }
 }
+
+
+/* ------------------------------------------------------------
+   Fix final 2: contraste interno en paneles blancos
+   ------------------------------------------------------------
+   Corrige casos donde reglas para fondos oscuros afectaban títulos/textos
+   dentro de paneles blancos, especialmente umbral extranjero y auditoría.
+*/
+
+/* Paneles blancos dentro de secciones claras: texto principal oscuro */
+.final-foreign-section .fold-content,
+.final-foreign-section .panel,
+.final-foreign-section .threshold-panel,
+.final-foreign-section .callout,
+.final-foreign-section .table-wrap,
+.final-foreign-section table,
+.final-foreign-section thead,
+.final-foreign-section tbody,
+.final-foreign-section tr,
+.final-foreign-section th,
+.final-foreign-section td,
+.final-scenario-section .callout,
+.final-scenario-section .card,
+.final-history-section .card,
+.final-history-section .history-sparkline,
+.final-history-section .history-selected-panel{
+  color:#111827 !important;
+}
+
+/* Títulos dentro de esos paneles */
+.final-foreign-section .fold-content h1,
+.final-foreign-section .fold-content h2,
+.final-foreign-section .fold-content h3,
+.final-foreign-section .panel h1,
+.final-foreign-section .panel h2,
+.final-foreign-section .panel h3,
+.final-foreign-section .threshold-panel h1,
+.final-foreign-section .threshold-panel h2,
+.final-foreign-section .threshold-panel h3,
+.final-foreign-section .callout h1,
+.final-foreign-section .callout h2,
+.final-foreign-section .callout h3,
+.final-scenario-section .callout h1,
+.final-scenario-section .callout h2,
+.final-scenario-section .callout h3{
+  color:#111827 !important;
+}
+
+/* Párrafos y celdas: menos tenue, más legible */
+.final-foreign-section .fold-content p,
+.final-foreign-section .panel p,
+.final-foreign-section .threshold-panel p,
+.final-foreign-section .callout p,
+.final-foreign-section td,
+.final-foreign-section td *,
+.final-foreign-section .muted,
+.final-scenario-section .callout p,
+.final-scenario-section .callout .muted{
+  color:#334155 !important;
+}
+
+/* Cabeceras de tabla: visibles en fondo claro */
+.final-foreign-section th,
+.final-foreign-section th *,
+.final-foreign-section table thead th{
+  color:#334155 !important;
+  background:#f1f5f9;
+}
+
+/* Valores importantes en tablas/callouts */
+.final-foreign-section b,
+.final-foreign-section strong,
+.final-foreign-section .winner,
+.final-foreign-section .keiko,
+.final-foreign-section .sanchez,
+.final-foreign-section .callout b,
+.final-foreign-section .callout strong,
+.final-scenario-section .callout b,
+.final-scenario-section .callout strong{
+  color:#0f3655 !important;
+}
+
+/* Auditoría: cajas blancas/amarillas internas deben tener texto oscuro */
+.final-audit-section .formula,
+.final-audit-section .formula *,
+.final-audit-section .method-note,
+.final-audit-section .method-note *,
+.final-audit-section #actualizacion,
+.final-audit-section #actualizacion *,
+.final-audit-section #manualUpdateNote,
+.final-audit-section #manualUpdateNote *,
+.final-audit-section #fallbackNotice,
+.final-audit-section #fallbackNotice *,
+.final-audit-section .fallback-note,
+.final-audit-section .fallback-note *{
+  color:#111827 !important;
+}
+
+/* En esas cajas, el texto secundario sigue oscuro pero no negro absoluto */
+.final-audit-section .formula span,
+.final-audit-section .formula p,
+.final-audit-section .method-note span,
+.final-audit-section .method-note p,
+.final-audit-section #manualUpdateNote,
+.final-audit-section #fallbackNotice{
+  color:#334155 !important;
+}
+
+/* Títulos destacados dentro de cajas internas */
+.final-audit-section .formula strong,
+.final-audit-section .formula b,
+.final-audit-section .method-note strong,
+.final-audit-section .method-note b,
+.final-audit-section #manualUpdateNote strong,
+.final-audit-section #manualUpdateNote b,
+.final-audit-section #fallbackNotice strong,
+.final-audit-section #fallbackNotice b{
+  color:#111827 !important;
+}
+
+/* Metodología resumida: números y cards internas */
+.final-audit-section .method-card,
+.final-audit-section .method-card *{
+  color:#111827 !important;
+}
+.final-audit-section .method-card p,
+.final-audit-section .method-card p *{
+  color:#334155 !important;
+}
+.final-audit-section .method-card span:first-child{
+  color:#ffffff !important;
+}
+
+/* Header del acordeón en auditoría: no usar texto azul tenue */
+.final-audit-section .fold-card > summary button,
+.final-audit-section .fold-card > summary .button,
+.final-audit-section .fold-card > summary [role="button"]{
+  color:#dbeafe !important;
+}
+
+/* Botón Ocultar/Mostrar en acordeones claros */
+.final-foreign-section summary button,
+.final-foreign-section summary .button,
+.final-foreign-section summary [role="button"],
+.final-history-section summary button,
+.final-history-section summary .button,
+.final-history-section summary [role="button"]{
+  color:#0f3655 !important;
+}
+
+/* Si algún summary de sección clara quedó blanco, devolverlo a oscuro */
+.final-foreign-section .fold-card > summary span,
+.final-foreign-section .fold-card > summary small,
+.final-history-section .fold-card > summary span,
+.final-history-section .fold-card > summary small{
+  color:#334155 !important;
+}
+.final-foreign-section .fold-card > summary span,
+.final-history-section .fold-card > summary span{
+  color:#111827 !important;
+}
+
+/* Evita que opacity heredada vuelva ilegible texto en paneles */
+.final-foreign-section .fold-content *,
+.final-audit-section .formula *,
+.final-audit-section .method-note *{
+  opacity:1 !important;
+}
