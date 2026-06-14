@@ -418,3 +418,19 @@ Se corrigieron los casos restantes donde algunos textos seguían demasiado tenue
 ```
 
 La causa era que reglas de contraste pensadas para fondos oscuros estaban afectando elementos internos con fondo blanco. El fix añade reglas más específicas para que los paneles blancos usen texto oscuro y legible.
+
+
+
+### Fix final 3 de tabla completa de cortes
+
+Se reforzó el contraste de la tabla completa del historial de cortes:
+
+```text
+- Encabezados de tabla más oscuros.
+- Celdas con texto principal oscuro.
+- Filas alternadas y hover más legibles.
+- Colores específicos para ventajas Keiko/Sánchez.
+- Etiquetas responsivas visibles en móvil.
+```
+
+Este cambio solo afecta la tabla `#historyTable` dentro de la sección de evolución.
