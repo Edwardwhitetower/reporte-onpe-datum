@@ -434,3 +434,25 @@ Se reforzó el contraste de la tabla completa del historial de cortes:
 ```
 
 Este cambio solo afecta la tabla `#historyTable` dentro de la sección de evolución.
+
+
+
+### Fix final 4 de tabla de cortes y cache CSS
+
+Se agregó un cache-buster al `index.html`:
+
+```html
+<link rel="stylesheet" href="style.css?v=final-table-contrast-2">
+```
+
+Esto fuerza al navegador a descargar el nuevo CSS. Además, se añadieron reglas ultra específicas para `section#historial table#historyTable` con:
+
+```text
+opacity: 1
+filter: none
+mix-blend-mode: normal
+texto oscuro forzado en Corte / Actas / Fuente / Calidad
+colores específicos para ventajas Keiko/Sánchez
+```
+
+Este fix requiere reemplazar también `index.html`, no solo `style.css`, porque el problema puede mantenerse por caché del archivo CSS.

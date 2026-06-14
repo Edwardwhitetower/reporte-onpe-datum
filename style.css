@@ -1795,3 +1795,79 @@ details > summary .muted,
     color:#1f2937 !important;
   }
 }
+
+
+/* ------------------------------------------------------------
+   Fix final 4: tabla de cortes, contraste forzado + cache bust
+   ------------------------------------------------------------
+   Esta regla es intencionalmente muy específica para vencer estilos heredados
+   y posibles reglas antiguas cacheadas en la sección de historial.
+*/
+
+html body.final-edition main section#historial table#historyTable,
+html body.final-edition main section#historial table#historyTable *{
+  opacity:1 !important;
+  filter:none !important;
+  mix-blend-mode:normal !important;
+  text-shadow:none !important;
+}
+
+html body.final-edition main section#historial table#historyTable{
+  background:#ffffff !important;
+  color:#111827 !important;
+}
+
+html body.final-edition main section#historial table#historyTable thead th,
+html body.final-edition main section#historial table#historyTable thead th *{
+  background:#eaf0f7 !important;
+  color:#1f2937 !important;
+  font-weight:950 !important;
+}
+
+html body.final-edition main section#historial table#historyTable tbody tr,
+html body.final-edition main section#historial table#historyTable tbody td{
+  background:#ffffff !important;
+}
+
+html body.final-edition main section#historial table#historyTable tbody tr:nth-child(even) td{
+  background:#f8fafc !important;
+}
+
+html body.final-edition main section#historial table#historyTable tbody td,
+html body.final-edition main section#historial table#historyTable tbody td:not(.winner),
+html body.final-edition main section#historial table#historyTable tbody td:not(.winner) *{
+  color:#172033 !important;
+  font-weight:650 !important;
+}
+
+html body.final-edition main section#historial table#historyTable tbody td[data-label="Corte"],
+html body.final-edition main section#historial table#historyTable tbody td[data-label="Actas"],
+html body.final-edition main section#historial table#historyTable tbody td[data-label="Fuente"],
+html body.final-edition main section#historial table#historyTable tbody td[data-label="Calidad"]{
+  color:#172033 !important;
+  font-weight:750 !important;
+}
+
+html body.final-edition main section#historial table#historyTable tbody td.winner,
+html body.final-edition main section#historial table#historyTable tbody td.winner *{
+  font-weight:950 !important;
+}
+
+html body.final-edition main section#historial table#historyTable tbody td.winner.keiko,
+html body.final-edition main section#historial table#historyTable tbody td.winner.keiko *{
+  color:#0f3655 !important;
+}
+
+html body.final-edition main section#historial table#historyTable tbody td.winner.sanchez,
+html body.final-edition main section#historial table#historyTable tbody td.winner.sanchez *{
+  color:#b45309 !important;
+}
+
+/* En móvil, la etiqueta data-label también debe verse fuerte */
+@media (max-width:760px){
+  html body.final-edition main section#historial table#historyTable td::before{
+    color:#334155 !important;
+    opacity:1 !important;
+    font-weight:950 !important;
+  }
+}
