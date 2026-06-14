@@ -1142,3 +1142,238 @@ a{color:inherit}.hero{min-height:520px;background:radial-gradient(circle at 18% 
 @media (min-width:1280px){.final-edition .section{padding-left:max(72px,calc((100vw - 1400px)/2));padding-right:max(72px,calc((100vw - 1400px)/2))}.final-topbar{padding-left:max(72px,calc((100vw - 1400px)/2));padding-right:max(72px,calc((100vw - 1400px)/2))}}
 @media (max-width:1100px){.final-hero-grid,.final-executive-panel,.final-territory-dashboard,.final-history-visual{grid-template-columns:1fr}.final-hero-panel{max-width:760px}.quick-read-grid,.scenario-grid,.threshold-grid,.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.final-download-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.peru-map-shell{min-height:520px}}
 @media (max-width:760px){.final-topbar{align-items:flex-start;gap:12px}.final-navlinks{width:100%;justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}.final-navlinks a{white-space:nowrap}.final-hero-grid{padding-top:34px}.final-hero-metrics,.quick-read-grid,.scenario-grid,.threshold-grid,.cards,.final-download-grid,.final-method-grid{grid-template-columns:1fr}.final-section-title{display:block}.final-section-title .muted{margin-left:0}.final-executive-panel{display:block}.final-bars-card{margin-bottom:14px}.race-track-stage{min-height:300px}.race-sprite{--race-runner-size:clamp(64px,18vw,96px)}.race-runner-label{font-size:.74rem;padding:5px 8px;max-width:48vw}.peru-map-shell{min-height:410px}.history-sparkline,.history-timeline{border-radius:22px;padding:14px}.spark-head{display:grid}.table-wrap{border-radius:18px}.controls input,.controls select{width:100%;min-width:0}.final-edition .section{padding-left:14px;padding-right:14px}}
+
+
+/* ------------------------------------------------------------
+   Fix final: contraste de títulos y labels en fondos oscuros
+   ------------------------------------------------------------ */
+:root{
+  --dark-title:#f8fafc;
+  --dark-text:#dbe4f0;
+  --dark-muted:#aebbd0;
+  --dark-soft:#cbd5e1;
+}
+
+/* Tarjetas y secciones oscuras: evitar títulos heredados en color muy oscuro */
+.final-hero,
+.hero-final,
+.hero-card,
+.final-card,
+.dark-card,
+.audit-section,
+.audit-shell,
+.audit-card,
+.technical-section,
+.technical-card,
+.method-card,
+.method-panel,
+.quality-card,
+.quality-panel,
+.race-card-live,
+details,
+details summary{
+  color:var(--dark-text);
+}
+
+/* Títulos principales dentro de fondos oscuros */
+.final-hero h1,
+.hero-final h1,
+.hero-card h1,
+.final-card h1,
+.dark-card h1,
+.audit-section h1,
+.audit-section h2,
+.audit-section h3,
+.audit-shell h1,
+.audit-shell h2,
+.audit-shell h3,
+.audit-card h1,
+.audit-card h2,
+.audit-card h3,
+.technical-section h1,
+.technical-section h2,
+.technical-section h3,
+.technical-card h1,
+.technical-card h2,
+.technical-card h3,
+.method-card h1,
+.method-card h2,
+.method-card h3,
+.method-panel h1,
+.method-panel h2,
+.method-panel h3,
+.quality-card h1,
+.quality-card h2,
+.quality-card h3,
+.quality-panel h1,
+.quality-panel h2,
+.quality-panel h3,
+.race-card-live h1,
+.race-card-live h2,
+.race-card-live h3,
+details summary,
+details summary strong,
+details summary b{
+  color:var(--dark-title) !important;
+}
+
+/* Labels pequeños, como "Última actualización manual", "Corte ONPE", etc. */
+.final-hero b,
+.hero-final b,
+.hero-card b,
+.final-card b,
+.dark-card b,
+.audit-section b,
+.audit-shell b,
+.audit-card b,
+.technical-section b,
+.technical-card b,
+.method-card b,
+.method-panel b,
+.quality-card b,
+.quality-panel b,
+.race-card-live b,
+.final-hero strong,
+.hero-final strong,
+.hero-card strong,
+.final-card strong,
+.dark-card strong,
+.audit-section strong,
+.audit-shell strong,
+.audit-card strong,
+.technical-section strong,
+.technical-card strong,
+.method-card strong,
+.method-panel strong,
+.quality-card strong,
+.quality-panel strong,
+.race-card-live strong{
+  color:var(--dark-title);
+}
+
+/* Texto secundario en fondos oscuros */
+.final-hero p,
+.hero-final p,
+.hero-card p,
+.final-card p,
+.dark-card p,
+.audit-section p,
+.audit-shell p,
+.audit-card p,
+.technical-section p,
+.technical-card p,
+.method-card p,
+.method-panel p,
+.quality-card p,
+.quality-panel p,
+.race-card-live p,
+.final-hero li,
+.hero-final li,
+.hero-card li,
+.final-card li,
+.dark-card li,
+.audit-section li,
+.audit-shell li,
+.audit-card li,
+.technical-section li,
+.technical-card li,
+.method-card li,
+.method-panel li,
+.quality-card li,
+.quality-panel li,
+.race-card-live li{
+  color:var(--dark-text);
+}
+
+/* Excepción: tarjetas blancas dentro de auditoría/metodología deben seguir con texto oscuro */
+.audit-section .white-card,
+.audit-section .card,
+.audit-section .method-step,
+.audit-section .table-card,
+.audit-section .download-card,
+.technical-section .white-card,
+.technical-section .card,
+.technical-section .method-step,
+.technical-section .table-card,
+.technical-section .download-card,
+details .white-card,
+details .card,
+details .method-step,
+details .table-card,
+details .download-card{
+  color:var(--ink);
+}
+.audit-section .white-card h1,
+.audit-section .white-card h2,
+.audit-section .white-card h3,
+.audit-section .card h1,
+.audit-section .card h2,
+.audit-section .card h3,
+.audit-section .method-step h1,
+.audit-section .method-step h2,
+.audit-section .method-step h3,
+.technical-section .white-card h1,
+.technical-section .white-card h2,
+.technical-section .white-card h3,
+.technical-section .card h1,
+.technical-section .card h2,
+.technical-section .card h3,
+.technical-section .method-step h1,
+.technical-section .method-step h2,
+.technical-section .method-step h3,
+details .white-card h1,
+details .white-card h2,
+details .white-card h3,
+details .card h1,
+details .card h2,
+details .card h3,
+details .method-step h1,
+details .method-step h2,
+details .method-step h3{
+  color:var(--ink) !important;
+}
+.audit-section .white-card p,
+.audit-section .card p,
+.audit-section .method-step p,
+.technical-section .white-card p,
+.technical-section .card p,
+.technical-section .method-step p,
+details .white-card p,
+details .card p,
+details .method-step p{
+  color:var(--muted);
+}
+
+/* Resumen/accordion: que el encabezado no quede negro sobre el fondo oscuro */
+summary,
+details > summary,
+.audit-section summary,
+.technical-section summary{
+  color:var(--dark-title) !important;
+  background:rgba(255,255,255,.055);
+  border-color:rgba(255,255,255,.14);
+}
+summary .muted,
+details > summary .muted,
+.audit-section summary .muted,
+.technical-section summary .muted{
+  color:var(--dark-soft) !important;
+}
+
+/* Caja de actualización/manual en oscuro */
+#manualUpdateNote,
+#actualizacion,
+#fallbackNotice{
+  color:var(--dark-text);
+}
+#manualUpdateNote b,
+#actualizacion b,
+#fallbackNotice b{
+  color:var(--dark-title) !important;
+}
+
+/* Mejor legibilidad de texto seleccionado en Android/Chrome */
+::selection{
+  background:rgba(96,165,250,.38);
+  color:#ffffff;
+}

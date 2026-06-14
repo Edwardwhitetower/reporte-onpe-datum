@@ -371,3 +371,21 @@ Cambios principales:
 - Fix aplicado: los sprites de la carrera usan `left: var(--runner-x)` para moverse en la escala real de la pista.
 
 Esta actualización no incluye `data/report-data.json` para evitar sobrescribir el último corte publicado. Mantén tus archivos de datos actuales y sube solo los archivos de UI incluidos en el ZIP final.
+
+
+### Fix final de contraste
+
+Se añadió una capa de CSS para mejorar el contraste de títulos, labels y encabezados dentro de fondos oscuros.
+
+Problema corregido:
+
+```text
+Algunos títulos y labels heredaban color oscuro sobre tarjetas oscuras.
+```
+
+Solución:
+
+```text
+Forzar títulos/strong/b/summary a tonos claros dentro de secciones oscuras.
+Mantener texto oscuro en tarjetas blancas internas para no romper la auditoría.
+```
