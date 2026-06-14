@@ -1076,6 +1076,110 @@ function buildPublicConclusion(s){
     </div>`;
 }
 
+
+function renderFinalHero(){
+  const verdict = document.getElementById('finalHeroVerdict');
+  const metrics = document.getElementById('finalHeroMetrics');
+  const status = document.getElementById('finalHeroStatus');
+  const worst = document.getElementById('finalHeroWorstCase');
+  if(!verdict && !metrics && !status && !worst) return;
+
+  const p = state.data?.projection || {};
+  const n = state.data?.nationalOnpe || {};
+  const s = calculateScenarioState();
+  const sourceText = projectionLabel(p.projectionSource || state.data?.meta?.projectionSource);
+  const cleanCut = Number(p.fallbackDepartmentCount || 0) === 0 && Number(state.data?.provinceErrors?.length || 0) === 0;
+  const consolidated = s.currentOnpeAhead && s.adjustedAhead && s.thresholdCleared && s.worstForeignAhead;
+
+  if(status){
+    status.innerHTML = consolidated
+      ? `<span class="status-dot safe"></span> Consolidado bajo el modelo`
+      : `<span class="status-dot watch"></span> Escenario analítico en seguimiento`;
+  }
+
+  if(verdict){
+    verdict.innerHTML = consolidated
+      ? `<strong>Escenario matemáticamente consolidado bajo el modelo publicado.</strong><span>Keiko lidera ONPE y conserva ventaja incluso si todo el extranjero pendiente se asigna a Sánchez.</span>`
+      : `<strong>Escenario analítico en seguimiento.</strong><span>La lectura depende del último corte válido y de la prueba frente al extranjero pendiente.</span>`;
+  }
+
+  if(metrics){
+    metrics.innerHTML = [
+      ['Actas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)}`],
+      ['ONPE actual', leadText(p.currentLeadKeiko), 'Conteo contabilizado'],
+      ['Ajustado', leadText(p.adjustedLeadKeiko), `${pct(p.adjustedKeikoPct, 3)} vs ${pct(p.adjustedSanchezPct, 3)}`],
+      ['Calidad', cleanCut ? 'Provincia completa' : 'Con fallback', cleanCut ? '196/196 si el JSON lo reporta' : fallbackSummaryText()]
+    ].map(([label,value,desc]) => `<article><small>${label}</small><b>${value}</b><span>${desc}</span></article>`).join('');
+  }
+
+  if(worst){
+    worst.innerHTML = `<b>Prueba extrema:</b> si todo el extranjero pendiente fuese a Sánchez, la ventaja quedaría en <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>. <span>${sourceText}</span>`;
+  }
+}
+
+function renderFinalHistoryVisuals(){
+  const timeline = document.getElementById('historyTimeline');
+  const spark = document.getElementById('historySparkline');
+  if(!timeline && !spark) return;
+  const entries = [...(state.history || [])].filter(e => e && e.cutoff);
+  if(!entries.length){
+    if(timeline) timeline.innerHTML = '<p class="muted">No se encontró historial de cortes.</p>';
+    if(spark) spark.innerHTML = '';
+    return;
+  }
+
+  const chron = [...entries].reverse();
+  const latest = entries[0];
+  const first = chron[0];
+  const adjustedVals = chron.map(e => Number(e.adjustedLeadKeiko || 0));
+  const currentVals = chron.map(e => Number(e.currentLeadKeiko || 0));
+  const allVals = adjustedVals.concat(currentVals).filter(Number.isFinite);
+  const min = Math.min(...allVals, 0);
+  const max = Math.max(...allVals, 0);
+  const width = 720;
+  const height = 240;
+  const pad = 34;
+  const x = i => chron.length === 1 ? width / 2 : pad + i * ((width - pad * 2) / (chron.length - 1));
+  const y = v => {
+    if(max === min) return height / 2;
+    return height - pad - ((v - min) / (max - min)) * (height - pad * 2);
+  };
+  const points = vals => vals.map((v,i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const zeroY = y(0);
+
+  if(spark){
+    spark.innerHTML = `
+      <div class="spark-head">
+        <div><small>Evolución completa</small><strong>${moneyish(chron.length)} cortes válidos</strong></div>
+        <div><small>Desde primer corte</small><strong class="${leadClass(Number(latest.adjustedLeadKeiko||0)-Number(first.adjustedLeadKeiko||0))}">${leadText(Number(latest.adjustedLeadKeiko||0)-Number(first.adjustedLeadKeiko||0))}</strong></div>
+      </div>
+      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Evolución de la ventaja ajustada y ONPE actual">
+        <line x1="${pad}" x2="${width-pad}" y1="${zeroY}" y2="${zeroY}" class="spark-zero" />
+        <polyline points="${points(currentVals)}" class="spark-current" />
+        <polyline points="${points(adjustedVals)}" class="spark-adjusted" />
+        ${chron.map((e,i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(Number(e.adjustedLeadKeiko||0)).toFixed(1)}" r="4" class="spark-dot"><title>${escapeHtml(e.cutoff)} · ${leadText(e.adjustedLeadKeiko)}</title></circle>`).join('')}
+      </svg>
+      <div class="spark-legend"><span><i class="adjusted"></i> Ventaja ajustada</span><span><i class="current"></i> ONPE actual</span></div>
+    `;
+  }
+
+  if(timeline){
+    timeline.innerHTML = chron.map((e, i) => {
+      const active = e.cutoff === latest.cutoff ? 'active' : '';
+      const quality = Number(e.provinceErrors || 0) || Number(e.fallbackDepartmentCount || 0)
+        ? `Fallback ${moneyish(e.fallbackDepartmentCount || 0)} / errores ${moneyish(e.provinceErrors || 0)}`
+        : 'Provincia completa';
+      return `<article class="timeline-cut ${active}">
+        <small>Corte ${i + 1}</small>
+        <b>${escapeHtml(e.cutoff)}</b>
+        <span>${valueOrDash(e.actasContabilizadasPct, x => pct(x, 3))} actas</span>
+        <strong class="${leadClass(e.adjustedLeadKeiko)}">${leadText(e.adjustedLeadKeiko)}</strong>
+        <em>${quality}</em>
+      </article>`;
+    }).join('');
+  }
+}
+
 function render(){
   const { nationalOnpe:n, projection:p, candidates:c, meta:m } = state.data;
   const keiko = c.find(x => x.id === 'keiko');
@@ -1134,6 +1238,7 @@ function render(){
   renderTerritoryMap();
   renderQuickRead();
   renderRaceToFinish();
+  renderFinalHero();
 
   document.getElementById('summaryCards').innerHTML = [
     ['Actas contabilizadas', pct(n.actasContabilizadasPct, 3), `${moneyish(n.contabilizadas)} de ${moneyish(n.totalActas)} actas`],
@@ -1163,6 +1268,7 @@ function render(){
   renderSensitivity();
   renderCutChanges();
   renderHistory();
+  renderFinalHistoryVisuals();
   setupProvinceDepartmentFilter();
   renderProvinces();
   renderRegions();

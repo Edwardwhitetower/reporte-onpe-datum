@@ -346,23 +346,28 @@ Bajo el modelo publicado, el escenario de victoria de Keiko está matemáticamen
 La misma caja mantiene la advertencia de que esta lectura no reemplaza la culminación formal del cómputo ni la proclamación oficial de las autoridades electorales. Si hay fallback departamental, la conclusión conserva la nota metodológica correspondiente.
 
 
-### Fix de posición real de sprites
+## Versión final editorial
 
-Se corrigió la posición de los corredores en la carrera dinámica.
+Esta versión reorganiza la página como dashboard final compacto:
 
-Problema detectado:
-
-```css
-transform: translateX(var(--runner-x))
+```text
+1. Hero con conclusión pública y métricas clave
+2. Resumen ejecutivo en una pantalla
+3. Carrera hacia la meta
+4. Mapa territorial
+5. Evolución completa de cortes válidos
+6. Prueba extrema del extranjero pendiente
+7. Auditoría técnica plegada
+8. Descargas
 ```
 
-`translateX(%)` usa el ancho del propio sprite, no el ancho de la pista. Por eso las líneas de avance se veían correctas, pero los personajes quedaban casi en la misma zona.
+Cambios principales:
 
-Corrección:
+- Menú reducido a secciones esenciales.
+- Historial completo de cortes visibles mediante línea de tiempo y gráfico de evolución.
+- Tablas pesadas plegadas por defecto.
+- Metodología resumida y auditoría técnica concentrada.
+- Mejoras responsive para desktop, tablet y móvil.
+- Fix aplicado: los sprites de la carrera usan `left: var(--runner-x)` para moverse en la escala real de la pista.
 
-```css
-left: var(--runner-x);
-transform: translateX(-50%);
-```
-
-Ahora los sprites se ubican según el mismo porcentaje de la pista que usan las líneas de avance.
+Esta actualización no incluye `data/report-data.json` para evitar sobrescribir el último corte publicado. Mantén tus archivos de datos actuales y sube solo los archivos de UI incluidos en el ZIP final.

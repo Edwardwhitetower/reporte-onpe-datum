@@ -3,150 +3,119 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Informe electoral ONPE + escenario Datum</title>
-  <meta name="description" content="Informe analítico de resultados ONPE y escenario extranjero Datum para la segunda vuelta presidencial Perú 2026." />
+  <title>Elecciones Perú 2026 · Lectura final ONPE + escenario extranjero</title>
+  <meta name="description" content="Dashboard final compacto de resultados ONPE y escenario extranjero pendiente para la segunda vuelta presidencial Perú 2026." />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <header class="hero">
-    <nav class="topbar">
-      <div class="brand">Reporte Electoral</div>
-      <div class="navlinks">
+<body class="final-edition">
+  <header class="hero final-hero">
+    <nav class="topbar final-topbar" aria-label="Navegación principal">
+      <a class="brand" href="#top" aria-label="Ir al inicio">Reporte Electoral</a>
+      <div class="navlinks final-navlinks">
         <a href="#resumen">Resumen</a>
-        <a href="#lectura-rapida">Lectura rápida</a>
-        <a href="#territorio">Mapa</a>
         <a href="#carrera">Carrera</a>
-        <a href="#escenario">Estado</a>
-        <a href="#metodologia">Metodología</a>
-        <a href="#actualizacion">Actualización</a>
-        <a href="#umbral">Extranjero</a>
-        <a href="#cambios">Cambios</a>
-        <a href="#historial">Historial</a>
-        <a href="#provincias">Provincias</a>
-        <a href="#regional">Regiones</a>
+        <a href="#territorio">Mapa</a>
+        <a href="#historial">Evolución</a>
+        <a href="#auditoria">Auditoría</a>
         <a href="#descargas">Descargas</a>
       </div>
     </nav>
-    <section class="hero-content">
-      <span class="badge">Escenario analítico no oficial</span>
-      <h1 id="heroTitle">ONPE + escenario extranjero Datum</h1>
-      <p id="heroSubtitle">Segunda vuelta presidencial Perú 2026</p>
-      <div id="cutoffNotice" class="notice" aria-live="polite"></div>
-      <div class="hero-actions">
-        <a class="button primary" href="#resumen">Ver resumen</a>
-        <a class="button secondary" href="data/report-data.json" download>Descargar JSON</a>
+
+    <section id="top" class="hero-content final-hero-grid">
+      <div class="final-hero-copy">
+        <span class="badge final-badge" id="finalHeroLabel">Escenario analítico no oficial</span>
+        <h1 id="heroTitle">ONPE + escenario extranjero</h1>
+        <p id="heroSubtitle">Segunda vuelta presidencial Perú 2026</p>
+        <div class="final-hero-verdict" id="finalHeroVerdict">
+          <strong>Cargando lectura final...</strong>
+          <span>El tablero se actualizará con el último JSON publicado.</span>
+        </div>
+        <div class="hero-actions final-actions">
+          <a class="button primary" href="#carrera">Ver carrera</a>
+          <a class="button secondary" href="#historial">Ver evolución</a>
+        </div>
       </div>
+
+      <aside class="final-hero-panel" aria-label="Datos clave del último corte">
+        <div class="final-panel-status" id="finalHeroStatus">Validando corte...</div>
+        <div class="final-hero-metrics" id="finalHeroMetrics"></div>
+        <div class="final-worst-case" id="finalHeroWorstCase">Cargando prueba extrema...</div>
+        <div id="cutoffNotice" class="notice final-cutoff" aria-live="polite"></div>
+      </aside>
     </section>
   </header>
 
   <main>
-
-    <section id="estado-datos" class="section status-section">
-      <div class="status-alert">
-        <p class="eyebrow">Control de calidad</p>
-        <h2>Actualización con validación técnica automática</h2>
-        <p>El informe solo publica cortes cuando la fuente oficial entrega respuestas JSON válidas. Si ONPE devuelve HTML u ocurre un fallo de descarga, el sistema bloquea el corte y mantiene el último corte válido publicado.</p>
-        <p>Esta validación no altera los datos oficiales ni reemplaza los resultados de ONPE/JNE; solo evita publicar archivos incompletos o respuestas inválidas como si fueran data.</p>
+    <section id="resumen" class="section final-summary-section">
+      <div class="section-title final-section-title">
+        <p class="eyebrow">Resumen final</p>
+        <h2>La lectura esencial en una pantalla</h2>
+        <p class="muted">Datos oficiales ONPE para lo contabilizado. El modelo usa proyección territorial para Perú y Datum solo si queda extranjero pendiente.</p>
       </div>
-    </section>
-
-    <section id="resumen" class="section">
-      <div class="section-title">
-        <p class="eyebrow">Resumen ejecutivo</p>
-        <h2>Resultado actual y proyección ajustada</h2>
-        <p class="muted">Los resultados oficiales corresponden a ONPE. Datum solo se usa mientras exista voto extranjero pendiente por estimar.</p>
-      </div>
-      <div class="cards" id="summaryCards"></div>
-      <div class="panel two-col">
-        <div>
-          <h3>Proyección final ajustada</h3>
+      <div class="cards final-kpi-grid" id="summaryCards"></div>
+      <div class="panel final-executive-panel">
+        <div class="final-bars-card">
+          <h3>Resultado ajustado del escenario</h3>
           <p class="muted" id="projectionSourceText">Cargando fuente de proyección...</p>
           <div id="finalBars" class="bars"></div>
         </div>
-        <div class="callout" id="mainCallout"></div>
+        <div class="callout final-main-callout" id="mainCallout"></div>
       </div>
     </section>
 
-
-
-
-    <section id="lectura-rapida" class="section quick-read-section">
+    <section id="lectura-rapida" class="section quick-read-section final-quick-section">
       <div class="section-title compact-title">
         <p class="eyebrow">Lectura rápida</p>
-        <h2>Lo esencial en 30 segundos</h2>
-        <p class="muted">Una vista pensada para público general: estado del escenario, seguridad matemática y dónde se concentra territorialmente la ventaja.</p>
+        <h2>Lo que debe entender el lector</h2>
       </div>
       <div class="quick-read-grid" id="quickReadCards"></div>
       <div class="quick-read-strip" id="quickReadStrip"></div>
     </section>
 
-
-    <section id="carrera" class="section race-section">
+    <section id="carrera" class="section race-section final-race-section">
       <div class="section-title compact-title">
-        <p class="eyebrow">Visual dinámico</p>
+        <p class="eyebrow">Visual principal</p>
         <h2>Carrera hacia la meta</h2>
-        <p class="muted">Los corredores avanzan con el porcentaje de actas contabilizadas. La separación entre ellos representa la ventaja ajustada del último corte.</p>
+        <p class="muted">Avance por actas contabilizadas y separación visual según la ventaja ajustada. Los números exactos se muestran arriba.</p>
       </div>
-
       <div class="race-card-live" id="raceCardLive">
         <div class="race-live-header">
           <div>
-            <span class="race-badge">🏁 En vivo con JSON</span>
+            <span class="race-badge">🏁 Último corte</span>
             <h3>Carrera hacia la meta</h3>
-            <p>Actualizado automáticamente con <code>data/report-data.json</code></p>
+            <p>Render dinámico desde <code>data/report-data.json</code></p>
           </div>
           <div class="race-status-pill" id="raceStatusPill">Cargando...</div>
         </div>
-
         <div class="race-live-stats">
-          <article>
-            <small>Actas contabilizadas</small>
-            <strong id="raceActasPct">--%</strong>
-            <span>Avance hacia la meta</span>
-          </article>
-          <article>
-            <small>Ventaja ajustada</small>
-            <strong id="raceAdjustedLead">--</strong>
-            <span id="raceLeadExplanation">Separación proporcional al margen</span>
-          </article>
-          <article>
-            <small>Diferencia porcentual</small>
-            <strong id="racePctGap">-- p.p.</strong>
-            <span>Distancia visual entre corredores</span>
-          </article>
+          <article><small>Actas contabilizadas</small><strong id="raceActasPct">--%</strong><span>Avance hacia la meta</span></article>
+          <article><small>Ventaja ajustada</small><strong id="raceAdjustedLead">--</strong><span id="raceLeadExplanation">Margen real del modelo</span></article>
+          <article><small>Diferencia porcentual</small><strong id="racePctGap">-- p.p.</strong><span>Separación electoral</span></article>
         </div>
-
         <div class="race-track-stage" id="raceTrackStage">
           <img class="race-track-bg" src="assets/race/track-bg.png" alt="Pista pixel art con meta" loading="lazy" />
-
           <div class="race-distance-line keiko-line" id="raceKeikoLine"></div>
           <div class="race-distance-line sanchez-line" id="raceSanchezLine"></div>
-
           <div class="race-runner race-keiko" id="raceRunnerKeiko">
             <div class="race-sprite race-sprite-keiko" role="img" aria-label="Keiko corriendo"></div>
             <div class="race-runner-label keiko-label" id="raceKeikoLabel">Keiko</div>
           </div>
-
           <div class="race-runner race-sanchez" id="raceRunnerSanchez">
             <div class="race-sprite race-sprite-sanchez" role="img" aria-label="Sánchez corriendo"></div>
             <div class="race-runner-label sanchez-label" id="raceSanchezLabel">Sánchez</div>
           </div>
         </div>
-
-        <p class="race-method-note" id="raceMethodNote">
-          Visual explicativo: la posición general sigue el avance de actas; la separación usa la diferencia ajustada. Los números exactos siempre se muestran arriba.
-        </p>
+        <p class="race-method-note" id="raceMethodNote">Cargando explicación visual...</p>
       </div>
     </section>
 
-    <section id="territorio" class="section territory-section">
-      <div class="section-title">
-        <p class="eyebrow">Lectura territorial</p>
-        <h2>Mapa real del Perú por regiones</h2>
-        <p class="muted">Mapa coroplético dinámico basado en la silueta real del Perú y sus departamentos. Se llena automáticamente con el último <code>data/report-data.json</code>.</p>
+    <section id="territorio" class="section territory-section final-map-section">
+      <div class="section-title final-section-title">
+        <p class="eyebrow">Mapa territorial</p>
+        <h2>Dónde se sostiene el margen</h2>
+        <p class="muted">Mapa regional interactivo con el aporte territorial a la diferencia proyectada.</p>
       </div>
-
-      <div class="territory-toolbar">
+      <div class="territory-toolbar final-toolbar">
         <div>
           <label for="territoryMetric">Visualizar</label>
           <select id="territoryMetric">
@@ -158,14 +127,10 @@
         </div>
         <div class="territory-note" id="territoryMetricNote">Cargando mapa territorial...</div>
       </div>
-
-      <div class="territory-dashboard">
+      <div class="territory-dashboard final-territory-dashboard">
         <div class="territory-map-card">
           <div class="map-header">
-            <div>
-              <h3 id="territoryMapTitle">Mapa regional</h3>
-              <p class="muted" id="territoryMapSubtitle">Pasa el cursor o toca una región para ver su detalle.</p>
-            </div>
+            <div><h3 id="territoryMapTitle">Mapa regional</h3><p class="muted" id="territoryMapSubtitle">Toca una región para ver su detalle.</p></div>
             <div class="map-source">GeoJSON + ONPE</div>
           </div>
           <div class="peru-map-shell">
@@ -174,238 +139,133 @@
           </div>
           <div id="territoryLegend" class="territory-legend"></div>
         </div>
-
         <aside class="territory-insights">
-          <article class="card territory-selected" id="territorySelected">
-            <small>Región seleccionada</small>
-            <strong>Perú</strong>
-            <span>Selecciona una región del mapa para ver votos, porcentajes, actas JEE y avance.</span>
-          </article>
-          <article class="chart-card">
-            <h3>Regiones que más pesan en el margen</h3>
-            <p class="muted">Barras ordenadas por aporte absoluto a la diferencia proyectada.</p>
-            <div id="territoryRanking" class="territory-ranking"></div>
-          </article>
+          <article class="card territory-selected" id="territorySelected"><small>Región seleccionada</small><strong>Perú</strong><span>Selecciona una región del mapa para ver su detalle.</span></article>
+          <article class="chart-card"><h3>Regiones que más pesan</h3><p class="muted">Aporte absoluto a la diferencia proyectada.</p><div id="territoryRanking" class="territory-ranking"></div></article>
         </aside>
       </div>
     </section>
 
-    <section id="escenario" class="section scenario-section">
-      <div class="section-title">
-        <p class="eyebrow">Estado del escenario</p>
-        <h2>Lectura matemática bajo el modelo publicado</h2>
-        <p class="muted">Esta sección resume si el escenario sigue abierto, favorable o virtualmente consolidado bajo el modelo. No reemplaza la proclamación oficial de ONPE/JNE.</p>
+    <section id="historial" class="section final-history-section">
+      <div class="section-title final-section-title">
+        <p class="eyebrow">Evolución</p>
+        <h2>Cómo se consolidó el escenario</h2>
+        <p class="muted">Todos los cortes válidos del historial, con tendencia de ventaja ONPE y ventaja ajustada.</p>
+      </div>
+      <div class="history-grid" id="historyCards"></div>
+      <div class="final-history-visual">
+        <div id="historySparkline" class="history-sparkline"></div>
+        <div id="historyTimeline" class="history-timeline"></div>
+      </div>
+      <details class="fold-card final-fold-card">
+        <summary><span>Ver tabla completa de cortes</span><small>Incluye todos los cortes válidos del historial.</small></summary>
+        <div class="fold-content"><div class="table-wrap"><table id="historyTable"></table></div></div>
+      </details>
+    </section>
+
+    <section id="escenario" class="section scenario-section final-scenario-section">
+      <div class="section-title final-section-title">
+        <p class="eyebrow">Seguridad matemática</p>
+        <h2>Prueba extrema del extranjero pendiente</h2>
+        <p class="muted">La pregunta clave: qué ocurre si todo el extranjero pendiente se asigna a Sánchez.</p>
       </div>
       <div class="scenario-grid" id="scenarioCards"></div>
       <div class="callout scenario-callout" id="scenarioCallout"></div>
     </section>
 
-    <section id="umbral" class="section alt">
-      <div class="section-title">
-        <p class="eyebrow" id="foreignSectionEyebrow">Umbral extranjero</p>
-        <h2 id="foreignSectionTitle">Qué necesita Keiko del voto extranjero pendiente</h2>
-        <p class="muted" id="foreignSectionDescription">Este bloque compara el porcentaje mínimo que Keiko necesita en el extranjero pendiente con el escenario Datum y con el avance parcial ONPE del extranjero.</p>
+    <section id="umbral" class="section alt final-foreign-section">
+      <div class="section-title final-section-title">
+        <p class="eyebrow" id="foreignSectionEyebrow">Extranjero</p>
+        <h2 id="foreignSectionTitle">El extranjero pendiente frente al umbral</h2>
+        <p class="muted" id="foreignSectionDescription">Cargando lectura del extranjero...</p>
       </div>
       <div class="threshold-grid" id="thresholdCards"></div>
-      <div class="panel two-col threshold-panel">
-        <div>
-          <h3 id="thresholdComparisonTitle">Comparación contra el umbral</h3>
-          <p class="muted" id="thresholdSummaryText">Cargando cálculo del umbral...</p>
-          <div class="table-wrap compact"><table id="thresholdTable"></table></div>
-        </div>
-        <div class="callout" id="thresholdCallout"></div>
-      </div>
-    </section>
-
-    <section id="metodologia" class="section alt">
-      <div class="section-title">
-        <p class="eyebrow">Metodología</p>
-        <h2>Cómo se construyó el escenario</h2>
-      </div>
-      <div class="method-grid">
-        <article class="method-card">
-          <span>1</span>
-          <h3>Datos oficiales ONPE</h3>
-          <p>Se toman actas contabilizadas, votos válidos nacionales y resultados por ubicación geográfica desde la web oficial de resultados.</p>
-        </article>
-        <article class="method-card">
-          <span>2</span>
-          <h3>Proyección Perú</h3>
-          <p id="projectionMethodText">La proyección se calcula por provincia cuando los datos provinciales están disponibles; de lo contrario, usa regiones como respaldo.</p>
-        </article>
-        <article class="method-card">
-          <span>3</span>
-          <h3 id="foreignMethodCardTitle">Extranjero ONPE + Datum</h3>
-          <p id="foreignMethodCardText">Si ONPE ya contabilizó votos del extranjero, se respetan esos votos oficiales. Datum se aplica solo al extranjero pendiente.</p>
-        </article>
-      </div>
-      <div id="actualizacion" class="formula method-note">
-        <strong>Actualización del informe:</strong>
-        <span id="manualUpdateNote">Cargando información de actualización...</span>
-      </div>
-      <div class="formula">
-        <strong>Advertencia:</strong> este informe no proclama resultados. Es una herramienta de lectura y simulación; la fuente oficial final es ONPE/JNE.
-      </div>
-    </section>
-
-    <section id="sensibilidad" class="section">
-      <div class="section-title">
-        <p class="eyebrow">Sensibilidad</p>
-        <h2 id="sensitivityTitle">Prueba de sensibilidad del volumen extranjero</h2>
-        <p class="muted" id="sensitivityDescription">Estos escenarios no son pronósticos independientes. Solo prueban cómo cambiaría el resultado si el volumen final de votos extranjeros válidos termina por debajo o por encima del estimado actual.</p>
-      </div>
-      <details class="fold-card">
-        <summary>
-          <span>Ver prueba de sensibilidad</span>
-          <small>Opcional: escenarios de volumen extranjero.</small>
-        </summary>
+      <details class="fold-card final-fold-card">
+        <summary><span>Ver cálculo del umbral extranjero</span><small>ONPE extranjero contado + faltante estimado.</small></summary>
         <div class="fold-content">
-      <div class="table-wrap"><table id="sensitivityTable"></table></div>
+          <div class="panel two-col threshold-panel">
+            <div><h3 id="thresholdComparisonTitle">Comparación contra el umbral</h3><p class="muted" id="thresholdSummaryText">Cargando cálculo...</p><div class="table-wrap compact"><table id="thresholdTable"></table></div></div>
+            <div class="callout" id="thresholdCallout"></div>
+          </div>
         </div>
       </details>
     </section>
 
-
-
-    <section id="cambios" class="section alt">
-      <div class="section-title">
-        <p class="eyebrow">Control de cambios</p>
-        <h2>Cambios frente al corte anterior</h2>
-        <p class="muted">Compara automáticamente el último corte válido contra el corte previo del historial. Sirve como control rápido para detectar variaciones relevantes en el margen, el extranjero, el umbral y la calidad metodológica del corte.</p>
+    <section id="auditoria" class="section final-audit-section">
+      <div class="section-title final-section-title">
+        <p class="eyebrow">Auditoría técnica</p>
+        <h2>Todo lo técnico, plegado</h2>
+        <p class="muted">Metodología, cambios, sensibilidad, tablas y descargas quedan disponibles sin saturar la lectura principal.</p>
       </div>
-      <details class="fold-card">
-        <summary>
-          <span>Ver cambios frente al corte anterior</span>
-          <small>Auditoría rápida entre cortes válidos.</small>
-        </summary>
-        <div class="fold-content">
-      <div class="changes-grid" id="changesCards"></div>
-      <div class="table-wrap"><table id="changesTable"></table></div>
-        </div>
-      </details>
+
+      <section id="metodologia" class="audit-block">
+        <details class="fold-card final-fold-card" open>
+          <summary><span>Metodología resumida</span><small>Cómo se calculó el escenario.</small></summary>
+          <div class="fold-content">
+            <div class="method-grid final-method-grid">
+              <article class="method-card"><span>1</span><h3>ONPE contado</h3><p>Se usan votos y actas oficiales ya contabilizados.</p></article>
+              <article class="method-card"><span>2</span><h3>Perú territorial</h3><p id="projectionMethodText">Cargando fuente de proyección...</p></article>
+              <article class="method-card"><span>3</span><h3 id="foreignMethodCardTitle">Extranjero</h3><p id="foreignMethodCardText">Cargando método extranjero...</p></article>
+            </div>
+            <div id="actualizacion" class="formula method-note"><strong>Actualización del informe:</strong> <span id="manualUpdateNote">Cargando información de actualización...</span></div>
+            <div class="formula"><strong>Advertencia:</strong> este informe no proclama resultados. Es una lectura analítica; la fuente oficial final es ONPE/JNE.</div>
+          </div>
+        </details>
+      </section>
+
+      <section id="cambios" class="audit-block">
+        <details class="fold-card final-fold-card">
+          <summary><span>Cambios frente al corte anterior</span><small>Auditoría rápida entre cortes.</small></summary>
+          <div class="fold-content"><div class="changes-grid" id="changesCards"></div><div class="table-wrap"><table id="changesTable"></table></div></div>
+        </details>
+      </section>
+
+      <section id="sensibilidad" class="audit-block">
+        <details class="fold-card final-fold-card">
+          <summary><span id="sensitivityTitle">Sensibilidad del volumen extranjero</span><small id="sensitivityDescription">Escenarios opcionales.</small></summary>
+          <div class="fold-content"><div class="table-wrap"><table id="sensitivityTable"></table></div></div>
+        </details>
+      </section>
+
+      <section id="provincias" class="audit-block">
+        <details class="fold-card final-fold-card">
+          <summary><span>Tabla provincial completa</span><small>Detalle fino de la proyección Perú.</small></summary>
+          <div class="fold-content">
+            <div class="controls"><input id="provinceSearch" type="search" placeholder="Buscar departamento o provincia..." /><select id="provinceDepartmentFilter"><option value="all">Todos los departamentos</option></select><select id="provinceFilter"><option value="all">Todas</option><option value="keiko">Ganador proyectado: Keiko</option><option value="sanchez">Ganador proyectado: Sánchez</option><option value="pending">Más actas no contabilizadas</option><option value="close">Carreras más ajustadas</option></select></div>
+            <p class="muted" id="provinceCount"></p>
+            <div class="table-wrap"><table id="provinceTable"></table></div>
+          </div>
+        </details>
+      </section>
+
+      <section id="regional" class="audit-block">
+        <details class="fold-card final-fold-card">
+          <summary><span>Tabla regional complementaria</span><small>Resumen tabular del mapa.</small></summary>
+          <div class="fold-content"><div class="controls"><input id="regionSearch" type="search" placeholder="Buscar región..." /><select id="regionFilter"><option value="all">Todas</option><option value="keiko">Ganador proyectado: Keiko</option><option value="sanchez">Ganador proyectado: Sánchez</option><option value="pending">Más actas no contabilizadas</option></select></div><div class="table-wrap"><table id="regionalTable"></table></div></div>
+        </details>
+      </section>
     </section>
 
-    <section id="historial" class="section">
-      <div class="section-title">
-        <p class="eyebrow">Historial</p>
-        <h2>Evolución de cortes válidos</h2>
-        <p class="muted">Esta sección conserva solo cortes que pasaron la validación técnica y generaron ZIP de datos. Los intentos bloqueados por preflight no se incluyen como resultados.</p>
+    <section id="descargas" class="section alt final-download-section">
+      <div class="section-title final-section-title">
+        <p class="eyebrow">Descargas</p>
+        <h2>Archivos de datos y auditoría</h2>
       </div>
-      <details class="fold-card">
-        <summary>
-          <span>Ver historial de cortes</span>
-          <small>Serie de cortes válidos publicados.</small>
-        </summary>
-        <div class="fold-content">
-      <div class="history-grid" id="historyCards"></div>
-      <div class="table-wrap"><table id="historyTable"></table></div>
-        </div>
-      </details>
-    </section>
-
-    <section id="provincias" class="section alt">
-      <div class="section-title">
-        <p class="eyebrow">Detalle provincial</p>
-        <h2>Tabla provincial completa</h2>
-        <p class="muted">Esta tabla permite revisar el cálculo más fino usado para la proyección Perú sin extranjero, cuando la fuente del modelo es provincial.</p>
+      <div class="download-grid final-download-grid">
+        <a class="download-card" href="data/report-data.json" download><strong>report-data.json</strong><span>Datos usados por la página.</span></a>
+        <a class="download-card" href="data/regions.csv" download><strong>regions.csv</strong><span>Detalle regional.</span></a>
+        <a class="download-card" href="data/provinces.csv" download><strong>provinces.csv</strong><span>Detalle provincial.</span></a>
+        <a class="download-card" href="data/province-errors.csv" download><strong>province-errors.csv</strong><span>Errores provinciales si existieran.</span></a>
+        <a class="download-card" href="data/fallback-departments.csv" download id="fallbackDownloadCard"><strong>fallback-departments.csv</strong><span>Fallback departamental.</span></a>
+        <a class="download-card" href="data/history.json" download><strong>history.json</strong><span>Historial de cortes.</span></a>
+        <a class="download-card" href="data/peru_departamental_simple.geojson" download><strong>GeoJSON Perú</strong><span>Mapa departamental.</span></a>
+        <a class="download-card" href="README.md" download><strong>README.md</strong><span>Documentación.</span></a>
       </div>
-      <details class="fold-card">
-        <summary>
-          <span>Ver tabla provincial</span>
-          <small>Detalle técnico completo por provincia.</small>
-        </summary>
-        <div class="fold-content">
-      <div class="controls">
-        <input id="provinceSearch" type="search" placeholder="Buscar departamento o provincia..." />
-        <select id="provinceDepartmentFilter"><option value="all">Todos los departamentos</option></select>
-        <select id="provinceFilter">
-          <option value="all">Todas</option>
-          <option value="keiko">Ganador proyectado: Keiko</option>
-          <option value="sanchez">Ganador proyectado: Sánchez</option>
-          <option value="pending">Más actas no contabilizadas</option>
-          <option value="close">Carreras más ajustadas</option>
-        </select>
-      </div>
-      <p class="muted" id="provinceCount"></p>
-      <div class="table-wrap"><table id="provinceTable"></table></div>
-        </div>
-      </details>
-    </section>
-
-    <section id="regional" class="section">
-      <div class="section-title">
-        <p class="eyebrow">Detalle regional</p>
-        <h2>Tabla regional complementaria</h2>
-        <p class="muted">La tabla regional se mantiene como vista resumida; la proyección principal puede estar basada en provincias si el JSON contiene ese nivel.</p>
-      </div>
-      <details class="fold-card">
-        <summary>
-          <span>Ver tabla regional</span>
-          <small>Resumen tabular complementario al mapa.</small>
-        </summary>
-        <div class="fold-content">
-      <div class="controls">
-        <input id="regionSearch" type="search" placeholder="Buscar región..." />
-        <select id="regionFilter">
-          <option value="all">Todas</option>
-          <option value="keiko">Ganador proyectado: Keiko</option>
-          <option value="sanchez">Ganador proyectado: Sánchez</option>
-          <option value="pending">Más actas no contabilizadas</option>
-        </select>
-      </div>
-      <div class="table-wrap"><table id="regionalTable"></table></div>
-        </div>
-      </details>
-    </section>
-
-    <section id="descargas" class="section alt">
-      <div class="section-title">
-        <p class="eyebrow">Descargas y auditoría</p>
-        <h2>Archivos incluidos</h2>
-      </div>
-      <details class="fold-card">
-        <summary>
-          <span>Ver archivos de auditoría y descarga</span>
-          <small>JSON, CSV, GeoJSON y documentación.</small>
-        </summary>
-        <div class="fold-content">
-      <div class="download-grid">
-        <a class="download-card" href="data/report-data.json" download>
-          <strong>report-data.json</strong>
-          <span>Datos usados por la página.</span>
-        </a>
-        <a class="download-card" href="data/regions.csv" download>
-          <strong>regions.csv</strong>
-          <span>Detalle regional en CSV.</span>
-        </a>
-        <a class="download-card" href="data/provinces.csv" download>
-          <strong>provinces.csv</strong>
-          <span>Detalle provincial en CSV.</span>
-        </a>
-        <a class="download-card" href="data/province-errors.csv" download>
-          <strong>province-errors.csv</strong>
-          <span>Errores de descarga provincial, si los hubiera.</span>
-        </a>
-        <a class="download-card" href="data/peru_departamental_simple.geojson" download>
-          <strong>peru_departamental_simple.geojson</strong>
-          <span>Mapa departamental local para el coroplético.</span>
-        </a>
-        <a class="download-card" href="data/history.json" download>
-          <strong>history.json</strong>
-          <span>Historial resumido de cortes válidos.</span>
-        </a>
-        <a class="download-card" href="README.md" download>
-          <strong>README.md</strong>
-          <span>Documentación del proyecto y metodología.</span>
-        </a>
-      </div>
-        </div>
-      </details>
     </section>
   </main>
 
   <footer>
-    <p id="footerText">Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum mientras exista voto extranjero pendiente. Actualización verificada manualmente. No reemplaza resultados oficiales ni proclamación electoral.</p>
+    <p id="footerText">Informe analítico. Datos oficiales: ONPE. Escenario externo: Datum mientras exista voto extranjero pendiente. No reemplaza resultados oficiales ni proclamación electoral.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
