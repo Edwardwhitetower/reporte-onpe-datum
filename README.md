@@ -389,3 +389,16 @@ Solución:
 Forzar títulos/strong/b/summary a tonos claros dentro de secciones oscuras.
 Mantener texto oscuro en tarjetas blancas internas para no romper la auditoría.
 ```
+
+
+
+### Fix de legibilidad e historial interactivo
+
+Cambios incluidos:
+
+```text
+1. Se reforzó el contraste del texto secundario en secciones con fondo blanco.
+2. Se corrigieron encabezados de acordeón dentro de auditoría técnica sobre fondo oscuro.
+3. La métrica "Sánchez +..." fue reemplazada por "Cambio del margen", para evitar confundir una variación histórica con el ganador actual.
+4. La gráfica de evolución ahora permite seleccionar cortes: al tocar un punto o una tarjeta, se resalta el corte correspondiente y se muestra su detalle.
+```

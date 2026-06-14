@@ -1377,3 +1377,159 @@ details > summary .muted,
   background:rgba(96,165,250,.38);
   color:#ffffff;
 }
+
+
+/* ------------------------------------------------------------
+   Fix final: legibilidad en fondos claros + historial interactivo
+   ------------------------------------------------------------ */
+
+/* Fondos claros: texto secundario menos tenue */
+.final-summary-section,
+.final-history-section,
+.final-scenario-section,
+.final-foreign-section,
+.final-territory-section{
+  color:#111827;
+}
+.final-summary-section .final-section-title p,
+.final-history-section .final-section-title p,
+.final-scenario-section .final-section-title p,
+.final-foreign-section .final-section-title p,
+.final-territory-section .final-section-title p,
+.final-summary-section .muted,
+.final-history-section .muted,
+.final-scenario-section .muted,
+.final-foreign-section .muted,
+.final-territory-section .muted{
+  color:#475569 !important;
+}
+.final-history-section .card span,
+.final-history-section .history-card span,
+.final-history-section .spark-head small,
+.final-history-section .timeline-cut span,
+.final-history-section .timeline-cut em,
+.final-history-section .history-selected-panel span,
+.final-summary-section .card span,
+.final-scenario-section .card span,
+.final-foreign-section .card span{
+  color:#475569 !important;
+}
+.final-history-section .card small,
+.final-summary-section .card small,
+.final-scenario-section .card small,
+.final-foreign-section .card small{
+  color:#64748b !important;
+}
+.final-history-section .spark-head strong,
+.final-history-section .history-card strong,
+.final-history-section .history-selected-panel strong{
+  color:#111827;
+}
+
+/* Auditoría oscura: encabezados de acordeón visibles */
+.final-audit-section .final-section-title p,
+.final-audit-section .muted{
+  color:#dbe4f0 !important;
+}
+.final-audit-section .fold-card > summary,
+.final-audit-section details > summary{
+  color:#f8fafc !important;
+  background:rgba(255,255,255,.075);
+  border:1px solid rgba(255,255,255,.16);
+}
+.final-audit-section .fold-card > summary span,
+.final-audit-section details > summary span,
+.final-audit-section .fold-card > summary b,
+.final-audit-section details > summary b{
+  color:#ffffff !important;
+}
+.final-audit-section .fold-card > summary small,
+.final-audit-section details > summary small{
+  color:#cbd5e1 !important;
+}
+
+/* Tarjetas blancas internas en auditoría: mantener texto oscuro y legible */
+.final-audit-section .method-card,
+.final-audit-section .card,
+.final-audit-section .table-card,
+.final-audit-section .download-card{
+  color:#111827;
+}
+.final-audit-section .method-card h3,
+.final-audit-section .card h3,
+.final-audit-section .table-card h3,
+.final-audit-section .download-card h3{
+  color:#111827 !important;
+}
+.final-audit-section .method-card p,
+.final-audit-section .card p,
+.final-audit-section .table-card p,
+.final-audit-section .download-card p{
+  color:#475569 !important;
+}
+
+/* Historial interactivo */
+.spark-dot{
+  cursor:pointer;
+  transition:r .18s ease, stroke-width .18s ease, filter .18s ease;
+}
+.spark-dot.selected{
+  stroke:#ffffff;
+  stroke-width:4;
+  filter:drop-shadow(0 0 10px rgba(37,99,235,.45));
+}
+.spark-selected-line{
+  stroke:rgba(37,99,235,.24);
+  stroke-width:2;
+  stroke-dasharray:5 7;
+}
+.timeline-cut{
+  cursor:pointer;
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.timeline-cut:hover{
+  transform:translateY(-2px);
+  border-color:rgba(37,99,235,.28);
+  box-shadow:0 18px 42px rgba(15,23,42,.12);
+}
+.timeline-cut.active{
+  border-color:rgba(37,99,235,.5);
+  box-shadow:0 18px 48px rgba(37,99,235,.16);
+}
+.history-selected-panel{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:14px;
+  margin-top:16px;
+  padding:16px;
+  border-radius:20px;
+  border:1px solid rgba(15,23,42,.1);
+  background:linear-gradient(135deg,#f8fafc,#ffffff);
+}
+.history-selected-panel small{
+  display:block;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:900;
+  color:#64748b;
+  font-size:.72rem;
+}
+.history-selected-panel strong{
+  display:block;
+  margin-top:4px;
+  font-size:1.05rem;
+}
+.history-selected-panel span{
+  display:block;
+  margin-top:4px;
+  font-size:.92rem;
+}
+.trend-up{color:#0f766e !important}
+.trend-down{color:#b45309 !important}
+.trend-neutral{color:#475569 !important}
+
+@media (max-width:720px){
+  .history-selected-panel{
+    grid-template-columns:1fr;
+  }
+}

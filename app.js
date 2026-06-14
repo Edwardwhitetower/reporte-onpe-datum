@@ -26,6 +26,29 @@ function leadClass(lead){
   return n >= 0 ? 'keiko' : 'sanchez';
 }
 
+function marginChangeText(delta){
+  const n = Number(delta || 0);
+  if(n === 0) return 'Sin variación';
+  return n > 0
+    ? `Subió ${moneyish(n)} votos`
+    : `Se redujo ${moneyish(Math.abs(n))} votos`;
+}
+
+function marginChangeDescription(delta){
+  const n = Number(delta || 0);
+  if(n === 0) return 'La ventaja ajustada no cambió desde el primer corte';
+  return n > 0
+    ? 'La ventaja ajustada se amplió desde el primer corte'
+    : 'La ventaja ajustada se redujo desde el primer corte';
+}
+
+function marginChangeClass(delta){
+  const n = Number(delta || 0);
+  if(n === 0) return 'trend-neutral';
+  return n > 0 ? 'trend-up' : 'trend-down';
+}
+
+
 function signedPoints(n){
   const value = Number(n || 0);
   const sign = value >= 0 ? '+' : '−';
@@ -1121,6 +1144,7 @@ function renderFinalHistoryVisuals(){
   const timeline = document.getElementById('historyTimeline');
   const spark = document.getElementById('historySparkline');
   if(!timeline && !spark) return;
+
   const entries = [...(state.history || [])].filter(e => e && e.cutoff);
   if(!entries.length){
     if(timeline) timeline.innerHTML = '<p class="muted">No se encontró historial de cortes.</p>';
@@ -1131,6 +1155,14 @@ function renderFinalHistoryVisuals(){
   const chron = [...entries].reverse();
   const latest = entries[0];
   const first = chron[0];
+
+  if(!state.selectedHistoryCutoff || !chron.some(e => e.cutoff === state.selectedHistoryCutoff)){
+    state.selectedHistoryCutoff = latest.cutoff;
+  }
+
+  const selectedCutoff = state.selectedHistoryCutoff;
+  const selectedEntry = chron.find(e => e.cutoff === selectedCutoff) || latest;
+
   const adjustedVals = chron.map(e => Number(e.adjustedLeadKeiko || 0));
   const currentVals = chron.map(e => Number(e.currentLeadKeiko || 0));
   const allVals = adjustedVals.concat(currentVals).filter(Number.isFinite);
@@ -1146,30 +1178,51 @@ function renderFinalHistoryVisuals(){
   };
   const points = vals => vals.map((v,i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
   const zeroY = y(0);
+  const trend = Number(latest.adjustedLeadKeiko || 0) - Number(first.adjustedLeadKeiko || 0);
+
+  const selectedIndex = chron.findIndex(e => e.cutoff === selectedEntry.cutoff);
+  const selectedAdjusted = Number(selectedEntry.adjustedLeadKeiko || 0);
+  const selectedCurrent = Number(selectedEntry.currentLeadKeiko || 0);
+  const selectedQuality = Number(selectedEntry.provinceErrors || 0) || Number(selectedEntry.fallbackDepartmentCount || 0)
+    ? `Fallback ${moneyish(selectedEntry.fallbackDepartmentCount || 0)} / errores ${moneyish(selectedEntry.provinceErrors || 0)}`
+    : 'Provincia completa';
 
   if(spark){
     spark.innerHTML = `
       <div class="spark-head">
         <div><small>Evolución completa</small><strong>${moneyish(chron.length)} cortes válidos</strong></div>
-        <div><small>Desde primer corte</small><strong class="${leadClass(Number(latest.adjustedLeadKeiko||0)-Number(first.adjustedLeadKeiko||0))}">${leadText(Number(latest.adjustedLeadKeiko||0)-Number(first.adjustedLeadKeiko||0))}</strong></div>
+        <div><small>Margen desde primer corte</small><strong class="${marginChangeClass(trend)}">${marginChangeText(trend)}</strong></div>
       </div>
       <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Evolución de la ventaja ajustada y ONPE actual">
         <line x1="${pad}" x2="${width-pad}" y1="${zeroY}" y2="${zeroY}" class="spark-zero" />
         <polyline points="${points(currentVals)}" class="spark-current" />
         <polyline points="${points(adjustedVals)}" class="spark-adjusted" />
-        ${chron.map((e,i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(Number(e.adjustedLeadKeiko||0)).toFixed(1)}" r="4" class="spark-dot"><title>${escapeHtml(e.cutoff)} · ${leadText(e.adjustedLeadKeiko)}</title></circle>`).join('')}
+        ${chron.map((e,i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(Number(e.adjustedLeadKeiko||0)).toFixed(1)}" r="${e.cutoff === selectedCutoff ? 7 : 4}" class="spark-dot ${e.cutoff === selectedCutoff ? 'selected' : ''}" data-history-cutoff="${escapeHtml(e.cutoff)}" tabindex="0" role="button" aria-label="Seleccionar corte ${i + 1}: ${escapeHtml(e.cutoff)}"><title>Corte ${i + 1}: ${escapeHtml(e.cutoff)} · ${leadText(e.adjustedLeadKeiko)}</title></circle>`).join('')}
+        ${selectedIndex >= 0 ? `<line x1="${x(selectedIndex).toFixed(1)}" x2="${x(selectedIndex).toFixed(1)}" y1="${pad}" y2="${height-pad}" class="spark-selected-line" />` : ''}
       </svg>
       <div class="spark-legend"><span><i class="adjusted"></i> Ventaja ajustada</span><span><i class="current"></i> ONPE actual</span></div>
+      <div class="history-selected-panel">
+        <div>
+          <small>Corte seleccionado</small>
+          <strong>${escapeHtml(selectedEntry.cutoff)}</strong>
+          <span>${valueOrDash(selectedEntry.actasContabilizadasPct, x => pct(x, 3))} actas contabilizadas · ${selectedQuality}</span>
+        </div>
+        <div>
+          <small>Ventaja ajustada</small>
+          <strong class="${leadClass(selectedAdjusted)}">${leadText(selectedAdjusted)}</strong>
+          <span>ONPE actual: <b class="${leadClass(selectedCurrent)}">${leadText(selectedCurrent)}</b></span>
+        </div>
+      </div>
     `;
   }
 
   if(timeline){
     timeline.innerHTML = chron.map((e, i) => {
-      const active = e.cutoff === latest.cutoff ? 'active' : '';
+      const active = e.cutoff === selectedCutoff ? 'active' : '';
       const quality = Number(e.provinceErrors || 0) || Number(e.fallbackDepartmentCount || 0)
         ? `Fallback ${moneyish(e.fallbackDepartmentCount || 0)} / errores ${moneyish(e.provinceErrors || 0)}`
         : 'Provincia completa';
-      return `<article class="timeline-cut ${active}">
+      return `<article class="timeline-cut ${active}" data-history-cutoff="${escapeHtml(e.cutoff)}" role="button" tabindex="0" aria-pressed="${active ? 'true' : 'false'}">
         <small>Corte ${i + 1}</small>
         <b>${escapeHtml(e.cutoff)}</b>
         <span>${valueOrDash(e.actasContabilizadasPct, x => pct(x, 3))} actas</span>
@@ -1178,6 +1231,24 @@ function renderFinalHistoryVisuals(){
       </article>`;
     }).join('');
   }
+
+  const bind = el => {
+    const cutoff = el.dataset.historyCutoff;
+    if(!cutoff) return;
+    const select = () => {
+      state.selectedHistoryCutoff = cutoff;
+      renderFinalHistoryVisuals();
+    };
+    el.addEventListener('click', select);
+    el.addEventListener('keydown', ev => {
+      if(ev.key === 'Enter' || ev.key === ' '){
+        ev.preventDefault();
+        select();
+      }
+    });
+  };
+
+  document.querySelectorAll('[data-history-cutoff]').forEach(bind);
 }
 
 function render(){
@@ -1617,7 +1688,7 @@ function renderHistory(){
     ['Cortes válidos', moneyish(entries.length), 'Solo cortes con ZIP de datos generado'],
     ['Último corte', latest.cutoff, `${valueOrDash(latest.actasContabilizadasPct, x => pct(x, 3))} actas contabilizadas`],
     ['Último umbral extranjero', threshold, latest.foreignClosed ? 'Datum ya no está activo' : thresholdDescription(latest.keikoNeededPctPendingForeign)],
-    ['Cambio desde primer corte', leadText(trend), 'Variación de la ventaja ajustada en el historial']
+    ['Cambio del margen', marginChangeText(trend), marginChangeDescription(trend)]
   ].map(([label, value, desc]) => `<article class="card history-card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
 
   table.innerHTML = `
