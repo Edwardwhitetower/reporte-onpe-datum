@@ -456,3 +456,18 @@ colores específicos para ventajas Keiko/Sánchez
 ```
 
 Este fix requiere reemplazar también `index.html`, no solo `style.css`, porque el problema puede mantenerse por caché del archivo CSS.
+
+
+
+### Actualización editorial final: victoria virtual consolidada
+
+Se ajustaron los textos dinámicos para cortes casi finales:
+
+```text
+- Si las actas superan 99.5% y el extranjero pendiente estimado es <= 1,500 votos,
+  el tablero pasa a hablar de "victoria virtual consolidada bajo el modelo".
+- Se reduce el énfasis en Datum cuando el extranjero pendiente ya es marginal.
+- Se agrega una lectura territorial: Perú sin extranjero puede seguir favoreciendo a Sánchez,
+  pero la ventaja extranjera ONPE ya contabilizada compensa ese margen.
+- Se mantiene la advertencia de que no es proclamación oficial.
+```
