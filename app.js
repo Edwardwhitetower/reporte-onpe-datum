@@ -98,13 +98,27 @@ function isForeignClosed(){
 }
 
 function foreignModeText(){
-  return isForeignClosed()
-    ? 'Extranjero oficial ONPE completo; Datum queda como referencia histórica.'
-    : 'ONPE para votos extranjeros ya contabilizados + Datum solo para el extranjero pendiente.';
+  const p = state.data?.projection || {};
+  const pending = Number(p.foreignRemainingVotesEstimated || 0);
+
+  if(isForeignClosed()){
+    return 'Extranjero oficial ONPE completo; Datum queda como referencia histórica.';
+  }
+
+  if(isForeignResidualAmount(pending)){
+    return `Extranjero ONPE casi cerrado; Datum solo aplica a un remanente marginal de ${moneyish(pending)} votos estimados.`;
+  }
+
+  return 'ONPE para votos extranjeros ya contabilizados + Datum solo para el extranjero pendiente.';
 }
 
 function adjustedMetricLabel(){
-  return isForeignClosed() ? 'Diferencia con extranjero ONPE' : 'Diferencia ajustada Datum';
+  const p = state.data?.projection || {};
+  const pending = Number(p.foreignRemainingVotesEstimated || 0);
+
+  if(isForeignClosed()) return 'Diferencia con extranjero ONPE';
+  if(isForeignResidualAmount(pending)) return 'Diferencia total casi final';
+  return 'Diferencia ajustada Datum';
 }
 
 
@@ -196,7 +210,9 @@ function calculateForeignThreshold(){
   if(rawNeededPct !== null){
     if(rawNeededPct <= 0){
       status = 'safe';
-      statusText = 'Keiko ya estaría arriba antes de estimar el extranjero pendiente.';
+      statusText = isForeignResidualAmount(pendingForeign)
+        ? 'Keiko ya está arriba antes del remanente extranjero; el pendiente es marginal y no define el resultado bajo este modelo.'
+        : 'Keiko ya estaría arriba antes de estimar el extranjero pendiente.';
     }else if(rawNeededPct > 100){
       status = 'danger';
       statusText = 'Ni ganando todo el extranjero pendiente alcanzaría bajo este corte.';
@@ -380,7 +396,7 @@ function calculateScenarioState(){
   const limaReinforces = Number(jee.limaJee || 0) > 0 && Number(jee.limaLead || 0) > 0;
   const fallbackWarning = fallback.length > 0 || Number(p.fallbackDepartmentCount || 0) > 0 || Number(p.provinceErrors || 0) > 0;
   const limaFallback = fallback.some(x => String(x.departamento || '').toUpperCase() === 'LIMA');
-  const peruNoForeignLead = Number(p.peruNoForeignLeadKeiko || 0);
+  const peruNoForeignLead = Number(p.peruNoForeignLeadKeiko ?? p.withoutForeignLeadKeiko ?? 0);
   const nearFinalStage = isNearFinalStage(Number(n.actasContabilizadasPct || 0), pendingForeign);
   const foreignResidual = isForeignResidualAmount(pendingForeign);
 
@@ -1317,10 +1333,13 @@ function render(){
   const sanchez = c.find(x => x.id === 'sanchez');
   const sourceText = projectionLabel(p.projectionSource || m.projectionSource);
   const foreignClosed = isForeignClosed();
+  const foreignResidual = isForeignResidualAmount(p.foreignRemainingVotesEstimated || 0);
   const adjustedLabel = adjustedMetricLabel();
 
   const heroTitle = document.getElementById('heroTitle');
-  if(heroTitle) heroTitle.textContent = foreignClosed ? 'ONPE + voto extranjero oficial' : 'ONPE + escenario extranjero Datum';
+  if(heroTitle) heroTitle.textContent = foreignClosed
+    ? 'ONPE + voto extranjero oficial'
+    : (foreignResidual ? 'ONPE casi final + remanente extranjero marginal' : 'ONPE + escenario extranjero Datum');
   document.getElementById('heroSubtitle').textContent = `${m.subtitle} · Corte ONPE ${n.fechaActualizacion}`;
 
   const cutoff = document.getElementById('cutoffNotice');
@@ -1329,14 +1348,22 @@ function render(){
       <strong>Última actualización manual del informe:</strong> ${formatDateTime(m.generatedAt)}<br>
       <strong>Corte ONPE:</strong> ${n.fechaActualizacion} · ${pct(n.actasContabilizadasPct, 3)} de actas contabilizadas.<br>
       <strong>Fuente de proyección Perú:</strong> ${sourceText}.<br>
-      <strong>Tratamiento del extranjero:</strong> ${foreignClosed ? 'bloque extranjero contabilizado por ONPE; Datum ya no se usa en el cálculo principal.' : `ONPE para votos ya contabilizados + Datum (${pct(p.datumForeignKeikoPct, 2)} Keiko / ${pct(p.datumForeignSanchezPct, 2)} Sánchez) solo para lo pendiente.`}<br>
+      <strong>Tratamiento del extranjero:</strong> ${foreignClosed
+        ? 'bloque extranjero contabilizado por ONPE; Datum ya no se usa en el cálculo principal.'
+        : (foreignResidual
+            ? `extranjero casi cerrado por ONPE; Datum solo aplica al remanente marginal de ${moneyish(p.foreignRemainingVotesEstimated || 0)} votos estimados.`
+            : `ONPE para votos ya contabilizados + Datum (${pct(p.datumForeignKeikoPct, 2)} Keiko / ${pct(p.datumForeignSanchezPct, 2)} Sánchez) solo para lo pendiente.`)}<br>
       <strong>Nota:</strong> este informe es una proyección analítica y no reemplaza los resultados oficiales de ONPE/JNE.
     `;
   }
 
   const projectionSourceText = document.getElementById('projectionSourceText');
   if(projectionSourceText){
-    projectionSourceText.textContent = foreignClosed ? `Suma la ${sourceText} para Perú y el voto extranjero oficial ONPE.` : `Suma la ${sourceText} para Perú y el escenario extranjero mixto ONPE + Datum.`;
+    projectionSourceText.textContent = foreignClosed
+      ? `Suma la ${sourceText} para Perú y el voto extranjero oficial ONPE.`
+      : (foreignResidual
+          ? `Suma la ${sourceText} para Perú, el extranjero ONPE ya contado y un remanente extranjero marginal.`
+          : `Suma la ${sourceText} para Perú y el escenario extranjero mixto ONPE + Datum.`);
   }
 
   const projectionMethodText = document.getElementById('projectionMethodText');
@@ -1352,8 +1379,14 @@ function render(){
 
   const foreignMethodTitle = document.getElementById('foreignMethodCardTitle');
   const foreignMethodText = document.getElementById('foreignMethodCardText');
-  if(foreignMethodTitle) foreignMethodTitle.textContent = foreignClosed ? 'Extranjero oficial ONPE' : 'Extranjero ONPE + Datum';
-  if(foreignMethodText) foreignMethodText.textContent = foreignClosed ? 'El voto extranjero ya está contabilizado por ONPE. Datum deja de aplicarse al cálculo principal y queda solo como referencia histórica de cortes anteriores.' : 'Si ONPE ya contabilizó votos del extranjero, se respetan esos votos oficiales. Datum se aplica solo al extranjero pendiente.';
+  if(foreignMethodTitle) foreignMethodTitle.textContent = foreignClosed
+    ? 'Extranjero oficial ONPE'
+    : (foreignResidual ? 'Extranjero casi cerrado' : 'Extranjero ONPE + Datum');
+  if(foreignMethodText) foreignMethodText.textContent = foreignClosed
+    ? 'El voto extranjero ya está contabilizado por ONPE. Datum deja de aplicarse al cálculo principal y queda solo como referencia histórica de cortes anteriores.'
+    : (foreignResidual
+        ? `El voto extranjero ya está prácticamente incorporado por ONPE. Datum solo queda para un remanente marginal de ${moneyish(p.foreignRemainingVotesEstimated || 0)} votos estimados.`
+        : 'Si ONPE ya contabilizó votos del extranjero, se respetan esos votos oficiales. Datum se aplica solo al extranjero pendiente.');
 
   const methodNote = document.getElementById('manualUpdateNote');
   if(methodNote){
@@ -1390,9 +1423,9 @@ function render(){
   document.getElementById('mainCallout').innerHTML = `
     <strong>Lectura principal y conclusión pública</strong>
     ${publicScenarioConclusion}
-    <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al aplicar ${foreignClosed ? 'el extranjero oficial ONPE' : 'el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente—'} la diferencia queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
+    <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al sumar ${foreignClosed ? 'el extranjero oficial ONPE' : (foreignResidual ? 'el extranjero ONPE ya contado y el remanente marginal estimado' : 'el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente—')} la diferencia total queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
     ${p.projectionSource === 'hibrido_provincia_departamento' ? `<p class="muted"><b>Nota de calidad del corte:</b> se usó fallback departamental en ${moneyish(p.fallbackDepartmentCount || getFallbackDepartments().length)} departamento(s) para evitar omitir provincias que no respondieron. ${fallbackSummaryText()}.</p>` : ''}
-    <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. ${foreignClosed ? 'El bloque extranjero está cerrado para efectos del cálculo principal.' : `Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.`}</p>`;
+    <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. ${foreignClosed ? 'El bloque extranjero está cerrado para efectos del cálculo principal.' : (foreignResidual ? `Remanente extranjero marginal: ${moneyish(p.foreignRemainingVotesEstimated || 0)} votos estimados.` : `Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.`)}</p>`;
 
   renderForeignSectionHeader();
   renderThreshold();
@@ -1422,6 +1455,9 @@ function renderForeignSectionHeader(){
   const sensDesc = document.getElementById('sensitivityDescription');
   const footer = document.getElementById('footerText');
 
+  const p = state.data?.projection || {};
+  const residual = isForeignResidualAmount(p.foreignRemainingVotesEstimated || 0);
+
   if(isForeignClosed()){
     if(eyebrow) eyebrow.textContent = 'Extranjero ONPE';
     if(title) title.textContent = 'Voto extranjero contabilizado oficialmente';
@@ -1430,6 +1466,14 @@ function renderForeignSectionHeader(){
     if(sensTitle) sensTitle.textContent = 'Sensibilidad cerrada';
     if(sensDesc) sensDesc.textContent = 'El extranjero ya no se simula porque no queda voto pendiente significativo en ese bloque.';
     if(footer) footer.textContent = 'Informe analítico. Datos oficiales: ONPE. Datum queda como referencia histórica si el extranjero ya fue contabilizado. No reemplaza resultados oficiales ni proclamación electoral.';
+  }else if(residual){
+    if(eyebrow) eyebrow.textContent = 'Extranjero casi cerrado';
+    if(title) title.textContent = 'El remanente extranjero ya no define el resultado';
+    if(desc) desc.textContent = `Quedan solo ${moneyish(p.foreignRemainingVotesEstimated || 0)} votos extranjeros estimados pendientes. Datum queda reducido a ese remanente marginal; el resultado total se explica casi por completo por ONPE ya contabilizado.`;
+    if(comparison) comparison.textContent = 'Remanente extranjero marginal';
+    if(sensTitle) sensTitle.textContent = 'Sensibilidad residual';
+    if(sensDesc) sensDesc.textContent = 'La sensibilidad del extranjero ya es marginal porque el volumen pendiente es demasiado pequeño para cambiar la ventaja total bajo la prueba extrema.';
+    if(footer) footer.textContent = 'Informe analítico. Datos oficiales: ONPE. Datum solo aplica a un remanente extranjero marginal. No reemplaza resultados oficiales ni proclamación electoral.';
   }else{
     if(eyebrow) eyebrow.textContent = 'Umbral extranjero';
     if(title) title.textContent = 'Qué necesita Keiko del voto extranjero pendiente';
@@ -1718,7 +1762,7 @@ function renderCutChanges(){
       prev: leadText(prev.adjustedLeadKeiko),
       latest: leadText(latest.adjustedLeadKeiko),
       change: adjustedMarginDelta === null ? 'N/D' : formatMarginShift(adjustedMarginDelta),
-      note: isForeignClosed() ? 'Con extranjero ONPE' : 'Con escenario mixto ONPE + Datum'
+      note: isForeignClosed() ? 'Con extranjero ONPE' : (isForeignResidualAmount(latest.foreignRemainingVotesEstimated || 0) ? 'Con extranjero casi cerrado' : 'Con escenario mixto ONPE + Datum')
     },
     {
       label: 'Fuente / calidad',
@@ -1758,12 +1802,14 @@ function renderHistory(){
   const latest = entries[0];
   const first = entries[entries.length - 1];
   const threshold = latest.foreignClosed ? 'Cerrado' : thresholdDisplay(latest.keikoNeededPctPendingForeign, 2);
+  const latestPendingForeign = Number(latest.foreignRemainingVotesEstimated ?? latest.foreignRemainingVotes ?? state.data?.projection?.foreignRemainingVotesEstimated ?? 0);
+  const latestResidual = isForeignResidualAmount(latestPendingForeign);
   const trend = Number(latest.adjustedLeadKeiko || 0) - Number(first.adjustedLeadKeiko || 0);
 
   cards.innerHTML = [
     ['Cortes válidos', moneyish(entries.length), 'Solo cortes con ZIP de datos generado'],
     ['Último corte', latest.cutoff, `${valueOrDash(latest.actasContabilizadasPct, x => pct(x, 3))} actas contabilizadas`],
-    ['Último umbral extranjero', threshold, latest.foreignClosed ? 'Datum ya no está activo' : thresholdDescription(latest.keikoNeededPctPendingForeign)],
+    [latestResidual ? 'Extranjero pendiente' : 'Último umbral extranjero', latestResidual ? moneyish(latestPendingForeign) : threshold, latest.foreignClosed ? 'Datum ya no está activo' : (latestResidual ? 'Remanente marginal; no define el resultado total' : thresholdDescription(latest.keikoNeededPctPendingForeign))],
     ['Cambio del margen', marginChangeText(trend), marginChangeDescription(trend)]
   ].map(([label, value, desc]) => `<article class="card history-card"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
 
