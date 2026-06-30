@@ -102,7 +102,10 @@ function foreignModeText(){
   const pending = Number(p.foreignRemainingVotesEstimated || 0);
 
   if(isForeignClosed()){
-    return 'Extranjero oficial ONPE completo; Datum queda como referencia histórica.';
+    const n = state.data?.nationalOnpe || {};
+    return isFinalCountStage(n.actasContabilizadasPct, pending)
+      ? 'Conteo al 100%; extranjero contabilizado por ONPE y sin remanente pendiente.'
+      : 'Extranjero oficial ONPE completo; Datum queda como referencia histórica.';
   }
 
   if(isForeignResidualAmount(pending)){
@@ -136,6 +139,16 @@ function residualForeignText(pendingForeign){
     ? `extranjero pendiente marginal: ${moneyish(pendingForeign)} votos estimados`
     : `extranjero pendiente: ${moneyish(pendingForeign)} votos estimados`;
 }
+
+
+function isFinalCountStage(actasPct, pendingForeign){
+  return Number(actasPct || 0) >= 99.999 && Number(pendingForeign || 0) <= 0;
+}
+
+function finalCountText(){
+  return '100% de actas contabilizadas';
+}
+
 
 
 function historySourceLabel(source){
@@ -388,7 +401,10 @@ function calculateScenarioState(){
   const pendingForeign = Math.max(0, Number(p.foreignRemainingVotesEstimated || 0));
   const leadBeforePending = Number(t.leadBeforePending || 0);
   const safeLeadWorstForeign = leadBeforePending - pendingForeign;
-  const thresholdCleared = Number(t.rawNeededPct) < 0;
+  const finalCountStage = isFinalCountStage(Number(n.actasContabilizadasPct || 0), pendingForeign);
+  const thresholdCleared = finalCountStage
+    ? safeLeadWorstForeign > 0
+    : (isForeignClosed() ? leadBeforePending > 0 : Number(t.rawNeededPct) < 0);
   const currentOnpeAhead = currentLead > 0;
   const adjustedAhead = adjustedLead > 0;
   const worstForeignAhead = safeLeadWorstForeign > 0;
@@ -399,6 +415,7 @@ function calculateScenarioState(){
   const peruNoForeignLead = Number(p.peruNoForeignLeadKeiko ?? p.withoutForeignLeadKeiko ?? 0);
   const nearFinalStage = isNearFinalStage(Number(n.actasContabilizadasPct || 0), pendingForeign);
   const foreignResidual = isForeignResidualAmount(pendingForeign);
+  const finalCountClosed = finalCountStage;
 
   let level = 'neutral';
   let title = 'Escenario abierto bajo el modelo';
@@ -433,7 +450,12 @@ function calculateScenarioState(){
     explanation = 'Keiko lidera el conteo ONPE, no depende del extranjero pendiente y conserva ventaja incluso en el peor escenario del extranjero restante.';
   }
 
-  if(currentOnpeAhead && thresholdCleared && worstForeignAhead && nearFinalStage){
+  if(currentOnpeAhead && thresholdCleared && worstForeignAhead && finalCountClosed){
+    level = 'safe';
+    title = 'Resultado ONPE al 100%: ventaja total de Keiko';
+    confidence = 'Máxima bajo el conteo publicado';
+    explanation = 'El conteo de actas está al 100% y no queda extranjero pendiente estimado. La ventaja total de Keiko se sostiene con votos ONPE contabilizados, no con una simulación del extranjero.';
+  }else if(currentOnpeAhead && thresholdCleared && worstForeignAhead && nearFinalStage){
     level = 'safe';
     title = 'Victoria virtual consolidada bajo el modelo';
     confidence = 'Muy alta';
@@ -467,6 +489,7 @@ function calculateScenarioState(){
     peruNoForeignLead,
     nearFinalStage,
     foreignResidual,
+    finalCountClosed,
     actasPct: Number(n.actasContabilizadasPct || 0),
     fallback
   };
@@ -488,19 +511,26 @@ function renderScenarioState(){
     ? `Lima: ${moneyish(jee.limaJee)} actas JEE (${pct(jee.limaShare, 1)}) · ${leadText(jee.limaLead)} proyectados`
     : 'Lima no concentra actas JEE en este corte';
 
-  const scenarioCards = s.nearFinalStage
+  const scenarioCards = s.finalCountClosed
     ? [
-        ['Estado', s.title, `Confianza bajo el modelo: ${s.confidence}`],
-        ['Conteo ONPE actual', leadText(s.currentLead), 'Keiko lidera el conteo contabilizado por ONPE'],
-        ['Colchón extremo final', leadText(s.safeLeadWorstForeign), `Aun si todo el extranjero pendiente (${moneyish(s.pendingForeign)}) fuese a Sánchez`],
-        ['Perú sin extranjero', leadText(s.peruNoForeignLead), s.peruNoForeignLead < 0 ? 'Sánchez mantiene ventaja territorial interna; el extranjero ONPE la compensa ampliamente' : 'Keiko también lidera el territorio interno sin extranjero']
+        ['Estado', s.title, `Confianza: ${s.confidence}`],
+        ['Resultado total ONPE', leadText(s.currentLead), 'Keiko lidera con el 100% de actas contabilizadas'],
+        ['Extranjero pendiente', '0', 'No queda remanente extranjero estimado; Datum ya no incide'],
+        ['Perú sin extranjero', leadText(s.peruNoForeignLead), s.peruNoForeignLead < 0 ? 'Sánchez gana el territorio interno; el extranjero ONPE sostiene la ventaja total de Keiko' : 'Keiko también lidera el territorio interno sin extranjero']
       ]
-    : [
-        ['Estado', s.title, `Confianza bajo el modelo: ${s.confidence}`],
-        ['Conteo ONPE actual', leadText(s.currentLead), s.currentOnpeAhead ? 'Keiko ya aparece adelante en el conteo contabilizado' : 'Keiko aún no lidera el conteo contabilizado'],
-        ['Ventaja segura ante extranjero', leadText(s.safeLeadWorstForeign), 'Escenario extremo: todo el extranjero pendiente para Sánchez'],
-        ['Actas JEE y territorio', jeeText, limaText]
-      ];
+    : (s.nearFinalStage
+      ? [
+          ['Estado', s.title, `Confianza bajo el modelo: ${s.confidence}`],
+          ['Conteo ONPE actual', leadText(s.currentLead), 'Keiko lidera el conteo contabilizado por ONPE'],
+          ['Colchón extremo final', leadText(s.safeLeadWorstForeign), `Aun si todo el extranjero pendiente (${moneyish(s.pendingForeign)}) fuese a Sánchez`],
+          ['Perú sin extranjero', leadText(s.peruNoForeignLead), s.peruNoForeignLead < 0 ? 'Sánchez mantiene ventaja territorial interna; el extranjero ONPE la compensa ampliamente' : 'Keiko también lidera el territorio interno sin extranjero']
+        ]
+      : [
+          ['Estado', s.title, `Confianza bajo el modelo: ${s.confidence}`],
+          ['Conteo ONPE actual', leadText(s.currentLead), s.currentOnpeAhead ? 'Keiko ya aparece adelante en el conteo contabilizado' : 'Keiko aún no lidera el conteo contabilizado'],
+          ['Ventaja segura ante extranjero', leadText(s.safeLeadWorstForeign), 'Escenario extremo: todo el extranjero pendiente para Sánchez'],
+          ['Actas JEE y territorio', jeeText, limaText]
+        ]);
 
   cards.innerHTML = scenarioCards.map(([label, value, desc]) => `<article class="card scenario-card ${s.level}"><small>${label}</small><strong>${value}</strong><span>${desc}</span></article>`).join('');
 
@@ -509,18 +539,28 @@ function renderScenarioState(){
     : `<p class="muted"><b>Calidad del corte:</b> sin fallback departamental relevante; lectura metodológica más limpia.</p>`;
 
   callout.className = `callout scenario-callout scenario-${s.level}`;
-  const nearFinalNote = s.nearFinalStage
+  const finalCountNote = s.finalCountClosed
+    ? `<p><b>Lectura final del tablero:</b> ya no hay extranjero pendiente ni simulación Datum que pueda modificar la lectura. La diferencia total coincide con el conteo contabilizado: <b class="${leadClass(s.currentLead)}">${leadText(s.currentLead)}</b>.</p>
+       <p><b>Dato territorial:</b> sin extranjero, el territorio peruano muestra <b class="${leadClass(s.peruNoForeignLead)}">${leadText(s.peruNoForeignLead)}</b>. La ventaja extranjera ONPE contabilizada compensa ese margen y sostiene la ventaja total de Keiko.</p>`
+    : '';
+
+  const nearFinalNote = !s.finalCountClosed && s.nearFinalStage
     ? `<p><b>Lectura adicional:</b> el tramo Datum ya es residual. Quedan solo <b>${moneyish(s.pendingForeign)}</b> votos extranjeros estimados pendientes; por eso el resultado total depende casi por completo de ONPE ya contabilizado.</p>
        <p><b>Dato territorial:</b> sin extranjero, el territorio peruano aún muestra <b class="${leadClass(s.peruNoForeignLead)}">${leadText(s.peruNoForeignLead)}</b>. La ventaja extranjera ONPE ya contabilizada compensa ese margen y sostiene la ventaja total de Keiko.</p>`
     : '';
+
+  const safetyLine = s.finalCountClosed
+    ? `<p>Cuenta de cierre: Perú sin extranjero + extranjero ONPE contabilizado = <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>.</p>`
+    : `<p>La cuenta de seguridad frente al extranjero pendiente es: Perú sin extranjero + extranjero ONPE ya contado − extranjero pendiente máximo para Sánchez = <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>.</p>`;
 
   callout.innerHTML = `
     <strong>${s.title}</strong>
     ${buildPublicConclusion(s)}
     <p>${s.explanation}</p>
+    ${finalCountNote}
     ${nearFinalNote}
-    <p>La cuenta de seguridad frente al extranjero pendiente es: Perú sin extranjero + extranjero ONPE ya contado − extranjero pendiente máximo para Sánchez = <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>.</p>
-    <p class="muted">Esta es una lectura matemática del modelo publicado, no una proclamación oficial. La proclamación corresponde a las autoridades electorales.</p>
+    ${safetyLine}
+    <p class="muted">Esta es una lectura matemática del conteo publicado, no una proclamación oficial. La proclamación corresponde a las autoridades electorales.</p>
     ${fallbackNote}`;
 }
 
@@ -1126,6 +1166,15 @@ function buildPublicConclusion(s){
     : ' El corte no reporta fallback departamental relevante, por lo que la lectura territorial es más limpia.';
 
   if(s.currentOnpeAhead && s.thresholdCleared && s.worstForeignAhead && s.adjustedAhead){
+    if(s.finalCountClosed){
+      return `
+        <div class="public-conclusion strong">
+          <b>Conclusión pública:</b>
+          <span>Con el 100% de actas contabilizadas, Keiko mantiene una ventaja total de <b>${leadText(s.currentLead)}</b>. El extranjero ya no requiere estimación: está incorporado como conteo ONPE y no queda remanente extranjero pendiente.</span>
+          <small>Esta lectura resume el conteo ONPE publicado y no reemplaza la proclamación oficial de las autoridades electorales.${fallbackText}</small>
+        </div>`;
+    }
+
     if(s.nearFinalStage){
       return `
         <div class="public-conclusion strong">
@@ -1156,7 +1205,7 @@ function buildPublicConclusion(s){
     return `
       <div class="public-conclusion favorable">
         <b>Conclusión pública:</b>
-        <span>Bajo el modelo publicado, el escenario ajustado favorece a Keiko, aunque todavía no alcanza la condición más fuerte de consolidación matemática.</span>
+        <span>Bajo el modelo publicado, el escenario ajustado favorece a Keiko. La lectura debe revisarse con los siguientes cortes hasta que el conteo quede cerrado.</span>
         <small>Se recomienda seguir actualizando con nuevos cortes válidos.${fallbackText}</small>
       </div>`;
   }
@@ -1186,17 +1235,21 @@ function renderFinalHero(){
 
   if(status){
     status.innerHTML = consolidated
-      ? (s.nearFinalStage
-          ? `<span class="status-dot safe"></span> Victoria virtual consolidada`
-          : `<span class="status-dot safe"></span> Consolidado bajo el modelo`)
+      ? (s.finalCountClosed
+          ? `<span class="status-dot safe"></span> Resultado ONPE al 100%`
+          : (s.nearFinalStage
+              ? `<span class="status-dot safe"></span> Victoria virtual consolidada`
+              : `<span class="status-dot safe"></span> Consolidado bajo el modelo`))
       : `<span class="status-dot watch"></span> Escenario analítico en seguimiento`;
   }
 
   if(verdict){
     verdict.innerHTML = consolidated
-      ? (s.nearFinalStage
-          ? `<strong>Victoria virtual consolidada con extranjero pendiente marginal.</strong><span>Keiko lidera ONPE y conserva ventaja aun si todo el remanente extranjero estimado (${moneyish(s.pendingForeign)} votos) se asigna a Sánchez.</span>`
-          : `<strong>Escenario matemáticamente consolidado bajo el modelo publicado.</strong><span>Keiko lidera ONPE y conserva ventaja incluso si todo el extranjero pendiente se asigna a Sánchez.</span>`)
+      ? (s.finalCountClosed
+          ? `<strong>Resultado al 100%: ventaja total de Keiko.</strong><span>Con el conteo de actas completo, Keiko lidera por ${leadText(s.currentLead)}. El extranjero está cerrado y Datum ya no incide en el cálculo principal.</span>`
+          : (s.nearFinalStage
+              ? `<strong>Victoria virtual consolidada con extranjero pendiente marginal.</strong><span>Keiko lidera ONPE y conserva ventaja aun si todo el remanente extranjero estimado (${moneyish(s.pendingForeign)} votos) se asigna a Sánchez.</span>`
+              : `<strong>Escenario matemáticamente consolidado bajo el modelo publicado.</strong><span>Keiko lidera ONPE y conserva ventaja incluso si todo el extranjero pendiente se asigna a Sánchez.</span>`))
       : `<strong>Escenario analítico en seguimiento.</strong><span>La lectura depende del último corte válido y de la prueba frente al extranjero pendiente.</span>`;
   }
 
@@ -1210,9 +1263,11 @@ function renderFinalHero(){
   }
 
   if(worst){
-    worst.innerHTML = s.nearFinalStage
-      ? `<b>Prueba extrema final:</b> aun asignando los ${moneyish(s.pendingForeign)} votos extranjeros pendientes estimados a Sánchez, Keiko conservaría <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>. <span>${sourceText}</span>`
-      : `<b>Prueba extrema:</b> si todo el extranjero pendiente fuese a Sánchez, la ventaja quedaría en <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>. <span>${sourceText}</span>`;
+    worst.innerHTML = s.finalCountClosed
+      ? `<b>Cuenta de cierre:</b> no queda extranjero pendiente. La ventaja total contabilizada es <b class="${leadClass(s.currentLead)}">${leadText(s.currentLead)}</b>. <span>${sourceText}</span>`
+      : (s.nearFinalStage
+          ? `<b>Prueba extrema final:</b> aun asignando los ${moneyish(s.pendingForeign)} votos extranjeros pendientes estimados a Sánchez, Keiko conservaría <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>. <span>${sourceText}</span>`
+          : `<b>Prueba extrema:</b> si todo el extranjero pendiente fuese a Sánchez, la ventaja quedaría en <b class="${leadClass(s.safeLeadWorstForeign)}">${leadText(s.safeLeadWorstForeign)}</b>. <span>${sourceText}</span>`);
   }
 }
 
@@ -1334,12 +1389,15 @@ function render(){
   const sourceText = projectionLabel(p.projectionSource || m.projectionSource);
   const foreignClosed = isForeignClosed();
   const foreignResidual = isForeignResidualAmount(p.foreignRemainingVotesEstimated || 0);
-  const adjustedLabel = adjustedMetricLabel();
+  const finalCountClosed = isFinalCountStage(n.actasContabilizadasPct, p.foreignRemainingVotesEstimated || 0);
+  const adjustedLabel = finalCountClosed ? 'Diferencia total final' : adjustedMetricLabel();
 
   const heroTitle = document.getElementById('heroTitle');
-  if(heroTitle) heroTitle.textContent = foreignClosed
-    ? 'ONPE + voto extranjero oficial'
-    : (foreignResidual ? 'ONPE casi final + remanente extranjero marginal' : 'ONPE + escenario extranjero Datum');
+  if(heroTitle) heroTitle.textContent = finalCountClosed
+    ? 'Resultado ONPE al 100% + extranjero contabilizado'
+    : (foreignClosed
+        ? 'ONPE + voto extranjero oficial'
+        : (foreignResidual ? 'ONPE casi final + remanente extranjero marginal' : 'ONPE + escenario extranjero Datum'));
   document.getElementById('heroSubtitle').textContent = `${m.subtitle} · Corte ONPE ${n.fechaActualizacion}`;
 
   const cutoff = document.getElementById('cutoffNotice');
@@ -1349,7 +1407,7 @@ function render(){
       <strong>Corte ONPE:</strong> ${n.fechaActualizacion} · ${pct(n.actasContabilizadasPct, 3)} de actas contabilizadas.<br>
       <strong>Fuente de proyección Perú:</strong> ${sourceText}.<br>
       <strong>Tratamiento del extranjero:</strong> ${foreignClosed
-        ? 'bloque extranjero contabilizado por ONPE; Datum ya no se usa en el cálculo principal.'
+        ? 'extranjero contabilizado por ONPE; no queda remanente pendiente y Datum ya no se usa.'
         : (foreignResidual
             ? `extranjero casi cerrado por ONPE; Datum solo aplica al remanente marginal de ${moneyish(p.foreignRemainingVotesEstimated || 0)} votos estimados.`
             : `ONPE para votos ya contabilizados + Datum (${pct(p.datumForeignKeikoPct, 2)} Keiko / ${pct(p.datumForeignSanchezPct, 2)} Sánchez) solo para lo pendiente.`)}<br>
@@ -1383,7 +1441,7 @@ function render(){
     ? 'Extranjero oficial ONPE'
     : (foreignResidual ? 'Extranjero casi cerrado' : 'Extranjero ONPE + Datum');
   if(foreignMethodText) foreignMethodText.textContent = foreignClosed
-    ? 'El voto extranjero ya está contabilizado por ONPE. Datum deja de aplicarse al cálculo principal y queda solo como referencia histórica de cortes anteriores.'
+    ? 'El voto extranjero ya está contabilizado por ONPE. No queda pendiente estimado y Datum deja de tener efecto en el cálculo principal.'
     : (foreignResidual
         ? `El voto extranjero ya está prácticamente incorporado por ONPE. Datum solo queda para un remanente marginal de ${moneyish(p.foreignRemainingVotesEstimated || 0)} votos estimados.`
         : 'Si ONPE ya contabilizó votos del extranjero, se respetan esos votos oficiales. Datum se aplica solo al extranjero pendiente.');
@@ -1423,9 +1481,9 @@ function render(){
   document.getElementById('mainCallout').innerHTML = `
     <strong>Lectura principal y conclusión pública</strong>
     ${publicScenarioConclusion}
-    <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al sumar ${foreignClosed ? 'el extranjero oficial ONPE' : (foreignResidual ? 'el extranjero ONPE ya contado y el remanente marginal estimado' : 'el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente—')} la diferencia total queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
+    <p>La diferencia Perú sin extranjero queda en <b class="${leadClass(p.withoutForeignLeadKeiko)}">${leadText(p.withoutForeignLeadKeiko)}</b>, usando ${sourceText}. Al sumar ${finalCountClosed ? 'el extranjero contabilizado por ONPE al 100%' : (foreignClosed ? 'el extranjero oficial ONPE' : (foreignResidual ? 'el extranjero ONPE ya contado y el remanente marginal estimado' : 'el escenario extranjero mixto —ONPE para lo ya contado y Datum solo para lo pendiente—'))} la diferencia total queda en <b class="${leadClass(p.adjustedLeadKeiko)}">${leadText(p.adjustedLeadKeiko)}</b>.</p>
     ${p.projectionSource === 'hibrido_provincia_departamento' ? `<p class="muted"><b>Nota de calidad del corte:</b> se usó fallback departamental en ${moneyish(p.fallbackDepartmentCount || getFallbackDepartments().length)} departamento(s) para evitar omitir provincias que no respondieron. ${fallbackSummaryText()}.</p>` : ''}
-    <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. ${foreignClosed ? 'El bloque extranjero está cerrado para efectos del cálculo principal.' : (foreignResidual ? `Remanente extranjero marginal: ${moneyish(p.foreignRemainingVotesEstimated || 0)} votos estimados.` : `Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.`)}</p>`;
+    <p class="muted">Voto extranjero estimado: ${moneyish(p.foreignVotesEstimated)} votos válidos en ${moneyish(p.foreignActs)} actas. Votos extranjeros ya contabilizados: ${moneyish(p.foreignCurrentValidVotes || 0)}. ${finalCountClosed ? 'El bloque extranjero está cerrado: no queda pendiente estimado.' : (foreignClosed ? 'El bloque extranjero está cerrado para efectos del cálculo principal.' : (foreignResidual ? `Remanente extranjero marginal: ${moneyish(p.foreignRemainingVotesEstimated || 0)} votos estimados.` : `Faltante extranjero estimado: ${moneyish(p.foreignRemainingVotesEstimated || 0)}.`))}</p>`;
 
   renderForeignSectionHeader();
   renderThreshold();
@@ -1458,7 +1516,15 @@ function renderForeignSectionHeader(){
   const p = state.data?.projection || {};
   const residual = isForeignResidualAmount(p.foreignRemainingVotesEstimated || 0);
 
-  if(isForeignClosed()){
+  if(isFinalCountStage(state.data?.nationalOnpe?.actasContabilizadasPct, p.foreignRemainingVotesEstimated || 0)){
+    if(eyebrow) eyebrow.textContent = 'Extranjero cerrado';
+    if(title) title.textContent = 'Voto extranjero contabilizado por ONPE';
+    if(desc) desc.textContent = 'El conteo extranjero está incorporado como dato ONPE y no queda pendiente estimado. Datum queda solo como referencia histórica y ya no afecta el resultado.';
+    if(comparison) comparison.textContent = 'Resultado extranjero ONPE';
+    if(sensTitle) sensTitle.textContent = 'Sin sensibilidad pendiente';
+    if(sensDesc) sensDesc.textContent = 'No se simula el extranjero porque el remanente estimado es cero.';
+    if(footer) footer.textContent = 'Informe analítico. Datos oficiales: ONPE. Conteo al 100%. No reemplaza la proclamación electoral.';
+  }else if(isForeignClosed()){
     if(eyebrow) eyebrow.textContent = 'Extranjero ONPE';
     if(title) title.textContent = 'Voto extranjero contabilizado oficialmente';
     if(desc) desc.textContent = 'El bloque extranjero ya no requiere estimación Datum para el cálculo principal. Se usa el voto extranjero contabilizado por ONPE.';
@@ -1516,10 +1582,16 @@ function renderThreshold(){
       </tr></tbody>`;
 
     calloutEl.className = 'callout threshold-safe';
-    calloutEl.innerHTML = `
-      <strong>Extranjero cerrado</strong>
-      <p>El cálculo principal ya no necesita escenario Datum para el extranjero. El bloque extranjero se toma de ONPE y Datum queda como referencia metodológica histórica.</p>
-      <p class="muted">Fórmula actual: Perú proyectado sin extranjero + extranjero oficial ONPE.</p>`;
+    const finalClosed = isFinalCountStage(state.data?.nationalOnpe?.actasContabilizadasPct, p.foreignRemainingVotesEstimated || 0);
+    calloutEl.innerHTML = finalClosed
+      ? `
+        <strong>Extranjero cerrado y conteo al 100%</strong>
+        <p>El cálculo principal ya no necesita escenario Datum. El bloque extranjero se toma íntegramente de ONPE y no queda pendiente estimado.</p>
+        <p class="muted">Fórmula de cierre: Perú sin extranjero + extranjero ONPE = diferencia total contabilizada.</p>`
+      : `
+        <strong>Extranjero cerrado</strong>
+        <p>El cálculo principal ya no necesita escenario Datum para el extranjero. El bloque extranjero se toma de ONPE y Datum queda como referencia metodológica histórica.</p>
+        <p class="muted">Fórmula actual: Perú proyectado sin extranjero + extranjero oficial ONPE.</p>`;
     return;
   }
   const currentForeignPct = t.foreignActual.keikoPct;

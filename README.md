@@ -471,3 +471,30 @@ Se ajustaron los textos dinámicos para cortes casi finales:
   pero la ventaja extranjera ONPE ya contabilizada compensa ese margen.
 - Se mantiene la advertencia de que no es proclamación oficial.
 ```
+
+
+
+### Actualización editorial 99.990%
+
+Se ajustaron textos para cortes prácticamente finales:
+
+```text
+- "Diferencia ajustada Datum" pasa a "Diferencia total casi final" cuando el extranjero pendiente es marginal.
+- El encabezado deja de hablar de "escenario extranjero Datum" y pasa a "ONPE casi final + remanente extranjero marginal".
+- El bloque extranjero deja de presentarse como un umbral relevante y se muestra como remanente marginal.
+- Se mantiene la lectura: Perú sin extranjero favorece a Sánchez, pero el extranjero ONPE ya contado compensa ampliamente y sostiene la ventaja total de Keiko.
+```
+
+
+
+### Actualización editorial 100%
+
+Se corrigió el comportamiento cuando el extranjero pendiente llega a cero:
+
+```text
+- El 100% de actas ya se trata como conteo cerrado, no como escenario pendiente.
+- Se elimina la lectura incorrecta de que Keiko "no alcanza la condición más fuerte".
+- La conclusión pública pasa a: resultado ONPE al 100% con ventaja total de Keiko.
+- Datum queda como referencia histórica y ya no participa en el cálculo principal.
+- Se mantiene la precisión: Perú sin extranjero favorece a Sánchez, pero el extranjero ONPE contabilizado sostiene la ventaja total de Keiko.
+```
