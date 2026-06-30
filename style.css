@@ -1871,3 +1871,54 @@ html body.final-edition main section#historial table#historyTable tbody td.winne
     font-weight:950 !important;
   }
 }
+
+
+/* ------------------------------------------------------------
+   Fix: tabla completa de cortes sin recorte vertical
+   ------------------------------------------------------------
+   El acordeón general usa max-height para tablas largas. En el historial
+   eso hace que en móvil solo se vean 2 cortes y el resto parezca cortado.
+   Esta regla anula el límite solo para #historyTable.
+*/
+
+html body.final-edition main section#historial .fold-content,
+html body.final-edition main section#historial .fold-content > .table-wrap{
+  max-height:none !important;
+  height:auto !important;
+  overflow-y:visible !important;
+}
+
+html body.final-edition main section#historial .fold-content > .table-wrap{
+  overflow-x:auto !important;
+  -webkit-overflow-scrolling:touch;
+}
+
+html body.final-edition main section#historial details[open],
+html body.final-edition main section#historial details[open] .fold-content{
+  overflow:visible !important;
+}
+
+html body.final-edition main section#historial table#historyTable tbody tr{
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
+@media (max-width:720px){
+  html body.final-edition main section#historial .fold-content > .table-wrap{
+    overflow:visible !important;
+    max-height:none !important;
+  }
+
+  html body.final-edition main section#historial table#historyTable,
+  html body.final-edition main section#historial table#historyTable tbody{
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+  }
+
+  html body.final-edition main section#historial table#historyTable tbody tr{
+    display:block !important;
+    width:100% !important;
+    margin-bottom:14px !important;
+  }
+}

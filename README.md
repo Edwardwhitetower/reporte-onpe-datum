@@ -498,3 +498,22 @@ Se corrigió el comportamiento cuando el extranjero pendiente llega a cero:
 - Datum queda como referencia histórica y ya no participa en el cálculo principal.
 - Se mantiene la precisión: Perú sin extranjero favorece a Sánchez, pero el extranjero ONPE contabilizado sostiene la ventaja total de Keiko.
 ```
+
+
+
+### Fix: tabla completa de cortes sin recorte vertical
+
+Se quitó el `max-height` heredado del acordeón solo para la tabla `#historyTable`.
+Antes, en especial en móvil, el contenedor de historial podía mostrar apenas 2 cortes y
+el resto quedaba dentro de un scroll interno poco evidente o aparecía cortado.
+
+Archivos a reemplazar:
+
+```text
+index.html
+style.css
+app.js
+README.md
+```
+
+`index.html` incluye cache-buster para `style.css` y `app.js`.
